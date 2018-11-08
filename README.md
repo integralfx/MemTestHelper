@@ -14,7 +14,7 @@ By default, MemTestHelper will use all of your CPU threads. Say your CPU has 8 t
 By default, the 8 instances will be centered, but you can move them around using x and y offset. Note that higher Y values will move the instances down.
 
 ### Stop at (%)
-Automatically stop each instance as they hit the coverage number entereed in the textbox.
+Automatically stop each instance as they hit the coverage number entered in the textbox.
 
 ## To-do
 * Be able to choose number of threads
