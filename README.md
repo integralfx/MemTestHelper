@@ -1,7 +1,7 @@
 # MemTestHelper
 AutoIT GUI to automate HCI MemTest
 
-![Screenshot](https://puu.sh/BWwRw/f5d8532141.png)
+![Screenshot](https://github.com/integralfx/MemTestHelper/raw/master/memtest_helper.jpg)
 
 ## Usage
 * Download both executables from [releases](https://github.com/integralfx/MemTestHelper/releases)
@@ -9,7 +9,10 @@ AutoIT GUI to automate HCI MemTest
 
 ## Settings
 ### Total RAM to test
-Exactly as its name implies. This number will be divided by the number of threads your CPU has and then input in each HCI MemTest instance.
+Exactly as its name implies. This number will be divided by the number of threads and then input in each HCI MemTest instance.
+
+### Number of threads
+How many HCI MemTest instances to run and hence the amount of CPU threads to use.
 
 ### Number of rows
 By default, MemTestHelper will use all of your CPU threads. Say your CPU has 8 threads, so there will be 8 HCI MemTest instances running. They will be centered on the primary monitor. Number of rows changes how those 8 instances are centered. If it's 2, it will put 4 instances on each row. It's best to play around with it to understand how it works.
@@ -21,5 +24,4 @@ By default, the 8 instances will be centered, but you can move them around using
 Automatically stop each instance as they hit the coverage number entered in the textbox.
 
 ## To-do
-* Be able to choose number of threads
 * Be able to stop after x number of errors
