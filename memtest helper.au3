@@ -141,7 +141,9 @@ Func update_coverage_info()
 EndFunc
 
 Func update_coverage()
-    For $i = 0 To GUICtrlRead($cbo_threads) - 1
+    Local $threads = GUICtrlRead($cbo_threads)
+    
+    For $i = 0 To $threads - 1
         Local $item = $lst_coverage_items[$i]
         Local $hwnd = $memtest_hwnds[$i]
         
@@ -161,6 +163,11 @@ Func update_coverage()
                 EndIf
             EndIf
         EndIf
+    Next
+    
+    ; set rest to nothing
+    For $i = $threads To $MAX_THREADS - 1
+        GUICtrlSetData($lst_coverage_items[$i], "-|-")
     Next
 EndFunc
 
