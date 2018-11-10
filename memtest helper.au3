@@ -6,7 +6,7 @@
 #include <WindowsConstants.au3>
 
 Global Const $MEMTEST_EXE = "memtest_6.0_no_nag.exe"
-Global Const $NUM_THREADS = EnvGet("NUMBER_OF_PROCESSORS")
+Global Const $MAX_THREADS = EnvGet("NUMBER_OF_PROCESSORS")
 Global Const $MEMTEST_WIDTH = 221
 Global Const $MEMTEST_HEIGHT = 253
 Global Const $UPDATE_INTERVAL = 100         ; how often to update coverage info (in ms)
@@ -14,23 +14,26 @@ Global Const $MEMTEST_BTN_START = "Button1"
 Global Const $MEMTEST_BTN_STOP = "Button2"
 Global Const $MEMTEST_EDT_RAM = "Edit1"
 
+Global Const $CBS_DROPDOWNLIST = 0x3        ; for some reason constant isn't defined
+
 If Not FileExists($MEMTEST_EXE) Then
     MsgBox($MB_OK, "Error", "MemTest can not be located")
     Exit
 EndIf
 
-Global $memtest_hwnds[$NUM_THREADS]         
+Global $memtest_hwnds[$MAX_THREADS]         
+Global $is_finished[$MAX_THREADS]           ; index tells whether memtest has reached specified coverage %
 Global $hwnd_gui                            
-Global $edt_total                           ; total RAM to test (in MB)
-Global $ddl_rows                            ; drop down list for number of rows
-Global $ipt_x_offset                        ; for positioning memtest windows
-Global $ipt_y_offset                        ; for positioning memtest windows
+Global $edt_total                           ; edit for total RAM to test (in MB)
+Global $cbo_threads                         ; combo for number of threads
+Global $cbo_rows                            ; combo for number of rows
+Global $ipt_x_offset                        ; input for positioning memtest windows
+Global $ipt_y_offset                        ; input for positioning memtest windows
 Global $btn_run
 Global $btn_stop
-Global $lst_coverage_items[$NUM_THREADS]
+Global $lst_coverage_items[$MAX_THREADS]
 Global $chk_stop_at                         ; to stop at a specified coverage %
 Global $edt_stop_at
-Global $is_finished[$NUM_THREADS]           ; index tells whether memtest has reached specified coverage %
 create_gui()
 
 ; --- EVENT HANDLING ---
@@ -49,13 +52,14 @@ Func run_memtest()
     EndIf
 
     GUICtrlSetState($edt_total, $GUI_DISABLE)
-    GUICtrlSetState($ddl_rows, $GUI_DISABLE)
+    GUICtrlSetState($cbo_threads, $GUI_DISABLE)
+    GUICtrlSetState($cbo_rows, $GUI_DISABLE)
     GUICtrlSetState($btn_run, $GUI_DISABLE)
     GUICtrlSetState($btn_stop, $GUI_ENABLE)
     GUICtrlSetState($chk_stop_at, $GUI_DISABLE)
     GUICtrlSetState($edt_stop_at, $GUI_DISABLE)
 
-    For $i = 0 To $NUM_THREADS - 1
+    For $i = 0 To GuiCtrlRead($cbo_threads) - 1
         $is_finished[$i] = False
     Next
 
@@ -68,7 +72,7 @@ EndFunc
 
 Func stop_memtest()   
     ; click stop
-    For $i = 0 To $NUM_THREADS - 1
+    For $i = 0 To GuiCtrlRead($cbo_threads) - 1
         If Not $is_finished[$i] Then
             ControlClick($memtest_hwnds[$i], "", $MEMTEST_BTN_STOP)
         EndIf
@@ -81,7 +85,8 @@ Func stop_memtest()
     update_coverage()
     
     GUICtrlSetState($edt_total, $GUI_ENABLE)
-    GUICtrlSetState($ddl_rows, $GUI_ENABLE)
+    GUICtrlSetState($cbo_threads, $GUI_ENABLE)
+    GUICtrlSetState($cbo_rows, $GUI_ENABLE)
     GUICtrlSetState($btn_run, $GUI_ENABLE)
     GUICtrlSetState($btn_stop, $GUI_DISABLE)
     GUICtrlSetState($chk_stop_at, $GUI_ENABLE)
@@ -91,19 +96,13 @@ Func stop_memtest()
 EndFunc
 
 Func offset_changed()
-    move_memtests(GUICtrlRead($ipt_x_offset), GUICtrlRead($ipt_y_offset))
+    move_memtests()
 EndFunc
 
 Func center_memtests()
-    Local $rows = GUICtrlRead($ddl_rows)
-    Local $cols = $NUM_THREADS / $rows
-    Local $x_offset = (_WinAPI_GetSystemMetrics(0) - $MEMTEST_WIDTH * $cols) / 2
-    Local $y_offset = (_WinAPI_GetSystemMetrics(1) - $MEMTEST_HEIGHT * $rows) / 2
+    center_xy_offsets()
     
-    GUICtrlSetData($ipt_x_offset, $x_offset)
-    GUICtrlSetData($ipt_y_offset, $y_offset)
-    
-    move_memtests($x_offset, $y_offset)
+    move_memtests()
 EndFunc
 
 ; checked/unchecked stop at (%) checkbox
@@ -113,6 +112,18 @@ Func chk_stop_at_checked()
     Else
         GUICtrlSetState($edt_stop_at, $GUI_DISABLE)
     EndIf
+EndFunc
+
+; selected number of threads
+Func cbo_threads_selected()
+    Local $threads = GUICtrlRead($cbo_threads)
+    GUICtrlSetData($cbo_rows, get_cbo_rows(), Mod($threads, 2) = 0 ? "2" : "1")
+    
+    center_xy_offsets()
+EndFunc
+
+Func cbo_rows_selected()
+    center_xy_offsets()
 EndFunc
 
 ; --- EVENT HANDLING ---
@@ -125,16 +136,16 @@ Func update_coverage_info()
     
     If is_all_finished() Then
         stop_memtest()
+        MsgBox($MB_OK, "", "MemTest finished")
     EndIf
 EndFunc
 
 Func update_coverage()
-    For $i = 0 To $NUM_THREADS - 1
+    For $i = 0 To GUICtrlRead($cbo_threads) - 1
         Local $item = $lst_coverage_items[$i]
         Local $hwnd = $memtest_hwnds[$i]
         
         Local $info = get_coverage_info($hwnd)
-        ConsoleWriteLn($info)
         Local $coverage = $info[0]
         Local $errors = $info[1]
         GUICtrlSetData($item, $coverage & "|" & $errors)
@@ -158,15 +169,36 @@ EndFunc
 
 ; --- HELPER FUNCTIONS ---
 
-Func get_ddl_rows()
+Func get_cbo_rows()
+    Local $threads = GUICtrlRead($cbo_threads)
+    
     Local $items = ""
-    For $i = 1 To $NUM_THREADS
-        If Mod($NUM_THREADS, $i) = 0 Then
+    For $i = 1 To $threads
+        If Mod($threads, $i) = 0 Then
             $items &= "|" & $i
         EndIf
     Next
 
     Return $items
+EndFunc
+
+Func get_cbo_threads()
+    Local $items = ""
+    For $i = 1 to $MAX_THREADS
+        $items &= "|" & $i
+    Next
+    
+    Return $items
+EndFunc
+
+Func center_xy_offsets()
+    Local $rows = GUICtrlRead($cbo_rows)
+    Local $cols = GUICtrlRead($cbo_threads) / $rows
+    Local $x_offset = Floor((_WinAPI_GetSystemMetrics(0) - $MEMTEST_WIDTH * $cols) / 2)
+    Local $y_offset = Floor((_WinAPI_GetSystemMetrics(1) - $MEMTEST_HEIGHT * $rows) / 2)
+    
+    GUICtrlSetData($ipt_x_offset, $x_offset)
+    GUICtrlSetData($ipt_y_offset, $y_offset)
 EndFunc
 
 Func create_gui()
@@ -184,9 +216,10 @@ Func create_gui()
     GUICtrlCreateLabel("Total RAM to test (MB):", 10, 25)
     $edt_total = GUICtrlCreateEdit("", 135, 20, 50, Default, 0)
     
-    GUICtrlCreateLabel("Number of rows:", 10, 50)
-    $ddl_rows = GUICtrlCreateCombo("", 135, 45, 50)
-    GUICtrlSetData($ddl_rows, get_ddl_rows(), "2")
+    GUICtrlCreateLabel("Number of threads:", 10, 50)
+    $cbo_threads = GUICtrlCreateCombo("", 135, 45, 50, Default, $CBS_DROPDOWNLIST)
+    GUICtrlSetData($cbo_threads, get_cbo_threads(), $MAX_THREADS)
+    GUICtrlSetOnEvent($cbo_threads, "cbo_threads_selected")
     
     $btn_run = GUICtrlCreateButton("Run", 10, 70, 80, 30)
     GUICtrlSetOnEvent($btn_run, "run_memtest")
@@ -196,14 +229,14 @@ Func create_gui()
     GUICtrlSetOnEvent($btn_stop, "stop_memtest")
     
     Local $lst_coverage = GUICtrlCreateListView("Coverage (%)|Errors", 10, 110, 180, 180)
-    For $i = 0 To $NUM_THREADS - 1
+    For $i = 0 To $MAX_THREADS - 1
         $lst_coverage_items[$i] = GUICtrlCreateListViewItem("-|-", $lst_coverage)
     Next
     
     ; Settings tab
     GUICtrlCreateTabItem("Settings")
     Local $rows = 2
-    Local $cols = $NUM_THREADS / $rows
+    Local $cols = $MAX_THREADS / $rows
     Local $x_offset = (_WinAPI_GetSystemMetrics(0) - $MEMTEST_WIDTH * $cols) / 2
     Local $y_offset = (_WinAPI_GetSystemMetrics(1) - $MEMTEST_HEIGHT * $rows) / 2
     
@@ -225,6 +258,11 @@ Func create_gui()
     $edt_stop_at = GUICtrlCreateEdit("", 90, 75, 50, Default, 0)
     GUICtrlSetState($edt_stop_at, $GUI_DISABLE)
     
+    GUICtrlCreateLabel("Number of rows:", 10, 105)
+    $cbo_rows = GUICtrlCreateCombo("", 90, 100, 50, Default, $CBS_DROPDOWNLIST)
+    GUICtrlSetData($cbo_rows, get_cbo_rows(), "2")
+    GUICtrlSetOnEvent($cbo_rows, "cbo_rows_selected")
+    
     GUICtrlCreateTabItem("")
     
     ; show GUI
@@ -244,8 +282,8 @@ Func validate_input()
         Return False
     EndIf
 
-    If Number($amount) < $NUM_THREADS Then
-        MsgBox($MB_OK, "Error", "Amount of RAM must be greater than " & $NUM_THREADS)
+    If Number($amount) < $MAX_THREADS Then
+        MsgBox($MB_OK, "Error", "Amount of RAM must be greater than " & $MAX_THREADS)
         Return False
     EndIf
     
@@ -253,20 +291,21 @@ Func validate_input()
 EndFunc
 
 Func start()
-    Local $ram_amount = GUICtrlRead($edt_total) / $NUM_THREADS
+    Local $threads = GUICtrlRead($cbo_threads)
+    Local $ram_amount = GUICtrlRead($edt_total) / $threads
     
     close_all_memtests()
     
-    For $i = 0 To $NUM_THREADS - 1
+    For $i = 0 To $threads - 1
         Local $pid = Run($MEMTEST_EXE)
         Sleep(100)
         $memtest_hwnds[$i] = get_hwnd_for_pid($pid)
     Next
     
-    move_memtests(GUICtrlRead($ipt_x_offset), GUICtrlRead($ipt_y_offset))
+    move_memtests()
     
-    Local $rows = GUICtrlRead($ddl_rows)
-    Local $cols = $NUM_THREADS / $rows
+    Local $rows = GUICtrlRead($cbo_rows)
+    Local $cols = $threads / $rows
     
     For $row = 0 To $rows - 1
         For $col = 0 To $cols - 1
@@ -344,14 +383,16 @@ Func get_coverage_info($hwnd)
     Return $info
 EndFunc
 
-Func move_memtests($x_offset, $y_offset)
+Func move_memtests()
     ; memtest not started
     If BitAND(GUICtrlGetState($btn_run), $GUI_ENABLE) Then
         Return
     EndIf
     
-    Local $rows = GUICtrlRead($ddl_rows)
-    Local $cols = $NUM_THREADS / $rows
+    Local $x_offset = Number(GUICtrlRead($ipt_x_offset), $NUMBER_DOUBLE)
+    Local $y_offset = Number(GUICtrlRead($ipt_y_offset), $NUMBER_DOUBLE)
+    Local $rows = GUICtrlRead($cbo_rows)
+    Local $cols = GUICtrlRead($cbo_threads) / $rows
     
     For $row = 0 To $rows - 1
         For $col = 0 To $cols - 1
@@ -366,9 +407,9 @@ Func move_memtests($x_offset, $y_offset)
 EndFunc
 
 ; checks if all elements of $is_finished are True
-Func is_all_finished()
-    For $elem In $is_finished
-        If Not $elem Then
+Func is_all_finished()   
+    For $i = 0 To GUICtrlRead($cbo_threads) - 1
+        If Not $is_finished[$i] Then
             Return False
         EndIf
     Next
