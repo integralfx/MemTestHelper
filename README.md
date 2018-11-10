@@ -3,6 +3,10 @@ AutoIT GUI to automate HCI MemTest
 
 ![Screenshot](https://puu.sh/BWwRw/f5d8532141.png)
 
+## Usage
+* Download both executables from [releases](https://github.com/integralfx/MemTestHelper/releases)
+* Run memtest helper
+
 ## Settings
 ### Total RAM to test
 Exactly as its name implies. This number will be divided by the number of threads your CPU has and then input in each HCI MemTest instance.
