@@ -4,12 +4,14 @@ AutoIT GUI to automate HCI MemTest
 ![Screenshot](https://github.com/integralfx/MemTestHelper/raw/master/memtest_helper.jpg)
 
 ## Usage
-* Download both executables from [releases](https://github.com/integralfx/MemTestHelper/releases)
-* Run memtest helper
+* Download my [modfied version](https://github.com/integralfx/MemTestHelper/raw/master/memtest_6.0_no_nag.exe) of HCI MemTest
+* Download memtest_helper from [releases](https://github.com/integralfx/MemTestHelper/releases)
+* Run memtest_helper
 
 ## Settings
-### Total RAM to test
+### RAM to test
 Exactly as its name implies. This number will be divided by the number of threads and then input in each HCI MemTest instance.
+Clicking on it will automatically input the amount of free RAM your computer has.
 
 ### Number of threads
 How many HCI MemTest instances to run and hence the amount of CPU threads to use.
@@ -25,4 +27,3 @@ Automatically stop each instance as they hit the coverage number entered in the 
 
 ## To-do
 * Be able to stop after x number of errors
-* Automatically get the amount of free RAM
