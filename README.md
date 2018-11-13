@@ -25,3 +25,4 @@ Automatically stop each instance as they hit the coverage number entered in the 
 
 ## To-do
 * Be able to stop after x number of errors
+* Automatically get the amount of free RAM
