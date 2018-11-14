@@ -27,3 +27,7 @@ Automatically stop each instance as they hit the coverage number entered in the 
 
 ## To-do
 * Be able to stop after x number of errors
+* Allow arbitrary number of rows
+  * If number of rows doesn't divide evenly into number of threads
+    * Center last row
+    * Start last row where the previous row starts
