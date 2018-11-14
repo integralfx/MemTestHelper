@@ -32,3 +32,4 @@ Checking "Total" will use the total coverage rather than each MemTest instance's
   * If number of rows doesn't divide evenly into number of threads
     * Center last row
     * Start last row where the previous row starts
+* Automatically close all MemTest instances when memtest_helper is closed - Stuoningur#5201
