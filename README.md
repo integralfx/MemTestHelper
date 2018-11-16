@@ -22,14 +22,16 @@ By default, MemTestHelper will use all of your CPU threads. Say your CPU has 8 t
 ### X/Y offset
 By default, the 8 instances will be centered, but you can move them around using X and Y offset. Note that higher Y values will move the instances down.
 
-### Stop at (%)
+### Stop at
+#### Coverage %
 Automatically stop each instance as they hit the coverage number entered in the textbox.
 Checking "Total" will use the total coverage rather than each MemTest instance's coverage.
+#### Error count
+Same as coverage % but with error count.
+Checking both will stop if either of the above conditions are met.
 
 ## To-do
-* Be able to stop after x number of errors
 * Allow arbitrary number of rows
   * If number of rows doesn't divide evenly into number of threads
     * Center last row
     * Start last row where the previous row starts
-* Automatically close all MemTest instances when memtest_helper is closed - Stuoningur#5201
