@@ -382,7 +382,7 @@ EndFunc
 Func create_about_tab()
     GUICtrlCreateTabItem("About")
     
-    GUICtrlCreateLabel("Version 1.3", 84, 120)
+    GUICtrlCreateLabel("Version 1.4", 84, 120)
     
     GUICtrlCreateLabel("Discord:", 50, 150)
     GUICtrlCreateInput("∫ntegral#7834", 100, 145, 80, Default, $ES_READONLY)
