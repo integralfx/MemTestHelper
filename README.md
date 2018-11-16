@@ -35,3 +35,4 @@ Checking both will stop if either of the above conditions are met.
   * If number of rows doesn't divide evenly into number of threads
     * Center last row
     * Start last row where the previous row starts
+* Layout grid to allow the user to choose how they want MemTest to be layed out
