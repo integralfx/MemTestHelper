@@ -26,11 +26,11 @@ By default, the 8 instances will be centered, but you can move them around using
 Spacing between each of the MemTest windows.
 
 ### Stop at
-#### Coverage %
-Automatically stop each instance as they hit the coverage number entered in the textbox.
-Checking "Total" will use the total coverage rather than each MemTest instance's coverage.
-#### Error count
-Same as coverage % but with error count.
+* #### Coverage %
+  * Automatically stop each instance as they hit the coverage number entered in the textbox.
+  * Checking "Total" will use the total coverage rather than each MemTest instance's coverage.
+* #### Error count
+  * Same as coverage % but with error count.
 
 Checking both will stop if either of the above conditions are met.
 
