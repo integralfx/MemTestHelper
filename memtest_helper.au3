@@ -1,3 +1,4 @@
+#include <ColorConstants.au3>
 #include <ComboConstants.au3>
 #include <EditConstants.au3>
 #include <GuiComboBox.au3>
@@ -12,7 +13,7 @@ Global Const $MEMTEST_EXE = "memtest_6.0_no_nag.exe"
 Global Const $NUM_THREADS = EnvGet("NUMBER_OF_PROCESSORS")
 Global Const $MAX_THREADS = $NUM_THREADS * 4
 Global Const $MEMTEST_WIDTH = 221
-Global Const $MEMTEST_HEIGHT = 253
+Global Const $MEMTEST_HEIGHT = 249
 Global Const $UPDATE_INTERVAL = 100         ; how often to update coverage info (in ms)
 Global Const $MEMTEST_BTN_START = "Button1"
 Global Const $MEMTEST_BTN_STOP = "Button2"
@@ -37,15 +38,18 @@ Global $cbo_threads                         ; combo for number of threads
 Global $cbo_rows                            ; combo for number of rows
 Global $ipt_x_offset                        ; input for positioning memtest windows
 Global $ipt_y_offset                        ; input for positioning memtest windows
+Global $ipt_x_spacing
+Global $ipt_y_spacing
 Global $btn_run
 Global $btn_stop
 Global $lst_coverage_items[$MAX_THREADS + 1]; index 0 is the total coverage % and errors
 Global $chk_stop_at                         ; to stop at a specified coverage %
 Global $chk_stop_at_total                   ; stop at total coverage %
-Global $edt_stop_at
+Global $ipt_stop_at
 Global $chk_stop_at_err
 Global $chk_stop_at_err_total
-Global $edt_stop_at_err
+Global $ipt_stop_at_err
+Global $ipt_update                          ; update interval
 create_gui()
 
 ; --- EVENT HANDLING ---
@@ -76,8 +80,12 @@ Func run_memtest()
     GUICtrlSetState($btn_run, $GUI_DISABLE)
     GUICtrlSetState($btn_stop, $GUI_ENABLE)
     GUICtrlSetState($chk_stop_at, $GUI_DISABLE)
-    GUICtrlSetState($edt_stop_at, $GUI_DISABLE)
+    GUICtrlSetState($ipt_stop_at, $GUI_DISABLE)
     GUICtrlSetState($chk_stop_at_total, $GUI_DISABLE)
+    GUICtrlSetState($chk_stop_at_err, $GUI_DISABLE)
+    GUICtrlSetState($ipt_stop_at_err, $GUI_DISABLE)
+    GUICtrlSetState($chk_stop_at_err_total, $GUI_DISABLE)
+    GUICtrlSetState($ipt_update, $GUI_DISABLE)
 
     For $i = 0 To GuiCtrlRead($cbo_threads) - 1
         $is_finished[$i] = False
@@ -86,7 +94,7 @@ Func run_memtest()
     $is_running = True
     start()
     
-    AdlibRegister("update_coverage_info", $UPDATE_INTERVAL)
+    AdlibRegister("update_coverage_info", GUICtrlRead($ipt_update))
     
     WinActivate($hwnd_gui)
 EndFunc
@@ -113,9 +121,14 @@ Func stop_memtest()
     GUICtrlSetState($btn_stop, $GUI_DISABLE)
     GUICtrlSetState($chk_stop_at, $GUI_ENABLE)
     If BitAND(GuiCtrlRead($chk_stop_at), $GUI_CHECKED) Then
-        GUICtrlSetState($edt_stop_at, $GUI_ENABLE)
+        GUICtrlSetState($ipt_stop_at, $GUI_ENABLE)
         GUICtrlSetState($chk_stop_at_total, $GUI_ENABLE)
     EndIf
+    If BitAND(GuiCtrlRead($chk_stop_at_err), $GUI_CHECKED) Then
+        GUICtrlSetState($ipt_stop_at_err, $GUI_ENABLE)
+        GUICtrlSetState($chk_stop_at_err_total, $GUI_ENABLE)
+    EndIf
+    GUICtrlSetState($ipt_update, $GUI_ENABLE)
     
     $is_running = False
     
@@ -124,6 +137,10 @@ Func stop_memtest()
 EndFunc
 
 Func offset_changed()
+    move_memtests()
+EndFunc
+
+Func spacing_changed()
     move_memtests()
 EndFunc
 
@@ -142,20 +159,20 @@ EndFunc
 ; checked/unchecked stop at (%) checkbox
 Func chk_stop_at_checked()   
     If BitAND(GuiCtrlRead($chk_stop_at), $GUI_CHECKED) Then
-        GUICtrlSetState($edt_stop_at, $GUI_ENABLE)
+        GUICtrlSetState($ipt_stop_at, $GUI_ENABLE)
         GUICtrlSetState($chk_stop_at_total, $GUI_ENABLE)
     Else
-        GUICtrlSetState($edt_stop_at, $GUI_DISABLE)
+        GUICtrlSetState($ipt_stop_at, $GUI_DISABLE)
         GUICtrlSetState($chk_stop_at_total, $GUI_DISABLE)
     EndIf
 EndFunc
 
 Func chk_stop_at_err_checked()
     If BitAND(GuiCtrlRead($chk_stop_at_err), $GUI_CHECKED) Then
-        GUICtrlSetState($edt_stop_at_err, $GUI_ENABLE)
+        GUICtrlSetState($ipt_stop_at_err, $GUI_ENABLE)
         GUICtrlSetState($chk_stop_at_err_total, $GUI_ENABLE)
     Else
-        GUICtrlSetState($edt_stop_at_err, $GUI_DISABLE)
+        GUICtrlSetState($ipt_stop_at_err, $GUI_DISABLE)
         GUICtrlSetState($chk_stop_at_err_total, $GUI_DISABLE)
     EndIf
 EndFunc
@@ -187,10 +204,10 @@ EndFunc
 
 Func update_coverage()
     Local $threads = GUICtrlRead($cbo_threads)
-    Local $stop_at = Number(GUICtrlRead($edt_stop_at))
+    Local $stop_at = Number(GUICtrlRead($ipt_stop_at))
     Local $stop_at_checked = BitAND(GUICtrlRead($chk_stop_at), $GUI_CHECKED)
     Local $stop_at_total_checked = BitAND(GUICtrlRead($chk_stop_at_total), $GUI_CHECKED)
-    Local $stop_at_err = Number(GUICtrlRead($edt_stop_at_err))
+    Local $stop_at_err = Number(GUICtrlRead($ipt_stop_at_err))
     Local $stop_at_err_checked = BitAND(GUICtrlRead($chk_stop_at_err), $GUI_CHECKED)
     Local $stop_at_err_total_checked = BitAND(GUICtrlRead($chk_stop_at_err_total), $GUI_CHECKED)
     Local $total_coverage = 0
@@ -205,6 +222,10 @@ Func update_coverage()
         Local $coverage = Number($info[0], $NUMBER_DOUBLE)
         Local $errors = Number($info[1])
         GUICtrlSetData($item, $i & "|" & $coverage & "|" & $errors)
+        
+        If $errors > 0 Then
+            GUICtrlSetColor($item, $COLOR_RED)
+        EndIf
         
         ; check coverage %
         If $stop_at_checked And Not $stop_at_total_checked Then
@@ -233,6 +254,10 @@ Func update_coverage()
     Next
     
     GUICtrlSetData($lst_coverage_items[0], "T|" & $total_coverage & "|" & $total_errors)
+    
+    If $total_errors > 0 Then
+        GUICtrlSetColor($lst_coverage_items[0], $COLOR_RED)
+    EndIf
     
     ; check total coverage
     If $stop_at_checked And $stop_at_total_checked Then
@@ -344,45 +369,64 @@ Func create_settings_tab()
     Local $x_offset = (_WinAPI_GetSystemMetrics(0) - $MEMTEST_WIDTH * $cols) / 2
     Local $y_offset = (_WinAPI_GetSystemMetrics(1) - $MEMTEST_HEIGHT * $rows) / 2
     
-    GUICtrlCreateLabel("X offset:", 25, 30)
-    $ipt_x_offset = GUICtrlCreateInput($x_offset, 70, 25, 50, Default, 0)
+    Local $x = 25
+    Local $y = 30
+    GUICtrlCreateLabel("X offset:", $x, $y)
+    $ipt_x_offset = GUICtrlCreateInput($x_offset, $x + 45, $y - 5, 50, Default, 0)
     GUICtrlCreateUpdown($ipt_x_offset)
     GUICtrlSetOnEvent($ipt_x_offset, "offset_changed")
     
-    GUICtrlCreateLabel("Y offset:", 25, 55)
-    $ipt_y_offset = GUICtrlCreateInput($y_offset, 70, 50, 50, Default, 0)
+    GUICtrlCreateLabel("Y offset:", $x, $y + 25)
+    $ipt_y_offset = GUICtrlCreateInput($y_offset, $x + 45, $y + 20, 50, Default, 0)
     GUICtrlCreateUpdown($ipt_y_offset)
     GUICtrlSetOnEvent($ipt_y_offset, "offset_changed")
     
-    Local $btn_center = GUICtrlCreateButton("Center", 125, 35, 80)
+    Local $btn_center = GUICtrlCreateButton("Center", $x + 100, $y + 5, 80)
     GUICtrlSetOnEvent($btn_center, "center_memtests")
     
-    GUICtrlCreateLabel("Number of rows:", 25, 80)
-    $cbo_rows = GUICtrlCreateCombo("", 105, 75, 50, 100, BitOR($CBS_DROPDOWNLIST, $WS_VSCROLL, $CBS_NOINTEGRALHEIGHT))
+    $y += 50
+    GUICtrlCreateLabel("X spacing:", $x, $y)
+    $ipt_x_spacing = GUICtrlCreateInput(0, $x + 55, $y - 5, 50, Default, 0)
+    GUICtrlCreateUpdown($ipt_x_spacing)
+    GUICtrlSetOnEvent($ipt_x_spacing, "spacing_changed")
+    
+    GUICtrlCreateLabel("Y spacing:", $x, $y + 25)
+    $ipt_y_spacing = GUICtrlCreateInput(0, $x + 55, $y + 20, 50, Default, 0)
+    GUICtrlCreateUpdown($ipt_y_spacing)
+    GUICtrlSetOnEvent($ipt_y_spacing, "spacing_changed")
+    
+    $y += 50
+    GUICtrlCreateLabel("Number of rows:", $x, $y)
+    $cbo_rows = GUICtrlCreateCombo("", $x + 85, $y - 5, 50, 100, BitOR($CBS_DROPDOWNLIST, $WS_VSCROLL, $CBS_NOINTEGRALHEIGHT))
     GUICtrlSetData($cbo_rows, get_cbo_rows(), $rows)
     GUICtrlSetOnEvent($cbo_rows, "cbo_rows_selected")
     
-    $chk_stop_at = GUICtrlCreateCheckbox("Stop at (%):", 25, 105)
+    $y += 25
+    $chk_stop_at = GUICtrlCreateCheckbox("Stop at (%):", $x, $y)
     GUICtrlSetOnEvent($chk_stop_at, "chk_stop_at_checked")
-    $edt_stop_at = GUICtrlCreateEdit("", 120, 105, 35, 20, 0)
-    GUICtrlSetState($edt_stop_at, $GUI_DISABLE)
-    $chk_stop_at_total = GUICtrlCreateCheckbox("Total", 160, 105)
+    $ipt_stop_at = GUICtrlCreateInput("", $x + 95, $y, 35, Default, 0)
+    GUICtrlSetState($ipt_stop_at, $GUI_DISABLE)
+    $chk_stop_at_total = GUICtrlCreateCheckbox("Total", $x + 135, $y)
     GUICtrlSetState($chk_stop_at_total, $GUI_DISABLE)
     GUICtrlSetTip($chk_stop_at_total, "Stop at total coverage")
 
-    $chk_stop_at_err = GUICtrlCreateCheckbox("Stop at (errors):", 25, 130)
+    $chk_stop_at_err = GUICtrlCreateCheckbox("Stop at (errors):", $x, $y + 25)
     GUICtrlSetOnEvent($chk_stop_at_err, "chk_stop_at_err_checked")
-    $edt_stop_at_err = GUICtrlCreateEdit("", 120, 130, 35, 20, 0)
-    GUICtrlSetState($edt_stop_at_err, $GUI_DISABLE)
-    $chk_stop_at_err_total = GUICtrlCreateCheckbox("Total", 160, 130)
+    $ipt_stop_at_err = GUICtrlCreateInput("", $x + 95, $y + 25, 35, Default, 0)
+    GUICtrlSetState($ipt_stop_at_err, $GUI_DISABLE)
+    $chk_stop_at_err_total = GUICtrlCreateCheckbox("Total", $x + 135, $y + 25)
     GUICtrlSetState($chk_stop_at_err_total, $GUI_DISABLE)
     GUICtrlSetTip($chk_stop_at_err_total, "Stop at total errors")
+    
+    $y += 55
+    GUICtrlCreateLabel("Update interval (ms):", $x, $y)
+    $ipt_update = GUICtrlCreateInput($UPDATE_INTERVAL, $x + 100, $y - 5, 40, 20, 0)
 EndFunc
 
 Func create_about_tab()
     GUICtrlCreateTabItem("About")
     
-    GUICtrlCreateLabel("Version 1.4", 84, 120)
+    GUICtrlCreateLabel("Version 1.5", 84, 120)
     
     GUICtrlCreateLabel("Discord:", 50, 150)
     GUICtrlCreateInput("∫ntegral#7834", 100, 145, 80, Default, $ES_READONLY)
@@ -432,9 +476,53 @@ Func validate_input()
         EndIf
     EndIf
     
+    ; validate X and Y offsets
+    Local $x_offset = GUICtrlRead($ipt_x_offset)
+    Local $y_offset = GUICtrlRead($ipt_y_offset)
+    
+    If $x_offset = "" Then
+        MsgBox($MB_OK, "Error", "Please enter X offset")
+        Return False
+    EndIf
+    If $y_offset = "" Then
+        MsgBox($MB_OK, "Error", "Please enter Y offset")
+        Return False
+    EndIf
+    
+    If Not StringIsDigit($x_offset) Then
+        MsgBox($MB_OK, "Error", "X offset must be an integer")
+        Return False
+    EndIf
+    If Not StringIsDigit($y_offset) Then
+        MsgBox($MB_OK, "Error", "Y offset must be an integer")
+        Return False
+    EndIf
+    
+    ; validate X and Y spacing
+    Local $x_spacing = GUICtrlRead($ipt_x_spacing)
+    Local $y_spacing = GUICtrlRead($ipt_y_spacing)
+    
+    If $x_spacing = "" Then
+        MsgBox($MB_OK, "Error", "Please enter X spacing")
+        Return False
+    EndIf
+    If $y_spacing = "" Then
+        MsgBox($MB_OK, "Error", "Please enter Y spacing")
+        Return False
+    EndIf
+    
+    If Not StringIsDigit($x_spacing) Then
+        MsgBox($MB_OK, "Error", "X spacing must be an integer")
+        Return False
+    EndIf
+    If Not StringIsDigit($y_spacing) Then
+        MsgBox($MB_OK, "Error", "Y spacing must be an integer")
+        Return False
+    EndIf
+    
     ; validate stop at %
     If BitAND(GUICtrlRead($chk_stop_at), $GUI_CHECKED) Then
-        Local $stop_at = GUICtrlRead($edt_stop_at)
+        Local $stop_at = GUICtrlRead($ipt_stop_at)
         
         If $stop_at = "" Then
             MsgBox($MB_OK, "Error", "Please enter stop at (%)")
@@ -456,7 +544,7 @@ Func validate_input()
     
     ; validate stop at error count
     If BitAND(GUICtrlRead($chk_stop_at_err), $GUI_CHECKED) Then
-        Local $stop_at = GUICtrlRead($edt_stop_at_err)
+        Local $stop_at = GUICtrlRead($ipt_stop_at_err)
         
         If $stop_at = "" Then
             MsgBox($MB_OK, "Error", "Please enter stop at error count")
@@ -474,6 +562,26 @@ Func validate_input()
             MsgBox($MB_OK, "Error", "Stop at error count must be greater than 1")
             Return False
         EndIf
+    EndIf
+    
+    ; validate update interval
+    Local $update = GUICtrlRead($ipt_update)
+    
+    If $update = "" Then
+        MsgBox($MB_OK, "Error", "Please enter update interval")
+        Return False
+    EndIf
+    
+    If Not StringIsDigit($update) Then
+        MsgBox($MB_OK, "Error", "Update interval must be an integer")
+        Return False
+    EndIf
+    
+    $update = Number($update)
+    ; update interval of 1ms doesn't let you stop
+    If $update < 2 Then
+        MsgBox($MB_OK, "Error", "Update interval must be at least 2")
+        Return False
     EndIf
     
     Return True
@@ -573,6 +681,8 @@ Func move_memtests()
     
     Local $x_offset = Number(GUICtrlRead($ipt_x_offset), $NUMBER_DOUBLE)
     Local $y_offset = Number(GUICtrlRead($ipt_y_offset), $NUMBER_DOUBLE)
+    Local $x_spacing = Number(GUICtrlRead($ipt_x_spacing))
+    Local $y_spacing = NUmber(GUICtrlRead($ipt_y_spacing))
     Local $rows = GUICtrlRead($cbo_rows)
     Local $cols = GUICtrlRead($cbo_threads) / $rows
     
@@ -580,10 +690,10 @@ Func move_memtests()
         For $col = 0 To $cols - 1
             Local $index = $row * $cols + $col
             Local $hwnd = $memtest_hwnds[$index]
+            Local $x = $col * $MEMTEST_WIDTH + $x_offset + $col * $x_spacing
+            Local $y = $row * $MEMTEST_HEIGHT + $y_offset + $row * $y_spacing
             
-            WinMove($hwnd, "", _ 
-                    $col * $MEMTEST_WIDTH + $x_offset, _
-                    $row * $MEMTEST_HEIGHT + $y_offset)
+            WinMove($hwnd, "", $x, $y)
         Next
     Next
 EndFunc
