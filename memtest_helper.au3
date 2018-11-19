@@ -1,8 +1,10 @@
 #include <ColorConstants.au3>
 #include <ComboConstants.au3>
+#include <Date.au3>
 #include <EditConstants.au3>
 #include <GuiComboBox.au3>
 #include <GUIConstantsEx.au3>
+#include <GuiListView.au3>
 #include <MemoryConstants.au3>
 #include <MsgBoxConstants.au3>
 #include <StaticConstants.au3>
@@ -12,8 +14,8 @@
 Global Const $MEMTEST_EXE = "memtest_6.0_no_nag.exe"
 Global Const $NUM_THREADS = EnvGet("NUMBER_OF_PROCESSORS")
 Global Const $MAX_THREADS = $NUM_THREADS * 4
-Global Const $MEMTEST_WIDTH = 221
-Global Const $MEMTEST_HEIGHT = 249
+Global Const $MEMTEST_WIDTH = 217
+Global Const $MEMTEST_HEIGHT = 247
 Global Const $UPDATE_INTERVAL = 100         ; how often to update coverage info (in ms)
 Global Const $MEMTEST_BTN_START = "Button1"
 Global Const $MEMTEST_BTN_STOP = "Button2"
@@ -21,7 +23,7 @@ Global Const $MEMTEST_EDT_RAM = "Edit1"
 Global Const $MEMTEST_MAX_RAM = 2048        ; max RAM for each instance
 
 Global Const $GUI_WIDTH = 230
-Global Const $GUI_HEIGHT = 300
+Global Const $GUI_HEIGHT = 350
 
 If Not FileExists($MEMTEST_EXE) Then
     MsgBox($MB_OK, "Error", "MemTest can not be located")
@@ -35,6 +37,10 @@ Global $hwnd_gui
 Global $btn_auto_ram                        ; button to automatically input available RAM
 Global $edt_ram                             ; edit for RAM to test (in MB)
 Global $cbo_threads                         ; combo for number of threads
+Global $h_timer
+Global $lbl_elapsed_time
+Global $lbl_estimated_time
+Global $lbl_speed
 Global $cbo_rows                            ; combo for number of rows
 Global $ipt_x_offset                        ; input for positioning memtest windows
 Global $ipt_y_offset                        ; input for positioning memtest windows
@@ -42,6 +48,7 @@ Global $ipt_x_spacing
 Global $ipt_y_spacing
 Global $btn_run
 Global $btn_stop
+Global $btn_show                            ; button for showing MemTest windows
 Global $lst_coverage_items[$MAX_THREADS + 1]; index 0 is the total coverage % and errors
 Global $chk_stop_at                         ; to stop at a specified coverage %
 Global $chk_stop_at_total                   ; stop at total coverage %
@@ -73,12 +80,15 @@ Func run_memtest()
         Return
     EndIf
 
+    $h_timer = TimerInit()
+
     GUICtrlSetState($btn_auto_ram, $GUI_DISABLE)
     GUICtrlSetState($edt_ram, $GUI_DISABLE)
     GUICtrlSetState($cbo_threads, $GUI_DISABLE)
     GUICtrlSetState($cbo_rows, $GUI_DISABLE)
     GUICtrlSetState($btn_run, $GUI_DISABLE)
     GUICtrlSetState($btn_stop, $GUI_ENABLE)
+    GUICtrlSetState($btn_show, $GUI_ENABLE)
     GUICtrlSetState($chk_stop_at, $GUI_DISABLE)
     GUICtrlSetState($ipt_stop_at, $GUI_DISABLE)
     GUICtrlSetState($chk_stop_at_total, $GUI_DISABLE)
@@ -95,6 +105,7 @@ Func run_memtest()
     start()
     
     AdlibRegister("update_coverage_info", GUICtrlRead($ipt_update))
+    AdlibRegister("update_time", 500)
     
     WinActivate($hwnd_gui)
 EndFunc
@@ -107,6 +118,7 @@ Func stop_memtest()
         EndIf
     Next
     
+    AdlibUnRegister("update_time")
     AdlibUnRegister("update_coverage_info")
     ; the user may have pressed stop while the coverage
     ; info was updating which causes some info to be missing
@@ -119,11 +131,13 @@ Func stop_memtest()
     GUICtrlSetState($cbo_rows, $GUI_ENABLE)
     GUICtrlSetState($btn_run, $GUI_ENABLE)
     GUICtrlSetState($btn_stop, $GUI_DISABLE)
+    GUICtrlSetState($btn_show, $GUI_DISABLE)
     GUICtrlSetState($chk_stop_at, $GUI_ENABLE)
     If BitAND(GuiCtrlRead($chk_stop_at), $GUI_CHECKED) Then
         GUICtrlSetState($ipt_stop_at, $GUI_ENABLE)
         GUICtrlSetState($chk_stop_at_total, $GUI_ENABLE)
     EndIf
+    GUICtrlSetState($chk_stop_at_err, $GUI_ENABLE)
     If BitAND(GuiCtrlRead($chk_stop_at_err), $GUI_CHECKED) Then
         GUICtrlSetState($ipt_stop_at_err, $GUI_ENABLE)
         GUICtrlSetState($chk_stop_at_err_total, $GUI_ENABLE)
@@ -134,6 +148,17 @@ Func stop_memtest()
     
     WinActivate($hwnd_gui)
     MsgBox($MB_OK, "", "MemTest finished")
+EndFunc
+
+Func show_memtest()
+    If $is_running Then
+        For $i = 0 To GUICtrlRead($cbo_threads) - 1
+            WinActivate($memtest_hwnds[$i])
+        Next
+        
+        ; GUISetState() doesn't work for some reason :/
+        WinActivate($hwnd_gui)
+    EndIf
 EndFunc
 
 Func offset_changed()
@@ -194,7 +219,7 @@ EndFunc
 
 ; --- THREADS ---
 
-Func update_coverage_info()   
+Func update_coverage_info()
     update_coverage()
     
     If is_all_finished() Then
@@ -262,14 +287,20 @@ Func update_coverage()
     ; check total coverage
     If $stop_at_checked And $stop_at_total_checked Then
         If $total_coverage > $stop_at Then
-            stop_all_memtests()
+            stop_memtests()
         EndIf
+        
+        Local $diff = TimerDiff($h_timer)
+        Local $est = ($diff / $total_coverage * $stop_at) - $diff
+        Local $h, $m, $s
+        _TicksToTime($est, $h, $m, $s)
+        GUICtrlSetData($lbl_estimated_time, StringFormat("%02dh%02dm%02ds to %d%%", $h, $m, $s, $stop_at))
     EndIf
     
     ; check total errors
     If $stop_at_err_checked And $stop_at_err_total_checked Then
         If $total_errors > $stop_at_err Then
-            stop_all_memtests()
+            stop_memtests()
         EndIf
     EndIf
     
@@ -277,6 +308,54 @@ Func update_coverage()
     For $i = $threads + 1 To $MAX_THREADS
         GUICtrlSetData($lst_coverage_items[$i], $i & "|-|-")
     Next
+EndFunc
+
+Func update_time()
+    Local $diff = TimerDiff($h_timer), $h, $m, $s
+    _TicksToTime($diff, $h, $m, $s)
+    GUICtrlSetData($lbl_elapsed_time, StringFormat("%02dh%02dm%02ds", $h, $m, $s))
+    
+    ; estimate time for coverage
+    Local $threads = GUICtrlRead($cbo_threads)
+    ; get total coverage
+    Local $total_coverage = 0
+    For $i = 1 To $threads
+        Local $item = $lst_coverage_items[$i]
+        Local $hwnd = $memtest_hwnds[$i - 1]
+        
+        Local $info = get_coverage_info($hwnd)
+        Local $coverage = Number($info[0], $NUMBER_DOUBLE)
+        
+        $total_coverage += $coverage
+    Next
+    
+    Local $stop_at = Number(GUICtrlRead($ipt_stop_at))
+    Local $stop_at_checked = BitAND(GUICtrlRead($chk_stop_at), $GUI_CHECKED)
+    Local $stop_at_total_checked = BitAND(GUICtrlRead($chk_stop_at_total), $GUI_CHECKED)
+    Local $est = 0, $cov = $stop_at
+    ; use user input coverage %
+    If $stop_at_checked Then
+        If $stop_at_total_checked Then
+            $est = ($diff / $total_coverage * $stop_at) - $diff
+        Else
+            ; calculate average coverage and use that to estimate
+            Local $avg = $total_coverage / $threads
+            $est = ($diff / $avg * $stop_at) - $diff
+        EndIf
+    Else
+        ; calculate average coverage and use that to estimate
+        Local $avg = $total_coverage / $threads
+        ; round up to next multiple of 100
+        $cov = (Int($avg / 100) + 1) * 100
+        $est = ($diff / $avg * $cov) - $diff
+    EndIf
+    
+    _TicksToTime($est, $h, $m, $s)
+    GUICtrlSetData($lbl_estimated_time, StringFormat("%02dh%02dm%02ds to %d%%", $h, $m, $s, $cov))
+    
+    Local $ram = Number(GUICtrlRead($edt_ram))
+    Local $speed = ($total_coverage / 100) * $ram / ($diff / 1000)
+    GUICtrlSetData($lbl_speed, StringFormat("%.2fMB/s", $speed))
 EndFunc
 
 ; --- THREADS ---
@@ -337,28 +416,53 @@ EndFunc
 
 Func create_main_tab()
     GUICtrlCreateTabItem("Main")
-    $btn_auto_ram = GUICtrlCreateButton("RAM to test (MB):", 25, 25, 100, 20)
+    
+    Local $x = 25
+    Local $y = 25
+    
+    $btn_auto_ram = GUICtrlCreateButton("RAM to test (MB):", $x, $y, 100, 20)
     GUICtrlSetOnEvent($btn_auto_ram, "btn_auto_ram_clicked")
     GUICtrlSetTip($btn_auto_ram, "Automatically input free RAM")
-    $edt_ram = GUICtrlCreateEdit("", 150, 25, 50, 20, 0)
+    $edt_ram = GUICtrlCreateEdit("", $x + 125, $y, 50, 20, 0)
     
-    GUICtrlCreateLabel("Number of threads:", 25, 55)
-    $cbo_threads = GUICtrlCreateCombo("", 150, 50, 50, 100, BitOR($CBS_DROPDOWNLIST, $WS_VSCROLL, $CBS_NOINTEGRALHEIGHT))
+    $y += 30
+    GUICtrlCreateLabel("Number of threads:", $x, $y)
+    $cbo_threads = GUICtrlCreateCombo("", $x + 125, $y - 5, 50, 100, BitOR($CBS_DROPDOWNLIST, $WS_VSCROLL, $CBS_NOINTEGRALHEIGHT))
     GUICtrlSetData($cbo_threads, get_cbo_threads(), $NUM_THREADS)
     GUICtrlSetOnEvent($cbo_threads, "cbo_threads_selected")
     
-    $btn_run = GUICtrlCreateButton("Run", 25, 75, 80, 30)
+    $y += 20
+    $btn_run = GUICtrlCreateButton("Run", $x, $y, 55, 30)
     GUICtrlSetOnEvent($btn_run, "run_memtest")
     
-    $btn_stop = GUICtrlCreateButton("Stop", 125, 75, 80, 30)
+    $btn_stop = GUICtrlCreateButton("Stop", $x + 60, $y, 55, 30)
     GUICtrlSetState($btn_stop, $GUI_DISABLE)
     GUICtrlSetOnEvent($btn_stop, "stop_memtest")
     
-    Local $lst_coverage = GUICtrlCreateListView("No.|Coverage (%)|Errors", 10, 110, 210, 180)
+    $btn_show = GUICtrlCreateButton("Show", $x + 120, $y, 55, 30)
+    GUICtrlSetState($btn_show, $GUI_DISABLE)
+    GUICtrlSetOnEvent($btn_show, "show_memtest")
+    
+    $y += 35
+    GUICtrlCreateLabel("Elapsed:", $x, $y)
+    $lbl_elapsed_time = GUICtrlCreateLabel("00h00m00s", $x + 60, $y, 120)
+    
+    GUICtrlCreateLabel("Estimated:", $x, $y + 15, 120)
+    $lbl_estimated_time = GUICtrlCreateLabel("00h00m00s", $x + 60, $y + 15, 120)
+    
+    GUICtrlCreateLabel("Speed:", $x, $y + 30)
+    $lbl_speed = GUICtrlCreateLabel("0.00MB/s", $x + 60, $y + 30, 120)
+    
+    $x -= 15
+    $y += 50
+    Local $lst_coverage = GUICtrlCreateListView("No.|Coverage (%)|Errors", $x, $y, 210, 180)
     ; total coverage and errors
     $lst_coverage_items[0] = GUICtrlCreateListViewItem("T|-|-", $lst_coverage)
     For $i = 1 To $MAX_THREADS
         $lst_coverage_items[$i] = GUICtrlCreateListViewItem($i & "|-|-", $lst_coverage)
+    Next
+    For $i = 0 To 2
+        _GUICtrlListView_SetColumnWidth($lst_coverage, $i, $LVSCW_AUTOSIZE_USEHEADER)
     Next
 EndFunc
 
@@ -426,7 +530,7 @@ EndFunc
 Func create_about_tab()
     GUICtrlCreateTabItem("About")
     
-    GUICtrlCreateLabel("Version 1.5", 84, 120)
+    GUICtrlCreateLabel("Version 1.6", 84, 120)
     
     GUICtrlCreateLabel("Discord:", 50, 150)
     GUICtrlCreateInput("∫ntegral#7834", 100, 145, 80, Default, $ES_READONLY)
