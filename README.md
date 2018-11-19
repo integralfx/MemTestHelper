@@ -43,3 +43,7 @@ How often to update the coverage and error info list. Lower values mean the list
     * Center last row
     * Start last row where the previous row starts
 * Layout grid to allow the user to choose how they want MemTest to be layed out
+* Timer to measure how long the test has been running
+  * Estimated time for every 100% coverage 
+  * OR
+  * Estimated time for the coverage % the user set
