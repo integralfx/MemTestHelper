@@ -34,9 +34,6 @@ Spacing between each of the MemTest windows.
 
 Checking both will stop if either of the above conditions are met.
 
-### Update interval
-How often to update the coverage and error info list. Lower values mean the list will be updated more often. Note that higher values might cause the GUI to become unresponsive. This is because AutoIT will [never support multi-threading](https://www.autoitscript.com/trac/autoit/wiki/AutoItNotOnToDoList).
-
 ## To-do
 * Allow arbitrary number of rows
   * If number of rows doesn't divide evenly into number of threads
