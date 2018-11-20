@@ -5,8 +5,8 @@
 
 ## Usage
 * Download my [modfied version](https://github.com/integralfx/MemTestHelper/raw/master/memtest_6.0_no_nag.exe) of HCI MemTest
-* Download memtest_helper from [releases](https://github.com/integralfx/MemTestHelper/releases)
-* Run memtest_helper
+* Download MemTestHelper from [releases](https://github.com/integralfx/MemTestHelper/releases)
+* Run MemTestHelper
 
 ## Settings
 ### RAM to test
