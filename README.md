@@ -28,7 +28,7 @@ Spacing between each of the MemTest windows.
 ### Stop at
 * #### Coverage %
   * Automatically stop each instance as they hit the coverage number entered in the textbox.
-  * Checking "Total" will use the total coverage rather than each MemTest instance's coverage.
+  * Checking "Total" (indicated by the 'T' in the coverage and error info list) will use the total coverage rather than each MemTest instance's coverage.
 * #### Error count
   * Same as coverage % but with error count.
 
