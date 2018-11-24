@@ -218,7 +218,7 @@ namespace MemTestHelper
 
         private void offset_changed(object sender, EventArgs e)
         {
-            move_memtests();
+            run_in_background(new MethodInvoker(delegate { move_memtests(); }));
         }
 
         private void btn_center_Click(object sender, EventArgs e)
@@ -445,9 +445,9 @@ namespace MemTestHelper
                 double ram = Convert.ToDouble(txt_ram.Text) / threads;
                 ControlSetText(hwnd, MEMTEST_EDT_RAM, string.Format("{0:f2}", ram));
 
-                ControlClick(hwnd, MEMTEST_BTN_START);
-
                 ControlSetText(hwnd, MEMTEST_STATIC_FREE_VER, "Modified version by ∫ntegral#7834");
+
+                ControlClick(hwnd, MEMTEST_BTN_START);
 
                 Thread.Sleep(10);
             }
@@ -464,20 +464,17 @@ namespace MemTestHelper
                 rows = (int)cbo_rows.SelectedItem,
                 cols = (int)cbo_threads.SelectedItem / rows;
 
-            run_in_background(new MethodInvoker(delegate
+            for (int r = 0; r < rows; r++)
             {
-                for (int r = 0; r < rows; r++)
+                for (int c = 0; c < cols; c++)
                 {
-                    for (int c = 0; c < cols; c++)
-                    {
-                        IntPtr hwnd = memtest_states[r * cols + c].proc.MainWindowHandle;
-                        int x = c * MEMTEST_WIDTH + c * x_spacing + x_offset,
-                            y = r * MEMTEST_HEIGHT + r * y_spacing + y_offset;
+                    IntPtr hwnd = memtest_states[r * cols + c].proc.MainWindowHandle;
+                    int x = c * MEMTEST_WIDTH + c * x_spacing + x_offset,
+                        y = r * MEMTEST_HEIGHT + r * y_spacing + y_offset;
 
-                        MoveWindow(hwnd, x, y, MEMTEST_WIDTH, MEMTEST_HEIGHT, true);
-                    }
+                    MoveWindow(hwnd, x, y, MEMTEST_WIDTH, MEMTEST_HEIGHT, true);
                 }
-            }));
+            }
         }
 
         private void close_all_memtests()
