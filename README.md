@@ -44,3 +44,4 @@ HCI MemTest only allows 2048MB per instance. If you have a CPU with 4 threads, t
     * Center last row
     * Start last row where the previous row starts
 * Layout grid to allow the user to choose how they want MemTest to be layed out
+* Dynamic coverage and error info list
