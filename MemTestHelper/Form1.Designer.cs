@@ -48,6 +48,7 @@
             this.txt_ram = new System.Windows.Forms.TextBox();
             this.btn_auto_ram = new System.Windows.Forms.Button();
             this.tab_settings = new System.Windows.Forms.TabPage();
+            this.btn_layout = new System.Windows.Forms.Button();
             this.chk_stop_at_err_total = new System.Windows.Forms.CheckBox();
             this.txt_stop_at_err = new System.Windows.Forms.TextBox();
             this.chk_stop_at_total = new System.Windows.Forms.CheckBox();
@@ -271,6 +272,7 @@
             // 
             // tab_settings
             // 
+            this.tab_settings.Controls.Add(this.btn_layout);
             this.tab_settings.Controls.Add(this.chk_stop_at_err_total);
             this.tab_settings.Controls.Add(this.txt_stop_at_err);
             this.tab_settings.Controls.Add(this.chk_stop_at_total);
@@ -295,6 +297,17 @@
             this.tab_settings.TabIndex = 1;
             this.tab_settings.Text = "Settings";
             this.tab_settings.UseVisualStyleBackColor = true;
+            // 
+            // btn_layout
+            // 
+            this.btn_layout.Location = new System.Drawing.Point(21, 181);
+            this.btn_layout.Name = "btn_layout";
+            this.btn_layout.Size = new System.Drawing.Size(75, 23);
+            this.btn_layout.TabIndex = 7;
+            this.btn_layout.Text = "Layout";
+            this.btn_layout.UseVisualStyleBackColor = true;
+            this.btn_layout.Visible = false;
+            this.btn_layout.Click += new System.EventHandler(this.btn_layout_Click);
             // 
             // chk_stop_at_err_total
             // 
@@ -533,7 +546,7 @@
             this.lbl_version.Name = "lbl_version";
             this.lbl_version.Size = new System.Drawing.Size(60, 13);
             this.lbl_version.TabIndex = 0;
-            this.lbl_version.Text = "Version 1.7";
+            this.lbl_version.Text = "Version 1.8";
             // 
             // Form1
             // 
@@ -544,8 +557,10 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "Form1";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "MemTestHelper";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
+            this.Move += new System.EventHandler(this.Form1_Move);
             this.tab_control.ResumeLayout(false);
             this.tab_main.ResumeLayout(false);
             this.tab_main.PerformLayout();
@@ -604,6 +619,7 @@
         private System.Windows.Forms.TextBox txt_discord;
         private System.Windows.Forms.Label lbl_discord;
         private System.Windows.Forms.Label lbl_version;
+        private System.Windows.Forms.Button btn_layout;
     }
 }
 

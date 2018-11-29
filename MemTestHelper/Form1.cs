@@ -25,7 +25,6 @@ namespace MemTestHelper
 
             init_cbo_threads();
             init_lst_coverage();
-            init_cbo_threads();
             init_cbo_rows();
             center_xy_offsets();
 
@@ -103,13 +102,29 @@ namespace MemTestHelper
                     lbl_speed_value.Text = $"{speed:f2}MB/s";
                 }));
             });
+
+            form_layout.StartPosition = FormStartPosition.Manual;
+            form_layout.Location = new Point(Location.X + Size.Width, Location.Y);
+        }
+
+        public int get_selected_num_threads()
+        {
+            return (int)cbo_threads.SelectedItem;
+        }
+
+        public int get_selected_num_rows()
+        {
+            return (int)cbo_rows.SelectedItem;
         }
 
         // event handling
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            close_all_memtests();
+            form_layout.should_close = true;
+            form_layout.Close();
+            close_memtests();
+            e.Cancel = false;
         }
 
         private void btn_auto_ram_Click(object sender, EventArgs e)
@@ -229,13 +244,43 @@ namespace MemTestHelper
         private void cbo_rows_SelectionChangeCommitted(object sender, EventArgs e)
         {
             center_xy_offsets();
+
+            // recreate layout
+            if (form_layout.Visible)
+            {
+                form_layout.Visible = false;
+                form_layout.Visible = true;
+            }
         }
 
         private void cbo_threads_SelectionChangeCommitted(object sender, EventArgs e)
         {
+            int threads = (int)cbo_threads.SelectedItem;
+            var items = lst_coverage.Items;
+            if (threads < items.Count)
+            {
+                for (int i = items.Count - 1; i > threads; i--)
+                    items.RemoveAt(i);
+            }
+            else
+            {
+                for (int i = items.Count; i <= threads; i++)
+                {
+                    string[] row = { i.ToString(), "-", "-" };
+                    lst_coverage.Items.Add(new ListViewItem(row));
+                }
+            }
+
             cbo_rows.Items.Clear();
             init_cbo_rows();
             center_xy_offsets();
+
+            // recreate layout grid
+            if (form_layout.Visible)
+            {
+                form_layout.Visible = false;
+                form_layout.Visible = true;
+            }
         }
 
         private void chk_stop_at_CheckedChanged(object sender, EventArgs e)
@@ -264,6 +309,19 @@ namespace MemTestHelper
                 txt_stop_at_err.Enabled = false;
                 chk_stop_at_err_total.Enabled = false;
             }
+        }
+
+        private void btn_layout_Click(object sender, EventArgs e)
+        {
+            if (!form_layout.Visible)
+                form_layout.Show(this);
+            else form_layout.Activate();
+        }
+
+        // move the layout form as well
+        private void Form1_Move(object sender, EventArgs e)
+        {
+            form_layout.Location = new Point(Location.X + Size.Width, Location.Y);
         }
 
         // helper functions
@@ -378,7 +436,7 @@ namespace MemTestHelper
 
         private void init_lst_coverage()
         {
-            for (int i = 0; i <= MAX_THREADS; i++)
+            for (int i = 0; i <= (int)cbo_threads.SelectedItem; i++)
             {
                 string[] row = { i.ToString(), "-", "-" };
                 // first row is total
@@ -432,9 +490,11 @@ namespace MemTestHelper
                 state.proc = Process.Start(MEMTEST_EXE);
                 state.is_finished = false;
                 memtest_states[i] = state;
+
+                Thread.Sleep(20);
             }
 
-            Thread.Sleep(100);
+            Thread.Sleep(20);
 
             move_memtests();
 
@@ -449,7 +509,7 @@ namespace MemTestHelper
 
                 ControlClick(hwnd, MEMTEST_BTN_START);
 
-                Thread.Sleep(10);
+                Thread.Sleep(20);
             }
         }
 
@@ -474,6 +534,17 @@ namespace MemTestHelper
 
                     MoveWindow(hwnd, x, y, MEMTEST_WIDTH, MEMTEST_HEIGHT, true);
                 }
+            }
+        }
+
+        private void close_memtests()
+        {
+            foreach (var s in memtest_states)
+            {
+                try {
+                    if (s != null) s.proc.Kill();
+                }
+                catch (Exception) {}
             }
         }
 
@@ -524,7 +595,8 @@ namespace MemTestHelper
                 // total is index 0
                 for (int i = 1; i <= threads; i++)
                 {
-                    var info = get_coverage_info(memtest_states[i - 1].proc.MainWindowHandle);
+                    var hwnd = memtest_states[i - 1].proc.MainWindowHandle;
+                    var info = get_coverage_info(hwnd);
                     if (info == null) continue;
                     double coverage = info.Item1;
                     int errors = info.Item2;
@@ -589,14 +661,20 @@ namespace MemTestHelper
                         btn_stop.PerformClick();
                 }
 
-                // set rest to nothing
-                for (int i = threads + 1; i < MAX_THREADS; i++)
+                if (is_all_finished())
                 {
-                    lst_coverage.Items[i].SubItems[1].Text = "-";
-                    lst_coverage.Items[i].SubItems[2].Text = "-";
-                }
+                    /* 
+                     * PerformClick only works if the button is visible
+                     * switch to main tab and PerformClick() then switch
+                     * back to the tab that the user was on
+                     */
+                    var curr_tab = tab_control.SelectedTab;
+                    if (curr_tab != tab_main)
+                        tab_control.SelectedTab = tab_main;
 
-                if (is_all_finished()) btn_stop.PerformClick();
+                    btn_stop.PerformClick();
+                    tab_control.SelectedTab = curr_tab;
+                }
             }));
         }
 
@@ -610,7 +688,6 @@ namespace MemTestHelper
             );
         }
 
-        // checks if all currently running MemTests are finished
         private bool is_all_finished()
         {
             for (int i = 0; i < (int)cbo_threads.SelectedItem; i++)
@@ -674,7 +751,7 @@ namespace MemTestHelper
             return hwnd;
         }
 
-        // emulate AutoIT Control* functions
+        // emulate AutoIT Control functions
         private bool ControlClick(IntPtr hwnd_parent, string class_name)
         {
             IntPtr hwnd = find_window(hwnd_parent, class_name);
@@ -742,6 +819,8 @@ namespace MemTestHelper
         private BackgroundWorker bw_coverage;
         private DateTime start_time;
         private System.Timers.Timer timer;
+        // layout grid
+        private FormLayout form_layout = new FormLayout();
 
         class MemTestState
         {
