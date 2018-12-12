@@ -34,7 +34,7 @@ Spacing between each of the MemTest windows.
 
 Checking both will stop if either of the above conditions are met.
 
-## Messages
+## Error Messages
 ### Amount of RAM must be greater than X
 HCI MemTest only allows 2048MB per instance. If you have a CPU with 4 threads, then that means you can only test up to 8192MB using 4 threads. To get around this, you can increase the number of threads and hence the number of HCI MemTest instances.
 
