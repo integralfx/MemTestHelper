@@ -143,7 +143,7 @@
             // hdr_errors
             // 
             this.hdr_errors.Text = "Errors";
-            this.hdr_errors.Width = 75;
+            this.hdr_errors.Width = 70;
             // 
             // lbl_speed_value
             // 
@@ -201,7 +201,6 @@
             // 
             // btn_show
             // 
-            this.btn_show.Enabled = false;
             this.btn_show.Location = new System.Drawing.Point(141, 53);
             this.btn_show.Name = "btn_show";
             this.btn_show.Size = new System.Drawing.Size(55, 30);
@@ -544,9 +543,9 @@
             this.lbl_version.AutoSize = true;
             this.lbl_version.Location = new System.Drawing.Point(84, 120);
             this.lbl_version.Name = "lbl_version";
-            this.lbl_version.Size = new System.Drawing.Size(60, 13);
+            this.lbl_version.Size = new System.Drawing.Size(69, 13);
             this.lbl_version.TabIndex = 0;
-            this.lbl_version.Text = "Version 1.8";
+            this.lbl_version.Text = "Version 1.8.1";
             // 
             // Form1
             // 
