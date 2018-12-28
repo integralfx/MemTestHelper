@@ -45,7 +45,10 @@ namespace MemTestHelper
             bw_coverage.RunWorkerCompleted += 
             new RunWorkerCompletedEventHandler(delegate (object o, RunWorkerCompletedEventArgs args)
             {
-                Thread.Sleep(100);
+                // wait for all MemTests to stop completely
+                while (is_any_memtest_stopping())
+                    Thread.Sleep(100);
+
                 update_coverage_info();
             });
 
@@ -149,7 +152,6 @@ namespace MemTestHelper
             cbo_rows.Enabled = false;
             btn_run.Enabled = false;
             btn_stop.Enabled = true;
-            btn_show.Enabled = true;
             chk_stop_at.Enabled = false;
             txt_stop_at.Enabled = false;
             chk_stop_at_total.Enabled = false;
@@ -175,56 +177,52 @@ namespace MemTestHelper
 
         private void btn_stop_Click(object sender, EventArgs e)
         {
-            // run in background as ControlClick can block
-            run_in_background(new MethodInvoker(delegate
+            for (int i = 0; i < (int)cbo_threads.SelectedItem; i++)
             {
-                for (int i = 0; i < (int)cbo_threads.SelectedItem; i++)
-                {
-                    if (!memtest_states[i].is_finished)
-                        ControlClick(memtest_states[i].proc.MainWindowHandle, MEMTEST_BTN_STOP);
-                }
+                if (!memtest_states[i].is_finished)
+                    ControlClick(memtest_states[i].proc.MainWindowHandle, MEMTEST_BTN_STOP);
+            }
 
-                bw_coverage.CancelAsync();
-                timer.Stop();
+            bw_coverage.CancelAsync();
+            timer.Stop();
 
-                btn_auto_ram.Enabled = true;
-                txt_ram.Enabled = true;
-                cbo_threads.Enabled = true;
-                cbo_rows.Enabled = true;
-                btn_run.Enabled = true;
-                btn_stop.Enabled = false;
-                btn_show.Enabled = false;
-                chk_stop_at.Enabled = true;
-                if (chk_stop_at.Checked)
-                    {
-                        txt_stop_at.Enabled = true;
-                        chk_stop_at_total.Enabled = true;
-                    }
-                chk_stop_at_err.Enabled = true;
-                if (chk_stop_at_err.Checked)
-                    {
-                        txt_stop_at_err.Enabled = true;
-                        chk_stop_at_err_total.Enabled = true;
-                    }
+            btn_auto_ram.Enabled = true;
+            txt_ram.Enabled = true;
+            cbo_threads.Enabled = true;
+            cbo_rows.Enabled = true;
+            btn_run.Enabled = true;
+            btn_stop.Enabled = false;
+            chk_stop_at.Enabled = true;
+            if (chk_stop_at.Checked)
+            {
+                txt_stop_at.Enabled = true;
+                chk_stop_at_total.Enabled = true;
+            }
+            chk_stop_at_err.Enabled = true;
+            if (chk_stop_at_err.Checked)
+            {
+                txt_stop_at_err.Enabled = true;
+                chk_stop_at_err_total.Enabled = true;
+            }
 
-                is_running = false;
+            is_running = false;
 
-                MessageBox.Show("MemTest finished");
-            }));
+            MessageBox.Show("MemTest finished");
         }
 
         private void btn_show_Click(object sender, EventArgs e)
         {
-            if (!is_running) return;
-
             // run in background as Thread.Sleep can lockup the GUI
             int threads = (int)cbo_threads.SelectedItem;
             run_in_background(new MethodInvoker(delegate
             {
                 for (int i = 0; i < threads; i++)
                 {
-                    SetForegroundWindow(memtest_states[i].proc.MainWindowHandle);
-                    Thread.Sleep(10);
+                    if (memtest_states[i] != null)
+                    {
+                        SetForegroundWindow(memtest_states[i].proc.MainWindowHandle);
+                        Thread.Sleep(10);
+                    }
                 }
 
                 Activate();
@@ -368,7 +366,7 @@ namespace MemTestHelper
             if ((UInt64)ram > avail_ram)
             {
                 var res = MessageBox.Show(
-                    $"Amount of RAM exceeds total RAM ({avail_ram})\n" +
+                    $"Amount of RAM exceeds available RAM ({avail_ram})\n" +
                     "This will cause RAM to be paged to your storage,\n" +
                     "making MemTest really slow.\n" +
                     "Continue?",
@@ -503,11 +501,14 @@ namespace MemTestHelper
                 IntPtr hwnd = memtest_states[i].proc.MainWindowHandle;
 
                 double ram = Convert.ToDouble(txt_ram.Text) / threads;
-                ControlSetText(hwnd, MEMTEST_EDT_RAM, string.Format("{0:f2}", ram));
+                run_in_background(new MethodInvoker(delegate
+                {
+                    ControlSetText(hwnd, MEMTEST_EDT_RAM, string.Format("{0:f2}", ram));
 
-                ControlSetText(hwnd, MEMTEST_STATIC_FREE_VER, "Modified version by ∫ntegral#7834");
+                    ControlSetText(hwnd, MEMTEST_STATIC_FREE_VER, "Modified version by ∫ntegral#7834");
 
-                ControlClick(hwnd, MEMTEST_BTN_START);
+                    ControlClick(hwnd, MEMTEST_BTN_START);
+                }));
 
                 Thread.Sleep(20);
             }
@@ -520,7 +521,7 @@ namespace MemTestHelper
             int x_offset = (int)ud_x_offset.Value,
                 y_offset = (int)ud_y_offset.Value,
                 x_spacing = (int)ud_x_spacing.Value - 5,
-                y_spacing = (int)ud_y_spacing.Value - 2,
+                y_spacing = (int)ud_y_spacing.Value - 3,
                 rows = (int)cbo_rows.SelectedItem,
                 cols = (int)cbo_threads.SelectedItem / rows;
 
@@ -650,7 +651,7 @@ namespace MemTestHelper
                 {
                     int stop_at = Convert.ToInt32(txt_stop_at.Text);
                     if (total_coverage > stop_at)
-                        btn_stop.PerformClick();
+                        click_btn_stop();
                 }
 
                 // check total errors
@@ -658,24 +659,43 @@ namespace MemTestHelper
                 {
                     int stop_at_err = Convert.ToInt32(txt_stop_at_err.Text);
                     if (total_errors > stop_at_err)
-                        btn_stop.PerformClick();
+                        click_btn_stop();
                 }
 
                 if (is_all_finished())
-                {
-                    /* 
-                     * PerformClick only works if the button is visible
-                     * switch to main tab and PerformClick() then switch
-                     * back to the tab that the user was on
-                     */
-                    var curr_tab = tab_control.SelectedTab;
-                    if (curr_tab != tab_main)
-                        tab_control.SelectedTab = tab_main;
-
-                    btn_stop.PerformClick();
-                    tab_control.SelectedTab = curr_tab;
-                }
+                    click_btn_stop();
             }));
+        }
+
+        /*
+         * MemTest can take a while to stop,
+         * which causes the total to return 0
+         */
+        private bool is_any_memtest_stopping()
+        {
+            for (int i = 0; i < (int)cbo_threads.SelectedItem; i++)
+            {
+                IntPtr hwnd = memtest_states[i].proc.MainWindowHandle;
+                string str = ControlGetText(hwnd, MEMTEST_STATIC_COVERAGE);
+                if (str != "" && str.Contains("Ending")) return true;
+            }
+
+            return false;
+        }
+
+        /* 
+         * PerformClick() only works if the button is visible
+         * switch to main tab and PerformClick() then switch
+         * back to the tab that the user was on
+         */
+        private void click_btn_stop()
+        {
+            var curr_tab = tab_control.SelectedTab;
+            if (curr_tab != tab_main)
+                tab_control.SelectedTab = tab_main;
+
+            btn_stop.PerformClick();
+            tab_control.SelectedTab = curr_tab;
         }
 
         private void show_error_msgbox(string msg)
@@ -756,8 +776,8 @@ namespace MemTestHelper
         {
             IntPtr hwnd = find_window(hwnd_parent, class_name);
             if (hwnd == IntPtr.Zero) return false;
-            SendMessage(hwnd, WM_LBUTTONDOWN, IntPtr.Zero, null);
-            SendMessage(hwnd, WM_LBUTTONUP, IntPtr.Zero, null);
+            SendNotifyMessage(hwnd, WM_LBUTTONDOWN, IntPtr.Zero, null);
+            SendNotifyMessage(hwnd, WM_LBUTTONUP, IntPtr.Zero, null);
             return true;
         }
 
@@ -785,8 +805,13 @@ namespace MemTestHelper
         [DllImport("user32.dll", SetLastError = true)]
         static extern IntPtr FindWindowEx(IntPtr hwndParent, IntPtr hwndChildAfter, string lpszClass, string lpszWindow);
 
+        // blocks
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern IntPtr SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, [MarshalAs(UnmanagedType.LPWStr)] string lParam);
+
+        // doesn't block
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        static extern bool SendNotifyMessage(IntPtr hWnd, int Msg, IntPtr wParam, [MarshalAs(UnmanagedType.LPWStr)] string lParam);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
