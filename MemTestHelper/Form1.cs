@@ -105,9 +105,6 @@ namespace MemTestHelper
                     lbl_speed_value.Text = $"{speed:f2}MB/s";
                 }));
             });
-
-            form_layout.StartPosition = FormStartPosition.Manual;
-            form_layout.Location = new Point(Location.X + Size.Width, Location.Y);
         }
 
         public int get_selected_num_threads()
@@ -124,10 +121,16 @@ namespace MemTestHelper
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            form_layout.should_close = true;
-            form_layout.Close();
             close_memtests();
-            e.Cancel = false;
+        }
+
+        // TODO: minimise MemTest instances when form is minimised
+        private void Form1_Resize(object sender, EventArgs e)
+        {
+            if (WindowState == FormWindowState.Minimized)
+            {
+                
+            }
         }
 
         private void btn_auto_ram_Click(object sender, EventArgs e)
@@ -156,8 +159,7 @@ namespace MemTestHelper
             txt_stop_at.Enabled = false;
             chk_stop_at_total.Enabled = false;
             chk_stop_at_err.Enabled = false;
-            txt_stop_at_err.Enabled = false;
-            chk_stop_at_err_total.Enabled = false;
+            chk_start_min.Enabled = false;
 
             is_running = true;
 
@@ -199,11 +201,7 @@ namespace MemTestHelper
                 chk_stop_at_total.Enabled = true;
             }
             chk_stop_at_err.Enabled = true;
-            if (chk_stop_at_err.Checked)
-            {
-                txt_stop_at_err.Enabled = true;
-                chk_stop_at_err_total.Enabled = true;
-            }
+            chk_start_min.Enabled = true;
 
             is_running = false;
 
@@ -220,7 +218,13 @@ namespace MemTestHelper
                 {
                     if (memtest_states[i] != null)
                     {
-                        SetForegroundWindow(memtest_states[i].proc.MainWindowHandle);
+                        IntPtr hwnd = memtest_states[i].proc.MainWindowHandle;
+
+                        if (IsIconic(hwnd))
+                            ShowWindow(hwnd, SW_RESTORE);
+                        else
+                            SetForegroundWindow(hwnd);
+
                         Thread.Sleep(10);
                     }
                 }
@@ -242,13 +246,6 @@ namespace MemTestHelper
         private void cbo_rows_SelectionChangeCommitted(object sender, EventArgs e)
         {
             center_xy_offsets();
-
-            // recreate layout
-            if (form_layout.Visible)
-            {
-                form_layout.Visible = false;
-                form_layout.Visible = true;
-            }
         }
 
         private void cbo_threads_SelectionChangeCommitted(object sender, EventArgs e)
@@ -272,13 +269,6 @@ namespace MemTestHelper
             cbo_rows.Items.Clear();
             init_cbo_rows();
             center_xy_offsets();
-
-            // recreate layout grid
-            if (form_layout.Visible)
-            {
-                form_layout.Visible = false;
-                form_layout.Visible = true;
-            }
         }
 
         private void chk_stop_at_CheckedChanged(object sender, EventArgs e)
@@ -293,33 +283,6 @@ namespace MemTestHelper
                 txt_stop_at.Enabled = false;
                 chk_stop_at_total.Enabled = false;
             }
-        }
-
-        private void chk_stop_at_err_CheckedChanged(object sender, EventArgs e)
-        {
-            if (chk_stop_at_err.Checked)
-            {
-                txt_stop_at_err.Enabled = true;
-                chk_stop_at_err_total.Enabled = true;
-            }
-            else
-            {
-                txt_stop_at_err.Enabled = false;
-                chk_stop_at_err_total.Enabled = false;
-            }
-        }
-
-        private void btn_layout_Click(object sender, EventArgs e)
-        {
-            if (!form_layout.Visible)
-                form_layout.Show(this);
-            else form_layout.Activate();
-        }
-
-        // move the layout form as well
-        private void Form1_Move(object sender, EventArgs e)
-        {
-            form_layout.Location = new Point(Location.X + Size.Width, Location.Y);
         }
 
         // helper functions
@@ -403,32 +366,6 @@ namespace MemTestHelper
                 }
             }
 
-            if (chk_stop_at_err.Checked)
-            {
-                string str_stop_at = txt_stop_at_err.Text;
-
-                if (str_stop_at == "")
-                {
-                    show_error_msgbox("Please enter stop at error count");
-                    return false;
-                }
-
-                if (!str_stop_at.All(char.IsDigit))
-                {
-                    show_error_msgbox("Stop at error count must be an integer");
-                    return false;
-                }
-
-                int stop_at = Convert.ToInt32(str_stop_at);
-                if (stop_at <= 0)
-                {
-                    show_error_msgbox("Stop at error count must be greater than 0");
-                    return false;
-                }
-            }
-
-
-
             return true;
         }
 
@@ -508,6 +445,9 @@ namespace MemTestHelper
                     ControlSetText(hwnd, MEMTEST_STATIC_FREE_VER, "Modified version by ∫ntegral#7834");
 
                     ControlClick(hwnd, MEMTEST_BTN_START);
+
+                    if (chk_start_min.Checked)
+                        ShowWindow(hwnd, SW_MINIMIZE);
                 }));
 
                 Thread.Sleep(20);
@@ -624,10 +564,9 @@ namespace MemTestHelper
                     }
 
                     // check error count
-                    if (chk_stop_at_err.Checked && !chk_stop_at_err_total.Checked)
+                    if (chk_stop_at_err.Checked)
                     {
-                        int stop_at_err = Convert.ToInt32(txt_stop_at_err.Text);
-                        if (errors > stop_at_err)
+                        if (errors > 1)
                         {
                             if (!memtest_states[i].is_finished)
                             {
@@ -651,14 +590,6 @@ namespace MemTestHelper
                 {
                     int stop_at = Convert.ToInt32(txt_stop_at.Text);
                     if (total_coverage > stop_at)
-                        click_btn_stop();
-                }
-
-                // check total errors
-                if (chk_stop_at_err.Checked && chk_stop_at_err_total.Checked)
-                {
-                    int stop_at_err = Convert.ToInt32(txt_stop_at_err.Text);
-                    if (total_errors > stop_at_err)
                         click_btn_stop();
                 }
 
@@ -823,29 +754,37 @@ namespace MemTestHelper
         [return: MarshalAs(UnmanagedType.Bool)]
         static extern bool SetForegroundWindow(IntPtr hWnd);
 
-        public static int WM_SETTEXT = 0xC, WM_LBUTTONDOWN = 0x201, WM_LBUTTONUP = 0x202;
+        [DllImport("user32.dll", EntryPoint = "ShowWindow", SetLastError = true)]
+        static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+        // is minimised
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool IsIconic(IntPtr hWnd);
+
+        public const int WM_SETTEXT = 0xC, WM_LBUTTONDOWN = 0x201, WM_LBUTTONUP = 0x202,
+                         SW_SHOW = 5, SW_RESTORE = 9, SW_MINIMIZE = 6;
 
         private static int NUM_THREADS = Convert.ToInt32(System.Environment.GetEnvironmentVariable("NUMBER_OF_PROCESSORS")),
                            MAX_THREADS = NUM_THREADS * 4;
-        private static string MEMTEST_EXE = "memtest_6.0_no_nag.exe",
-                              MEMTEST_BTN_START = "Button1",
-                              MEMTEST_BTN_STOP = "Button2",
-                              MEMTEST_EDT_RAM = "Edit1",
-                              MEMTEST_STATIC_COVERAGE = "Static1",
-                              // If you find this free version useful...
-                              MEMTEST_STATIC_FREE_VER = "Static2";
 
-        private static int MEMTEST_WIDTH = 217,
-                           MEMTEST_HEIGHT = 247,
-                           MEMTEST_MAX_RAM = 2048;
+        private const string MEMTEST_EXE = "memtest_6.0_no_nag.exe",
+                             MEMTEST_BTN_START = "Button1",
+                             MEMTEST_BTN_STOP = "Button2",
+                             MEMTEST_EDT_RAM = "Edit1",
+                             MEMTEST_STATIC_COVERAGE = "Static1",
+                             // If you find this free version useful...
+                             MEMTEST_STATIC_FREE_VER = "Static2";
+
+        private const int MEMTEST_WIDTH = 217,
+                          MEMTEST_HEIGHT = 247,
+                          MEMTEST_MAX_RAM = 2048;
 
         private MemTestState[] memtest_states = new MemTestState[MAX_THREADS];
         private bool is_running = false;
         private BackgroundWorker bw_coverage;
         private DateTime start_time;
         private System.Timers.Timer timer;
-        // layout grid
-        private FormLayout form_layout = new FormLayout();
 
         class MemTestState
         {

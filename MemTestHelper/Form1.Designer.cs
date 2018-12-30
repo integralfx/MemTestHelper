@@ -48,9 +48,7 @@
             this.txt_ram = new System.Windows.Forms.TextBox();
             this.btn_auto_ram = new System.Windows.Forms.Button();
             this.tab_settings = new System.Windows.Forms.TabPage();
-            this.btn_layout = new System.Windows.Forms.Button();
-            this.chk_stop_at_err_total = new System.Windows.Forms.CheckBox();
-            this.txt_stop_at_err = new System.Windows.Forms.TextBox();
+            this.chk_start_min = new System.Windows.Forms.CheckBox();
             this.chk_stop_at_total = new System.Windows.Forms.CheckBox();
             this.chk_stop_at_err = new System.Windows.Forms.CheckBox();
             this.txt_stop_at = new System.Windows.Forms.TextBox();
@@ -271,9 +269,7 @@
             // 
             // tab_settings
             // 
-            this.tab_settings.Controls.Add(this.btn_layout);
-            this.tab_settings.Controls.Add(this.chk_stop_at_err_total);
-            this.tab_settings.Controls.Add(this.txt_stop_at_err);
+            this.tab_settings.Controls.Add(this.chk_start_min);
             this.tab_settings.Controls.Add(this.chk_stop_at_total);
             this.tab_settings.Controls.Add(this.chk_stop_at_err);
             this.tab_settings.Controls.Add(this.txt_stop_at);
@@ -297,35 +293,17 @@
             this.tab_settings.Text = "Settings";
             this.tab_settings.UseVisualStyleBackColor = true;
             // 
-            // btn_layout
+            // chk_start_min
             // 
-            this.btn_layout.Location = new System.Drawing.Point(21, 181);
-            this.btn_layout.Name = "btn_layout";
-            this.btn_layout.Size = new System.Drawing.Size(75, 23);
-            this.btn_layout.TabIndex = 7;
-            this.btn_layout.Text = "Layout";
-            this.btn_layout.UseVisualStyleBackColor = true;
-            this.btn_layout.Visible = false;
-            this.btn_layout.Click += new System.EventHandler(this.btn_layout_Click);
-            // 
-            // chk_stop_at_err_total
-            // 
-            this.chk_stop_at_err_total.AutoSize = true;
-            this.chk_stop_at_err_total.Enabled = false;
-            this.chk_stop_at_err_total.Location = new System.Drawing.Point(156, 157);
-            this.chk_stop_at_err_total.Name = "chk_stop_at_err_total";
-            this.chk_stop_at_err_total.Size = new System.Drawing.Size(50, 17);
-            this.chk_stop_at_err_total.TabIndex = 6;
-            this.chk_stop_at_err_total.Text = "Total";
-            this.chk_stop_at_err_total.UseVisualStyleBackColor = true;
-            // 
-            // txt_stop_at_err
-            // 
-            this.txt_stop_at_err.Enabled = false;
-            this.txt_stop_at_err.Location = new System.Drawing.Point(116, 154);
-            this.txt_stop_at_err.Name = "txt_stop_at_err";
-            this.txt_stop_at_err.Size = new System.Drawing.Size(35, 20);
-            this.txt_stop_at_err.TabIndex = 5;
+            this.chk_start_min.AutoSize = true;
+            this.chk_start_min.Checked = true;
+            this.chk_start_min.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chk_start_min.Location = new System.Drawing.Point(21, 181);
+            this.chk_start_min.Name = "chk_start_min";
+            this.chk_start_min.Size = new System.Drawing.Size(96, 17);
+            this.chk_start_min.TabIndex = 8;
+            this.chk_start_min.Text = "Start minimised";
+            this.chk_start_min.UseVisualStyleBackColor = true;
             // 
             // chk_stop_at_total
             // 
@@ -341,13 +319,14 @@
             // chk_stop_at_err
             // 
             this.chk_stop_at_err.AutoSize = true;
+            this.chk_stop_at_err.Checked = true;
+            this.chk_stop_at_err.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chk_stop_at_err.Location = new System.Drawing.Point(21, 157);
             this.chk_stop_at_err.Name = "chk_stop_at_err";
-            this.chk_stop_at_err.Size = new System.Drawing.Size(98, 17);
+            this.chk_stop_at_err.Size = new System.Drawing.Size(87, 17);
             this.chk_stop_at_err.TabIndex = 4;
-            this.chk_stop_at_err.Text = "Stop at (errors):";
+            this.chk_stop_at_err.Text = "Stop on error";
             this.chk_stop_at_err.UseVisualStyleBackColor = true;
-            this.chk_stop_at_err.CheckedChanged += new System.EventHandler(this.chk_stop_at_err_CheckedChanged);
             // 
             // txt_stop_at
             // 
@@ -545,7 +524,7 @@
             this.lbl_version.Name = "lbl_version";
             this.lbl_version.Size = new System.Drawing.Size(69, 13);
             this.lbl_version.TabIndex = 0;
-            this.lbl_version.Text = "Version 1.8.1";
+            this.lbl_version.Text = "Version 1.8.2";
             // 
             // Form1
             // 
@@ -559,7 +538,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "MemTestHelper";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
-            this.Move += new System.EventHandler(this.Form1_Move);
+            this.Resize += new System.EventHandler(this.Form1_Resize);
             this.tab_control.ResumeLayout(false);
             this.tab_main.ResumeLayout(false);
             this.tab_main.PerformLayout();
@@ -612,13 +591,11 @@
         private System.Windows.Forms.CheckBox chk_stop_at_total;
         private System.Windows.Forms.TextBox txt_stop_at;
         private System.Windows.Forms.CheckBox chk_stop_at;
-        private System.Windows.Forms.CheckBox chk_stop_at_err_total;
-        private System.Windows.Forms.TextBox txt_stop_at_err;
         private System.Windows.Forms.CheckBox chk_stop_at_err;
         private System.Windows.Forms.TextBox txt_discord;
         private System.Windows.Forms.Label lbl_discord;
         private System.Windows.Forms.Label lbl_version;
-        private System.Windows.Forms.Button btn_layout;
+        private System.Windows.Forms.CheckBox chk_start_min;
     }
 }
 
