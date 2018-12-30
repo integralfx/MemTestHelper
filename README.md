@@ -27,22 +27,18 @@ By default, the 8 instances will be centered, but you can move them around using
 ### X/Y spacing
 Spacing between each of the MemTest windows.
 
-### Stop at
-* #### Coverage %
+### Stop at coverage %
   * Automatically stop each instance as they hit the coverage number entered in the textbox.
   * Checking "Total" (indicated by the 'T' in the coverage and error info list) will use the total coverage rather than each MemTest instance's coverage.
-* #### Error count
-  * Same as coverage % but with error count.
+
+### Stop on error (default)
+  * Automatically stop if any errors are found
 
 Checking both will stop if either of the above conditions are met.
+
+### Start minimised (default)
+  * Start MemTest instances minimised
 
 ## Error Messages
 ### Amount of RAM must be greater than X
 HCI MemTest only allows 2048MB per instance. If you have a CPU with 4 threads, then that means you can only test up to 8192MB using 4 threads. To get around this, you can increase the number of threads and hence the number of HCI MemTest instances.
-
-## To-do
-* Allow arbitrary number of rows
-  * If number of rows doesn't divide evenly into number of threads
-    * Center last row
-    * Start last row where the previous row starts
-* Layout grid to allow the user to choose how they want MemTest to be layed out
