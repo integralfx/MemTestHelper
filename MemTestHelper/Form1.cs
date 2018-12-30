@@ -313,7 +313,11 @@ namespace MemTestHelper
 
             if (ram > MEMTEST_MAX_RAM * threads)
             {
-                show_error_msgbox($"Amount of RAM must be at most {MEMTEST_MAX_RAM * threads}");
+                show_error_msgbox(
+                    $"Amount of RAM must be at most {MEMTEST_MAX_RAM * threads}\n" + 
+                    "Try increasing the number of threads\n" + 
+                    "or reducing amount of RAM"
+                );
                 return false;
             }
 
@@ -331,7 +335,7 @@ namespace MemTestHelper
                 var res = MessageBox.Show(
                     $"Amount of RAM exceeds available RAM ({avail_ram})\n" +
                     "This will cause RAM to be paged to your storage,\n" +
-                    "making MemTest really slow.\n" +
+                    "which may make MemTest really slow.\n" +
                     "Continue?",
                     "Warning",
                     MessageBoxButtons.YesNo,
