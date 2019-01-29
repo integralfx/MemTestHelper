@@ -28,16 +28,16 @@ By default, the 8 instances will be centered, but you can move them around using
 Spacing between each of the MemTest windows.
 
 ### Stop at coverage %
-  * Automatically stop each instance as they hit the coverage number entered in the textbox.
-  * Checking "Total" (indicated by the 'T' in the coverage and error info list) will use the total coverage rather than each MemTest instance's coverage.
+Automatically stop each instance as they hit the coverage number entered in the textbox.
+Checking "Total" (indicated by the 'T' in the coverage and error info list) will use the total coverage rather than each MemTest instance's coverage.
 
 ### Stop on error (default)
-  * Automatically stop if any errors are found
+Automatically stop if any errors are found
 
 Checking both will stop if either of the above conditions are met.
 
 ### Start minimised (default)
-  * Start MemTest instances minimised
+Start MemTest instances minimised
 
 ## Error Messages
 ### Amount of RAM must be at most X
@@ -48,3 +48,4 @@ HCI MemTest only (reliably) allows 2048MB per instance. If you have a CPU with 4
 * Add an option to automatically resize coverage and error info list depending on the number of threads
 * Add a button to hide MemTest windows
 * Automatically minimise MemTest windows when MemTestHelper is minimised
+* Add saving/loading of settings to a config file
