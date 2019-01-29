@@ -133,6 +133,7 @@ namespace MemTestHelper
             int threads = (int)cbo_threads.SelectedItem;
             switch (WindowState)
             {
+                // minimise MemTest instances
                 case FormWindowState.Minimized:
                     run_in_background(new MethodInvoker(delegate
                     {
@@ -151,29 +152,36 @@ namespace MemTestHelper
                     }));
                     break;
 
+                // restore previous state of MemTest instances
                 case FormWindowState.Normal:
                     run_in_background(new MethodInvoker(delegate
                     {
-                        for (int i = 0; i < threads; i++)
+                        /*
+                         * is_minimised is true when user clicked the hide button
+                         * this means that the memtest instances should be kept minimised
+                         */ 
+                        if (!is_minimised)
                         {
-                            if (memtest_states[i] != null)
+                            for (int i = 0; i < threads; i++)
                             {
-                                IntPtr hwnd = memtest_states[i].proc.MainWindowHandle;
+                                if (memtest_states[i] != null)
+                                {
+                                    IntPtr hwnd = memtest_states[i].proc.MainWindowHandle;
 
-                                if (!memtest_states[i].is_minimised)
                                     ShowWindow(hwnd, SW_RESTORE);
 
-                                Thread.Sleep(10);
+                                    Thread.Sleep(10);
+                                }
                             }
+
+                            // user may have changed offsets while minimised
+                            move_memtests();
+
+                            // hack to bring form to top
+                            TopMost = true;
+                            Thread.Sleep(10);
+                            TopMost = false;
                         }
-
-                        // user may have changed offsets while minimised
-                        move_memtests();
-
-                        // hack to bring form to top
-                        TopMost = true;
-                        Thread.Sleep(10);
-                        TopMost = false;
                     }));
                     
                     break;
@@ -268,11 +276,11 @@ namespace MemTestHelper
                         else
                             SetForegroundWindow(hwnd);
 
-                        memtest_states[i].is_minimised = false;
-
                         Thread.Sleep(10);
                     }
                 }
+
+                is_minimised = false;
 
                 // user may have changed offsets while minimised
                 move_memtests();
@@ -295,11 +303,11 @@ namespace MemTestHelper
                         if (!IsIconic(hwnd))
                             ShowWindow(hwnd, SW_MINIMIZE);
 
-                        memtest_states[i].is_minimised = true;
-
                         Thread.Sleep(10);
                     }
                 }
+
+                is_minimised = true;
             }));
         }
 
@@ -645,7 +653,7 @@ namespace MemTestHelper
                     // check error count
                     if (chk_stop_at_err.Checked)
                     {
-                        if (errors > 1)
+                        if (errors > 0)
                         {
                             if (!memtest_states[i].is_finished)
                             {
@@ -863,11 +871,12 @@ namespace MemTestHelper
         private BackgroundWorker bw_coverage;
         private DateTime start_time;
         private System.Timers.Timer timer;
+        private bool is_minimised = true;
 
         class MemTestState
         {
             public Process proc;
-            public bool is_finished, is_minimised = true;
+            public bool is_finished;
         }
     }
 }
