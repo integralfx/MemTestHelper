@@ -68,6 +68,7 @@
             this.txt_discord = new System.Windows.Forms.TextBox();
             this.lbl_discord = new System.Windows.Forms.Label();
             this.lbl_version = new System.Windows.Forms.Label();
+            this.btn_hide = new System.Windows.Forms.Button();
             this.tab_control.SuspendLayout();
             this.tab_main.SuspendLayout();
             this.tab_settings.SuspendLayout();
@@ -87,11 +88,12 @@
             this.tab_control.Margin = new System.Windows.Forms.Padding(0);
             this.tab_control.Name = "tab_control";
             this.tab_control.SelectedIndex = 0;
-            this.tab_control.Size = new System.Drawing.Size(227, 348);
+            this.tab_control.Size = new System.Drawing.Size(227, 382);
             this.tab_control.TabIndex = 0;
             // 
             // tab_main
             // 
+            this.tab_main.Controls.Add(this.btn_hide);
             this.tab_main.Controls.Add(this.lst_coverage);
             this.tab_main.Controls.Add(this.lbl_speed_value);
             this.tab_main.Controls.Add(this.lbl_speed);
@@ -109,7 +111,7 @@
             this.tab_main.Location = new System.Drawing.Point(4, 22);
             this.tab_main.Margin = new System.Windows.Forms.Padding(0);
             this.tab_main.Name = "tab_main";
-            this.tab_main.Size = new System.Drawing.Size(219, 322);
+            this.tab_main.Size = new System.Drawing.Size(219, 356);
             this.tab_main.TabIndex = 0;
             this.tab_main.Text = "Main";
             this.tab_main.UseVisualStyleBackColor = true;
@@ -121,9 +123,9 @@
             this.hdr_coverage,
             this.hdr_errors});
             this.lst_coverage.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lst_coverage.Location = new System.Drawing.Point(4, 138);
+            this.lst_coverage.Location = new System.Drawing.Point(4, 154);
             this.lst_coverage.Name = "lst_coverage";
-            this.lst_coverage.Size = new System.Drawing.Size(210, 180);
+            this.lst_coverage.Size = new System.Drawing.Size(210, 199);
             this.lst_coverage.TabIndex = 7;
             this.lst_coverage.UseCompatibleStateImageBehavior = false;
             this.lst_coverage.View = System.Windows.Forms.View.Details;
@@ -146,7 +148,7 @@
             // lbl_speed_value
             // 
             this.lbl_speed_value.AutoSize = true;
-            this.lbl_speed_value.Location = new System.Drawing.Point(81, 118);
+            this.lbl_speed_value.Location = new System.Drawing.Point(81, 137);
             this.lbl_speed_value.Name = "lbl_speed_value";
             this.lbl_speed_value.Size = new System.Drawing.Size(54, 13);
             this.lbl_speed_value.TabIndex = 6;
@@ -155,7 +157,7 @@
             // lbl_speed
             // 
             this.lbl_speed.AutoSize = true;
-            this.lbl_speed.Location = new System.Drawing.Point(21, 118);
+            this.lbl_speed.Location = new System.Drawing.Point(21, 137);
             this.lbl_speed.Name = "lbl_speed";
             this.lbl_speed.Size = new System.Drawing.Size(41, 13);
             this.lbl_speed.TabIndex = 6;
@@ -164,7 +166,7 @@
             // lbl_estimated_time
             // 
             this.lbl_estimated_time.AutoSize = true;
-            this.lbl_estimated_time.Location = new System.Drawing.Point(81, 103);
+            this.lbl_estimated_time.Location = new System.Drawing.Point(81, 122);
             this.lbl_estimated_time.Name = "lbl_estimated_time";
             this.lbl_estimated_time.Size = new System.Drawing.Size(62, 13);
             this.lbl_estimated_time.TabIndex = 6;
@@ -173,7 +175,7 @@
             // lbl_estimated
             // 
             this.lbl_estimated.AutoSize = true;
-            this.lbl_estimated.Location = new System.Drawing.Point(21, 103);
+            this.lbl_estimated.Location = new System.Drawing.Point(21, 122);
             this.lbl_estimated.Name = "lbl_estimated";
             this.lbl_estimated.Size = new System.Drawing.Size(56, 13);
             this.lbl_estimated.TabIndex = 6;
@@ -182,7 +184,7 @@
             // lbl_elapsed_time
             // 
             this.lbl_elapsed_time.AutoSize = true;
-            this.lbl_elapsed_time.Location = new System.Drawing.Point(81, 88);
+            this.lbl_elapsed_time.Location = new System.Drawing.Point(81, 107);
             this.lbl_elapsed_time.Name = "lbl_elapsed_time";
             this.lbl_elapsed_time.Size = new System.Drawing.Size(62, 13);
             this.lbl_elapsed_time.TabIndex = 6;
@@ -191,7 +193,7 @@
             // lbl_elapsed
             // 
             this.lbl_elapsed.AutoSize = true;
-            this.lbl_elapsed.Location = new System.Drawing.Point(21, 88);
+            this.lbl_elapsed.Location = new System.Drawing.Point(21, 107);
             this.lbl_elapsed.Name = "lbl_elapsed";
             this.lbl_elapsed.Size = new System.Drawing.Size(48, 13);
             this.lbl_elapsed.TabIndex = 6;
@@ -199,9 +201,9 @@
             // 
             // btn_show
             // 
-            this.btn_show.Location = new System.Drawing.Point(141, 53);
+            this.btn_show.Location = new System.Drawing.Point(21, 83);
             this.btn_show.Name = "btn_show";
-            this.btn_show.Size = new System.Drawing.Size(55, 30);
+            this.btn_show.Size = new System.Drawing.Size(85, 20);
             this.btn_show.TabIndex = 5;
             this.btn_show.Text = "Show";
             this.btn_show.UseVisualStyleBackColor = true;
@@ -210,9 +212,9 @@
             // btn_stop
             // 
             this.btn_stop.Enabled = false;
-            this.btn_stop.Location = new System.Drawing.Point(81, 53);
+            this.btn_stop.Location = new System.Drawing.Point(112, 53);
             this.btn_stop.Name = "btn_stop";
-            this.btn_stop.Size = new System.Drawing.Size(55, 30);
+            this.btn_stop.Size = new System.Drawing.Size(85, 25);
             this.btn_stop.TabIndex = 5;
             this.btn_stop.Text = "Stop";
             this.btn_stop.UseVisualStyleBackColor = true;
@@ -222,7 +224,7 @@
             // 
             this.btn_run.Location = new System.Drawing.Point(21, 53);
             this.btn_run.Name = "btn_run";
-            this.btn_run.Size = new System.Drawing.Size(55, 30);
+            this.btn_run.Size = new System.Drawing.Size(85, 25);
             this.btn_run.TabIndex = 5;
             this.btn_run.Text = "Run";
             this.btn_run.UseVisualStyleBackColor = true;
@@ -494,7 +496,7 @@
             this.tab_about.Location = new System.Drawing.Point(4, 22);
             this.tab_about.Margin = new System.Windows.Forms.Padding(0);
             this.tab_about.Name = "tab_about";
-            this.tab_about.Size = new System.Drawing.Size(219, 322);
+            this.tab_about.Size = new System.Drawing.Size(219, 356);
             this.tab_about.TabIndex = 2;
             this.tab_about.Text = "About";
             this.tab_about.UseVisualStyleBackColor = true;
@@ -524,13 +526,23 @@
             this.lbl_version.Name = "lbl_version";
             this.lbl_version.Size = new System.Drawing.Size(69, 13);
             this.lbl_version.TabIndex = 0;
-            this.lbl_version.Text = "Version 1.8.2";
+            this.lbl_version.Text = "Version 1.8.3";
+            // 
+            // btn_hide
+            // 
+            this.btn_hide.Location = new System.Drawing.Point(112, 83);
+            this.btn_hide.Name = "btn_hide";
+            this.btn_hide.Size = new System.Drawing.Size(85, 20);
+            this.btn_hide.TabIndex = 8;
+            this.btn_hide.Text = "Hide";
+            this.btn_hide.UseVisualStyleBackColor = true;
+            this.btn_hide.Click += new System.EventHandler(this.btn_hide_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(226, 346);
+            this.ClientSize = new System.Drawing.Size(226, 381);
             this.Controls.Add(this.tab_control);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
@@ -596,6 +608,7 @@
         private System.Windows.Forms.Label lbl_discord;
         private System.Windows.Forms.Label lbl_version;
         private System.Windows.Forms.CheckBox chk_start_min;
+        private System.Windows.Forms.Button btn_hide;
     }
 }
 

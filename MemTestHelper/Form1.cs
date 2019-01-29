@@ -53,7 +53,7 @@ namespace MemTestHelper
             });
 
             timer = new System.Timers.Timer(1000);
-            timer.Elapsed += new System.Timers.ElapsedEventHandler(delegate 
+            timer.Elapsed += new System.Timers.ElapsedEventHandler(delegate
             (object sender, System.Timers.ElapsedEventArgs e)
             {
                 Invoke(new MethodInvoker(delegate
@@ -61,7 +61,9 @@ namespace MemTestHelper
                     int threads = (int)cbo_threads.SelectedItem;
                     var elapsed = e.SignalTime - start_time;
 
-                    lbl_elapsed_time.Text = $"{elapsed:hh\\hmm\\mss\\s}";
+                    lbl_elapsed_time.Text = elapsed.TotalHours.ToString("00") + "h" +
+                                            elapsed.Minutes.ToString("00") + "m" +
+                                            elapsed.Seconds.ToString("00") + "s";
 
                     double total_coverage = 0;
                     for (int i = 1; i <= threads; i++)
@@ -72,7 +74,9 @@ namespace MemTestHelper
                         total_coverage += info.Item1;
                     }
 
-                    double diff = elapsed.TotalMilliseconds, 
+                    if (total_coverage == 0) return;
+
+                    double diff = elapsed.TotalMilliseconds,
                            est = 0;
                     int cov = 0;
                     // use user input coverage %
@@ -124,12 +128,55 @@ namespace MemTestHelper
             close_memtests();
         }
 
-        // TODO: minimise MemTest instances when form is minimised
         private void Form1_Resize(object sender, EventArgs e)
         {
-            if (WindowState == FormWindowState.Minimized)
+            int threads = (int)cbo_threads.SelectedItem;
+            switch (WindowState)
             {
-                
+                case FormWindowState.Minimized:
+                    run_in_background(new MethodInvoker(delegate
+                    {
+                        for (int i = 0; i < threads; i++)
+                        {
+                            if (memtest_states[i] != null)
+                            {
+                                IntPtr hwnd = memtest_states[i].proc.MainWindowHandle;
+
+                                if (!IsIconic(hwnd))
+                                    ShowWindow(hwnd, SW_MINIMIZE);
+
+                                Thread.Sleep(10);
+                            }
+                        }
+                    }));
+                    break;
+
+                case FormWindowState.Normal:
+                    run_in_background(new MethodInvoker(delegate
+                    {
+                        for (int i = 0; i < threads; i++)
+                        {
+                            if (memtest_states[i] != null)
+                            {
+                                IntPtr hwnd = memtest_states[i].proc.MainWindowHandle;
+
+                                if (!memtest_states[i].is_minimised)
+                                    ShowWindow(hwnd, SW_RESTORE);
+
+                                Thread.Sleep(10);
+                            }
+                        }
+
+                        // user may have changed offsets while minimised
+                        move_memtests();
+
+                        // hack to bring form to top
+                        TopMost = true;
+                        Thread.Sleep(10);
+                        TopMost = false;
+                    }));
+                    
+                    break;
             }
         }
 
@@ -160,8 +207,6 @@ namespace MemTestHelper
             chk_stop_at_total.Enabled = false;
             chk_stop_at_err.Enabled = false;
             chk_start_min.Enabled = false;
-
-            is_running = true;
 
             // run in background as start_memtests can block
             run_in_background(new MethodInvoker(delegate
@@ -203,8 +248,6 @@ namespace MemTestHelper
             chk_stop_at_err.Enabled = true;
             chk_start_min.Enabled = true;
 
-            is_running = false;
-
             MessageBox.Show("MemTest finished");
         }
 
@@ -225,11 +268,38 @@ namespace MemTestHelper
                         else
                             SetForegroundWindow(hwnd);
 
+                        memtest_states[i].is_minimised = false;
+
                         Thread.Sleep(10);
                     }
                 }
 
+                // user may have changed offsets while minimised
+                move_memtests();
+
                 Activate();
+            }));
+        }
+
+        private void btn_hide_Click(object sender, EventArgs e)
+        {
+            int threads = (int)cbo_threads.SelectedItem;
+            run_in_background(new MethodInvoker(delegate
+            {
+                for (int i = 0; i < threads; i++)
+                {
+                    if (memtest_states[i] != null)
+                    {
+                        IntPtr hwnd = memtest_states[i].proc.MainWindowHandle;
+
+                        if (!IsIconic(hwnd))
+                            ShowWindow(hwnd, SW_MINIMIZE);
+
+                        memtest_states[i].is_minimised = true;
+
+                        Thread.Sleep(10);
+                    }
+                }
             }));
         }
 
@@ -289,18 +359,24 @@ namespace MemTestHelper
 
         private bool validate_input()
         {
+            ComputerInfo ci = new ComputerInfo();
+            UInt64 total_ram = ci.TotalPhysicalMemory / (1024 * 1024),
+                   avail_ram = ci.AvailablePhysicalMemory / (1024 * 1024);
+
             string str_ram = txt_ram.Text;
-
-            if (str_ram == "")
+            // automatically input available ram if empty
+            if (str_ram.Length == 0)
             {
-                show_error_msgbox("Please enter amount of RAM");
-                return false;
+                str_ram = avail_ram.ToString();
+                txt_ram.Text = str_ram;
             }
-
-            if (!str_ram.All(char.IsDigit))
+            else
             {
-                show_error_msgbox("Amount of RAM must be an integer");
-                return false;
+                if (!str_ram.All(char.IsDigit))
+                {
+                    show_error_msgbox("Amount of RAM must be an integer");
+                    return false;
+                }
             }
 
             int threads = (int)cbo_threads.SelectedItem,
@@ -321,9 +397,6 @@ namespace MemTestHelper
                 return false;
             }
 
-            ComputerInfo ci = new ComputerInfo();
-            UInt64 total_ram = ci.TotalPhysicalMemory / (1024 * 1024),
-                   avail_ram = ci.AvailablePhysicalMemory / (1024 * 1024);
             if ((UInt64)ram > total_ram)
             {
                 show_error_msgbox($"Amount of RAM exceeds total RAM ({total_ram})");
@@ -460,8 +533,6 @@ namespace MemTestHelper
 
         private void move_memtests()
         {
-            if (!is_running) return;
-
             int x_offset = (int)ud_x_offset.Value,
                 y_offset = (int)ud_y_offset.Value,
                 x_spacing = (int)ud_x_spacing.Value - 5,
@@ -473,11 +544,15 @@ namespace MemTestHelper
             {
                 for (int c = 0; c < cols; c++)
                 {
-                    IntPtr hwnd = memtest_states[r * cols + c].proc.MainWindowHandle;
+                    MemTestState state = memtest_states[r * cols + c];
+                    if (state == null) continue;
+
+                    IntPtr hwnd = state.proc.MainWindowHandle;
                     int x = c * MEMTEST_WIDTH + c * x_spacing + x_offset,
                         y = r * MEMTEST_HEIGHT + r * y_spacing + y_offset;
 
                     MoveWindow(hwnd, x, y, MEMTEST_WIDTH, MEMTEST_HEIGHT, true);
+                    Thread.Sleep(20);
                 }
             }
         }
@@ -785,7 +860,6 @@ namespace MemTestHelper
                           MEMTEST_MAX_RAM = 2048;
 
         private MemTestState[] memtest_states = new MemTestState[MAX_THREADS];
-        private bool is_running = false;
         private BackgroundWorker bw_coverage;
         private DateTime start_time;
         private System.Timers.Timer timer;
@@ -793,7 +867,7 @@ namespace MemTestHelper
         class MemTestState
         {
             public Process proc;
-            public bool is_finished;
+            public bool is_finished, is_minimised = true;
         }
     }
 }
