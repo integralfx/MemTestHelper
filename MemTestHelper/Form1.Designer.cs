@@ -30,6 +30,7 @@
         {
             this.tab_control = new System.Windows.Forms.TabControl();
             this.tab_main = new System.Windows.Forms.TabPage();
+            this.btn_hide = new System.Windows.Forms.Button();
             this.lst_coverage = new System.Windows.Forms.ListView();
             this.hdr_no = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.hdr_coverage = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -68,7 +69,6 @@
             this.txt_discord = new System.Windows.Forms.TextBox();
             this.lbl_discord = new System.Windows.Forms.Label();
             this.lbl_version = new System.Windows.Forms.Label();
-            this.btn_hide = new System.Windows.Forms.Button();
             this.tab_control.SuspendLayout();
             this.tab_main.SuspendLayout();
             this.tab_settings.SuspendLayout();
@@ -115,6 +115,16 @@
             this.tab_main.TabIndex = 0;
             this.tab_main.Text = "Main";
             this.tab_main.UseVisualStyleBackColor = true;
+            // 
+            // btn_hide
+            // 
+            this.btn_hide.Location = new System.Drawing.Point(112, 83);
+            this.btn_hide.Name = "btn_hide";
+            this.btn_hide.Size = new System.Drawing.Size(85, 20);
+            this.btn_hide.TabIndex = 8;
+            this.btn_hide.Text = "Hide";
+            this.btn_hide.UseVisualStyleBackColor = true;
+            this.btn_hide.Click += new System.EventHandler(this.btn_hide_Click);
             // 
             // lst_coverage
             // 
@@ -290,7 +300,7 @@
             this.tab_settings.Location = new System.Drawing.Point(4, 22);
             this.tab_settings.Margin = new System.Windows.Forms.Padding(0);
             this.tab_settings.Name = "tab_settings";
-            this.tab_settings.Size = new System.Drawing.Size(219, 322);
+            this.tab_settings.Size = new System.Drawing.Size(219, 356);
             this.tab_settings.TabIndex = 1;
             this.tab_settings.Text = "Settings";
             this.tab_settings.UseVisualStyleBackColor = true;
@@ -524,19 +534,9 @@
             this.lbl_version.AutoSize = true;
             this.lbl_version.Location = new System.Drawing.Point(84, 120);
             this.lbl_version.Name = "lbl_version";
-            this.lbl_version.Size = new System.Drawing.Size(69, 13);
+            this.lbl_version.Size = new System.Drawing.Size(60, 13);
             this.lbl_version.TabIndex = 0;
-            this.lbl_version.Text = "Version 1.8.3";
-            // 
-            // btn_hide
-            // 
-            this.btn_hide.Location = new System.Drawing.Point(112, 83);
-            this.btn_hide.Name = "btn_hide";
-            this.btn_hide.Size = new System.Drawing.Size(85, 20);
-            this.btn_hide.TabIndex = 8;
-            this.btn_hide.Text = "Hide";
-            this.btn_hide.UseVisualStyleBackColor = true;
-            this.btn_hide.Click += new System.EventHandler(this.btn_hide_Click);
+            this.lbl_version.Text = "Version 1.9";
             // 
             // Form1
             // 
