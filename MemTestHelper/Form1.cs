@@ -49,7 +49,7 @@ namespace MemTestHelper
                 while (is_any_memtest_stopping())
                     Thread.Sleep(100);
 
-                update_coverage_info();
+                update_coverage_info(false);
             });
 
             timer = new System.Timers.Timer(1000);
@@ -612,7 +612,7 @@ namespace MemTestHelper
             return Tuple.Create(coverage, errors);
         }
 
-        private void update_coverage_info()
+        private void update_coverage_info(bool should_check = true)
         {
             lst_coverage.Invoke(new MethodInvoker(delegate
             {
@@ -631,35 +631,32 @@ namespace MemTestHelper
 
                     lst_coverage.Items[i].SubItems[1].Text = string.Format("{0:f1}", coverage);
                     lst_coverage.Items[i].SubItems[2].Text = errors.ToString();
-
-                    if (errors > 0)
-                        lst_coverage.Items[i].SubItems[1].ForeColor = Color.Red;
-
-                    // check coverage %
-                    if (chk_stop_at.Checked && !chk_stop_at_total.Checked)
+                        
+                    if (should_check)
                     {
-                        int stop_at = Convert.ToInt32(txt_stop_at.Text);
-                        if (coverage > stop_at)
+                        // check coverage %
+                        if (chk_stop_at.Checked && !chk_stop_at_total.Checked)
                         {
-                            if (!memtest_states[i - 1].is_finished)
+                            int stop_at = Convert.ToInt32(txt_stop_at.Text);
+                            if (coverage > stop_at)
                             {
-                                ControlClick(memtest_states[i - 1].proc.MainWindowHandle,
-                                             MEMTEST_BTN_STOP);
-                                memtest_states[i - 1].is_finished = true;
+                                if (!memtest_states[i - 1].is_finished)
+                                {
+                                    ControlClick(memtest_states[i - 1].proc.MainWindowHandle,
+                                                 MEMTEST_BTN_STOP);
+                                    memtest_states[i - 1].is_finished = true;
+                                }
                             }
                         }
-                    }
 
-                    // check error count
-                    if (chk_stop_at_err.Checked)
-                    {
-                        if (errors > 0)
+                        // check error count
+                        if (chk_stop_at_err.Checked)
                         {
-                            if (!memtest_states[i].is_finished)
+                            if (errors > 0)
                             {
-                                ControlClick(memtest_states[i].proc.MainWindowHandle,
-                                             MEMTEST_BTN_STOP);
-                                memtest_states[i].is_finished = true;
+                                lst_coverage.Items[i].SubItems[1].ForeColor = Color.Red;
+
+                                click_btn_stop();
                             }
                         }
                     }
@@ -672,16 +669,19 @@ namespace MemTestHelper
                 lst_coverage.Items[0].SubItems[1].Text = string.Format("{0:f1}", total_coverage);
                 lst_coverage.Items[0].SubItems[2].Text = total_errors.ToString();
 
-                // check total coverage
-                if (chk_stop_at.Checked && chk_stop_at_total.Checked)
+                if (should_check)
                 {
-                    int stop_at = Convert.ToInt32(txt_stop_at.Text);
-                    if (total_coverage > stop_at)
+                    // check total coverage
+                    if (chk_stop_at.Checked && chk_stop_at_total.Checked)
+                    {
+                        int stop_at = Convert.ToInt32(txt_stop_at.Text);
+                        if (total_coverage > stop_at)
+                            click_btn_stop();
+                    }
+
+                    if (is_all_finished())
                         click_btn_stop();
                 }
-
-                if (is_all_finished())
-                    click_btn_stop();
             }));
         }
 
