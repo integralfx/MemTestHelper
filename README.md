@@ -46,6 +46,4 @@ HCI MemTest only (reliably) allows 2048MB per instance. If you have a CPU with 4
 
 ## To do
 * Add an option to automatically resize coverage and error info list depending on the number of threads
-* Add a button to hide MemTest windows
-* Automatically minimise MemTest windows when MemTestHelper is minimised
 * Add saving/loading of settings to a config file
