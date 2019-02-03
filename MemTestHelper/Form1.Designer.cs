@@ -343,9 +343,9 @@
             // txt_stop_at
             // 
             this.txt_stop_at.Enabled = false;
-            this.txt_stop_at.Location = new System.Drawing.Point(116, 131);
+            this.txt_stop_at.Location = new System.Drawing.Point(100, 131);
             this.txt_stop_at.Name = "txt_stop_at";
-            this.txt_stop_at.Size = new System.Drawing.Size(35, 20);
+            this.txt_stop_at.Size = new System.Drawing.Size(50, 20);
             this.txt_stop_at.TabIndex = 5;
             // 
             // chk_stop_at
@@ -534,9 +534,9 @@
             this.lbl_version.AutoSize = true;
             this.lbl_version.Location = new System.Drawing.Point(84, 120);
             this.lbl_version.Name = "lbl_version";
-            this.lbl_version.Size = new System.Drawing.Size(60, 13);
+            this.lbl_version.Size = new System.Drawing.Size(69, 13);
             this.lbl_version.TabIndex = 0;
-            this.lbl_version.Text = "Version 1.9";
+            this.lbl_version.Text = "Version 1.9.1";
             // 
             // Form1
             // 

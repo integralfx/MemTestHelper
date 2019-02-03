@@ -12,6 +12,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
 
@@ -37,7 +38,7 @@ namespace MemTestHelper
                 while (!worker.CancellationPending)
                 {
                     update_coverage_info();
-                    Thread.Sleep(100);
+                    Thread.Sleep(UPDATE_INTERVAL);
                 }
 
                 args.Cancel = true;
@@ -61,9 +62,10 @@ namespace MemTestHelper
                     int threads = (int)cbo_threads.SelectedItem;
                     var elapsed = e.SignalTime - start_time;
 
-                    lbl_elapsed_time.Text = elapsed.TotalHours.ToString("00") + "h" +
-                                            elapsed.Minutes.ToString("00") + "m" +
-                                            elapsed.Seconds.ToString("00") + "s";
+                    lbl_elapsed_time.Text = String.Format("{0:00}h{1:00}m{2:00}s",
+                                                          (int)(elapsed.TotalHours),
+                                                          elapsed.Minutes,
+                                                          elapsed.Seconds);
 
                     double total_coverage = 0;
                     for (int i = 1; i <= threads; i++)
@@ -102,7 +104,12 @@ namespace MemTestHelper
                         est = (diff / avg * cov) - diff;
                     }
 
-                    lbl_estimated_time.Text = $"{TimeSpan.FromMilliseconds(est):hh\\hmm\\mss\\s} to {cov}%";
+                    TimeSpan est_time = TimeSpan.FromMilliseconds(est);
+                    lbl_estimated_time.Text = String.Format("{0:00}h{1:00}m{2:00}s to {3}%",
+                                                            (int)(est_time.TotalHours),
+                                                            est_time.Minutes,
+                                                            est_time.Seconds,
+                                                            cov);
 
                     int ram = Convert.ToInt32(txt_ram.Text);
                     double speed = (total_coverage / 100) * ram / (diff / 1000);
@@ -207,7 +214,7 @@ namespace MemTestHelper
             btn_auto_ram.Enabled = false;
             txt_ram.Enabled = false;
             cbo_threads.Enabled = false;
-            cbo_rows.Enabled = false;
+            //cbo_rows.Enabled = false;
             btn_run.Enabled = false;
             btn_stop.Enabled = true;
             chk_stop_at.Enabled = false;
@@ -232,11 +239,11 @@ namespace MemTestHelper
 
         private void btn_stop_Click(object sender, EventArgs e)
         {
-            for (int i = 0; i < (int)cbo_threads.SelectedItem; i++)
+            Parallel.For(0, (int)cbo_threads.SelectedItem, i =>
             {
                 if (!memtest_states[i].is_finished)
-                    ControlClick(memtest_states[i].proc.MainWindowHandle, MEMTEST_BTN_STOP);
-            }
+                    ControlClick(memtest_states[i].proc.MainWindowHandle, MEMTEST_BTN_STOP); 
+            });
 
             bw_coverage.CancelAsync();
             timer.Stop();
@@ -244,7 +251,7 @@ namespace MemTestHelper
             btn_auto_ram.Enabled = true;
             txt_ram.Enabled = true;
             cbo_threads.Enabled = true;
-            cbo_rows.Enabled = true;
+            //cbo_rows.Enabled = true;
             btn_run.Enabled = true;
             btn_stop.Enabled = false;
             chk_stop_at.Enabled = true;
@@ -255,6 +262,10 @@ namespace MemTestHelper
             }
             chk_stop_at_err.Enabled = true;
             chk_start_min.Enabled = true;
+
+            // wait for all memtests to fully stop
+            while (is_any_memtest_stopping())
+                Thread.Sleep(100);
 
             MessageBox.Show("MemTest finished");
         }
@@ -504,39 +515,25 @@ namespace MemTestHelper
             close_all_memtests();
 
             int threads = (int)cbo_threads.SelectedItem;
-            for (int i = 0; i < threads; i++)
+            Parallel.For(0, threads, i => 
             {
                 MemTestState state = new MemTestState();
                 state.proc = Process.Start(MEMTEST_EXE);
                 state.is_finished = false;
                 memtest_states[i] = state;
 
-                Thread.Sleep(20);
-            }
+                Thread.Sleep(threads * 25);
 
-            Thread.Sleep(20);
-
-            move_memtests();
-
-            for (int i = 0; i < threads; i++)
-            {
                 IntPtr hwnd = memtest_states[i].proc.MainWindowHandle;
-
                 double ram = Convert.ToDouble(txt_ram.Text) / threads;
-                run_in_background(new MethodInvoker(delegate
-                {
-                    ControlSetText(hwnd, MEMTEST_EDT_RAM, string.Format("{0:f2}", ram));
 
-                    ControlSetText(hwnd, MEMTEST_STATIC_FREE_VER, "Modified version by ∫ntegral#7834");
+                ControlSetText(hwnd, MEMTEST_EDT_RAM, $"{ram:f2}");
+                ControlSetText(hwnd, MEMTEST_STATIC_FREE_VER, "Modified version by ∫ntegral#7834");
+                ControlClick(hwnd, MEMTEST_BTN_START);
 
-                    ControlClick(hwnd, MEMTEST_BTN_START);
-
-                    if (chk_start_min.Checked)
-                        ShowWindow(hwnd, SW_MINIMIZE);
-                }));
-
-                Thread.Sleep(20);
-            }
+                if (chk_start_min.Checked)
+                    ShowWindow(hwnd, SW_MINIMIZE);
+            });
         }
 
         private void move_memtests()
@@ -545,35 +542,32 @@ namespace MemTestHelper
                 y_offset = (int)ud_y_offset.Value,
                 x_spacing = (int)ud_x_spacing.Value - 5,
                 y_spacing = (int)ud_y_spacing.Value - 3,
-                rows = (int)cbo_rows.SelectedItem,
-                cols = (int)cbo_threads.SelectedItem / rows;
+                rows = (int)cbo_rows.SelectedItem;
 
-            for (int r = 0; r < rows; r++)
+            Parallel.For(0, (int)cbo_threads.SelectedItem, i =>
             {
-                for (int c = 0; c < cols; c++)
-                {
-                    MemTestState state = memtest_states[r * cols + c];
-                    if (state == null) continue;
+                 MemTestState state = memtest_states[i];
+                 if (state == null) return;
 
-                    IntPtr hwnd = state.proc.MainWindowHandle;
-                    int x = c * MEMTEST_WIDTH + c * x_spacing + x_offset,
-                        y = r * MEMTEST_HEIGHT + r * y_spacing + y_offset;
+                 IntPtr hwnd = state.proc.MainWindowHandle;
+                 int c = i / rows,
+                     r = i % rows,
+                     x = c * MEMTEST_WIDTH + c * x_spacing + x_offset,
+                     y = r * MEMTEST_HEIGHT + r * y_spacing + y_offset;
 
-                    MoveWindow(hwnd, x, y, MEMTEST_WIDTH, MEMTEST_HEIGHT, true);
-                    Thread.Sleep(20);
-                }
-            }
+                 MoveWindow(hwnd, x, y, MEMTEST_WIDTH, MEMTEST_HEIGHT, true);
+            });
         }
 
         private void close_memtests()
         {
-            foreach (var s in memtest_states)
+            Parallel.ForEach(memtest_states, s =>
             {
                 try {
                     if (s != null) s.proc.Kill();
                 }
-                catch (Exception) {}
-            }
+                catch (Exception) { }
+            });
         }
 
         private void close_all_memtests()
@@ -581,8 +575,7 @@ namespace MemTestHelper
             // remove the .exe
             string name = MEMTEST_EXE.Substring(0, MEMTEST_EXE.Length - 4);
             var procs = Process.GetProcessesByName(name);
-            foreach (Process p in procs)
-                p.Kill();
+            Parallel.ForEach(procs, p => { p.Kill(); });
         }
 
         // returns (coverage, errors)
@@ -853,7 +846,8 @@ namespace MemTestHelper
                          SW_SHOW = 5, SW_RESTORE = 9, SW_MINIMIZE = 6;
 
         private static int NUM_THREADS = Convert.ToInt32(System.Environment.GetEnvironmentVariable("NUMBER_OF_PROCESSORS")),
-                           MAX_THREADS = NUM_THREADS * 4;
+                           MAX_THREADS = NUM_THREADS * 4,
+                           UPDATE_INTERVAL = 200;   // interval (in ms) for coverage info list
 
         private const string MEMTEST_EXE = "memtest_6.0_no_nag.exe",
                              MEMTEST_BTN_START = "Button1",
