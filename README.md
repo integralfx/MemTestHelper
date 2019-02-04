@@ -13,7 +13,7 @@
 ## Settings
 ### RAM to test
 Exactly as its name implies. This number will be divided by the number of threads and then input in each HCI MemTest instance.
-Clicking on it will automatically input the amount of free RAM your computer has.
+Clicking on it will automatically input the amount of free RAM your computer has. If left empty, amount of free RAM will be automatically entered when clicking run.
 
 ### Number of threads
 How many HCI MemTest instances to run and hence the amount of CPU threads to use.
