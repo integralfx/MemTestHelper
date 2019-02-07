@@ -51,7 +51,7 @@
             this.tab_settings = new System.Windows.Forms.TabPage();
             this.chk_start_min = new System.Windows.Forms.CheckBox();
             this.chk_stop_at_total = new System.Windows.Forms.CheckBox();
-            this.chk_stop_at_err = new System.Windows.Forms.CheckBox();
+            this.chk_stop_on_err = new System.Windows.Forms.CheckBox();
             this.txt_stop_at = new System.Windows.Forms.TextBox();
             this.chk_stop_at = new System.Windows.Forms.CheckBox();
             this.cbo_rows = new System.Windows.Forms.ComboBox();
@@ -69,6 +69,8 @@
             this.txt_discord = new System.Windows.Forms.TextBox();
             this.lbl_discord = new System.Windows.Forms.Label();
             this.lbl_version = new System.Windows.Forms.Label();
+            this.lbl_win_height = new System.Windows.Forms.Label();
+            this.ud_win_height = new System.Windows.Forms.NumericUpDown();
             this.tab_control.SuspendLayout();
             this.tab_main.SuspendLayout();
             this.tab_settings.SuspendLayout();
@@ -77,10 +79,12 @@
             ((System.ComponentModel.ISupportInitialize)(this.ud_x_spacing)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ud_x_offset)).BeginInit();
             this.tab_about.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ud_win_height)).BeginInit();
             this.SuspendLayout();
             // 
             // tab_control
             // 
+            this.tab_control.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
             this.tab_control.Controls.Add(this.tab_main);
             this.tab_control.Controls.Add(this.tab_settings);
             this.tab_control.Controls.Add(this.tab_about);
@@ -128,6 +132,7 @@
             // 
             // lst_coverage
             // 
+            this.lst_coverage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
             this.lst_coverage.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.hdr_no,
             this.hdr_coverage,
@@ -283,12 +288,14 @@
             // 
             this.tab_settings.Controls.Add(this.chk_start_min);
             this.tab_settings.Controls.Add(this.chk_stop_at_total);
-            this.tab_settings.Controls.Add(this.chk_stop_at_err);
+            this.tab_settings.Controls.Add(this.chk_stop_on_err);
             this.tab_settings.Controls.Add(this.txt_stop_at);
             this.tab_settings.Controls.Add(this.chk_stop_at);
             this.tab_settings.Controls.Add(this.cbo_rows);
             this.tab_settings.Controls.Add(this.btn_center);
+            this.tab_settings.Controls.Add(this.ud_win_height);
             this.tab_settings.Controls.Add(this.ud_y_offset);
+            this.tab_settings.Controls.Add(this.lbl_win_height);
             this.tab_settings.Controls.Add(this.lbl_y_offset);
             this.tab_settings.Controls.Add(this.ud_y_spacing);
             this.tab_settings.Controls.Add(this.lbl_rows);
@@ -328,17 +335,17 @@
             this.chk_stop_at_total.Text = "Total";
             this.chk_stop_at_total.UseVisualStyleBackColor = true;
             // 
-            // chk_stop_at_err
+            // chk_stop_on_err
             // 
-            this.chk_stop_at_err.AutoSize = true;
-            this.chk_stop_at_err.Checked = true;
-            this.chk_stop_at_err.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chk_stop_at_err.Location = new System.Drawing.Point(21, 157);
-            this.chk_stop_at_err.Name = "chk_stop_at_err";
-            this.chk_stop_at_err.Size = new System.Drawing.Size(87, 17);
-            this.chk_stop_at_err.TabIndex = 4;
-            this.chk_stop_at_err.Text = "Stop on error";
-            this.chk_stop_at_err.UseVisualStyleBackColor = true;
+            this.chk_stop_on_err.AutoSize = true;
+            this.chk_stop_on_err.Checked = true;
+            this.chk_stop_on_err.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chk_stop_on_err.Location = new System.Drawing.Point(21, 157);
+            this.chk_stop_on_err.Name = "chk_stop_on_err";
+            this.chk_stop_on_err.Size = new System.Drawing.Size(87, 17);
+            this.chk_stop_on_err.TabIndex = 4;
+            this.chk_stop_on_err.Text = "Stop on error";
+            this.chk_stop_on_err.UseVisualStyleBackColor = true;
             // 
             // txt_stop_at
             // 
@@ -538,18 +545,52 @@
             this.lbl_version.TabIndex = 0;
             this.lbl_version.Text = "Version 1.9.1";
             // 
+            // lbl_win_height
+            // 
+            this.lbl_win_height.AutoSize = true;
+            this.lbl_win_height.Location = new System.Drawing.Point(18, 204);
+            this.lbl_win_height.Name = "lbl_win_height";
+            this.lbl_win_height.Size = new System.Drawing.Size(81, 13);
+            this.lbl_win_height.TabIndex = 0;
+            this.lbl_win_height.Text = "Window height:";
+            // 
+            // ud_win_height
+            // 
+            this.ud_win_height.Location = new System.Drawing.Point(100, 202);
+            this.ud_win_height.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.ud_win_height.Minimum = new decimal(new int[] {
+            420,
+            0,
+            0,
+            0});
+            this.ud_win_height.Name = "ud_win_height";
+            this.ud_win_height.Size = new System.Drawing.Size(50, 20);
+            this.ud_win_height.TabIndex = 1;
+            this.ud_win_height.Value = new decimal(new int[] {
+            420,
+            0,
+            0,
+            0});
+            this.ud_win_height.ValueChanged += new System.EventHandler(this.ud_win_height_ValueChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(226, 381);
             this.Controls.Add(this.tab_control);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
+            this.MaximumSize = new System.Drawing.Size(242, 1000);
+            this.MinimumSize = new System.Drawing.Size(242, 0);
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "MemTestHelper";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.Resize += new System.EventHandler(this.Form1_Resize);
             this.tab_control.ResumeLayout(false);
             this.tab_main.ResumeLayout(false);
@@ -562,6 +603,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.ud_x_offset)).EndInit();
             this.tab_about.ResumeLayout(false);
             this.tab_about.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ud_win_height)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -603,12 +645,14 @@
         private System.Windows.Forms.CheckBox chk_stop_at_total;
         private System.Windows.Forms.TextBox txt_stop_at;
         private System.Windows.Forms.CheckBox chk_stop_at;
-        private System.Windows.Forms.CheckBox chk_stop_at_err;
+        private System.Windows.Forms.CheckBox chk_stop_on_err;
         private System.Windows.Forms.TextBox txt_discord;
         private System.Windows.Forms.Label lbl_discord;
         private System.Windows.Forms.Label lbl_version;
         private System.Windows.Forms.CheckBox chk_start_min;
         private System.Windows.Forms.Button btn_hide;
+        private System.Windows.Forms.NumericUpDown ud_win_height;
+        private System.Windows.Forms.Label lbl_win_height;
     }
 }
 

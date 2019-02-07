@@ -118,21 +118,19 @@ namespace MemTestHelper
             });
         }
 
-        public int get_selected_num_threads()
-        {
-            return (int)cbo_threads.SelectedItem;
-        }
-
-        public int get_selected_num_rows()
-        {
-            return (int)cbo_rows.SelectedItem;
-        }
-
         // event handling
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            load_cfg();
+            update_form_height();
+            update_lst_coverage_items();
+        }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             close_memtests();
+            save_cfg();
         }
 
         private void Form1_Resize(object sender, EventArgs e)
@@ -190,7 +188,6 @@ namespace MemTestHelper
                             TopMost = false;
                         }
                     }));
-                    
                     break;
             }
         }
@@ -220,7 +217,7 @@ namespace MemTestHelper
             chk_stop_at.Enabled = false;
             txt_stop_at.Enabled = false;
             chk_stop_at_total.Enabled = false;
-            chk_stop_at_err.Enabled = false;
+            chk_stop_on_err.Enabled = false;
             chk_start_min.Enabled = false;
 
             // run in background as start_memtests can block
@@ -260,7 +257,7 @@ namespace MemTestHelper
                 txt_stop_at.Enabled = true;
                 chk_stop_at_total.Enabled = true;
             }
-            chk_stop_at_err.Enabled = true;
+            chk_stop_on_err.Enabled = true;
             chk_start_min.Enabled = true;
 
             // wait for all memtests to fully stop
@@ -339,21 +336,7 @@ namespace MemTestHelper
 
         private void cbo_threads_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            int threads = (int)cbo_threads.SelectedItem;
-            var items = lst_coverage.Items;
-            if (threads < items.Count)
-            {
-                for (int i = items.Count - 1; i > threads; i--)
-                    items.RemoveAt(i);
-            }
-            else
-            {
-                for (int i = items.Count; i <= threads; i++)
-                {
-                    string[] row = { i.ToString(), "-", "-" };
-                    lst_coverage.Items.Add(new ListViewItem(row));
-                }
-            }
+            update_lst_coverage_items();
 
             cbo_rows.Items.Clear();
             init_cbo_rows();
@@ -374,7 +357,143 @@ namespace MemTestHelper
             }
         }
 
+        private void ud_win_height_ValueChanged(object sender, EventArgs e)
+        {
+            update_form_height();
+        }
+
         // helper functions
+
+        // TODO: error checking
+        private bool load_cfg()
+        {
+            string[] valid_keys = { "ram", "threads", "x_offset", "y_offset",
+                                    "x_spacing", "y_spacing", "rows", "stop_at",
+                                    "stop_at_value", "stop_at_total", "stop_on_error",
+                                    "start_min", "win_height" };
+
+            try
+            {
+                string[] lines = File.ReadAllLines(CFG_FILENAME);
+                Dictionary<string, int> cfg = new Dictionary<string, int>();
+
+                foreach (string l in lines)
+                {
+                    string[] s = l.Split('=');
+                    if (s.Length != 2) continue;
+                    s[0] = s[0].Trim();
+                    s[1] = s[1].Trim();
+
+                    if (valid_keys.Contains(s[0]))
+                    {
+                        if (s[1].Length == 0) continue;
+
+                        int v;
+                        if (Int32.TryParse(s[1], out v))
+                            cfg.Add(s[0], v);
+                        else return false;
+                    }
+                    else return false;
+                }
+
+                foreach (KeyValuePair<string, int> kv in cfg)
+                {
+                    switch (kv.Key)
+                    {
+                        case "ram":
+                            txt_ram.Text = kv.Value.ToString();
+                            break;
+                        case "threads":
+                            cbo_threads.SelectedItem = kv.Value;
+                            break;
+
+                        case "x_offset":
+                            ud_x_offset.Value = kv.Value;
+                            break;
+                        case "y_offset":
+                            ud_y_offset.Value = kv.Value;
+                            break;
+
+                        case "x_spacing":
+                            ud_x_spacing.Value = kv.Value;
+                            break;
+                        case "y_spacing":
+                            ud_y_spacing.Value = kv.Value;
+                            break;
+
+                        case "stop_at":
+                            chk_stop_at.Checked = kv.Value != 0;
+                            break;
+                        case "stop_at_value":
+                            txt_stop_at.Text = kv.Value.ToString();
+                            break;
+                        case "stop_at_total":
+                            chk_stop_at_total.Checked = kv.Value != 0;
+                            break;
+
+                        case "stop_on_error":
+                            chk_stop_on_err.Checked = kv.Value != 0;
+                            break;
+
+                        case "start_min":
+                            chk_start_min.Checked = kv.Value != 0;
+                            break;
+
+                        case "win_height":
+                            ud_win_height.Value = kv.Value;
+                            break;
+                    }
+                }
+            }
+            catch(FileNotFoundException e)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool save_cfg()
+        {
+            try {
+                var file = new StreamWriter(CFG_FILENAME);
+                List<string> lines = new List<string>();
+
+                lines.Add($"ram = {txt_ram.Text}");
+                lines.Add($"threads = {(int)cbo_threads.SelectedItem}");
+
+                lines.Add($"x_offset = {ud_x_offset.Value}");
+                lines.Add($"y_offset = {ud_y_offset.Value}");
+                lines.Add($"x_spacing = {ud_x_spacing.Value}");
+                lines.Add($"y_spacing = {ud_y_spacing.Value}");
+                lines.Add($"rows = {cbo_rows.SelectedItem}");
+
+                lines.Add(string.Format("stop_at = {0}", chk_stop_at.Checked ? 1 : 0));
+                lines.Add($"stop_at_value = {txt_stop_at.Text}");
+                lines.Add(string.Format("stop_at_total = {0}", chk_stop_at_total.Checked ? 1 : 0));
+                lines.Add(string.Format("stop_on_error = {0}", chk_stop_on_err.Checked ? 1 : 0));
+
+                lines.Add(string.Format("start_min = {0}", chk_start_min.Checked ? 1 : 0));
+
+                lines.Add($"win_height = {ud_win_height.Value}");
+
+                foreach (string l in lines)
+                    file.WriteLine(l);
+
+                file.Close();
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private void update_form_height()
+        {
+            Size = new Size(Size.Width, (int)ud_win_height.Value);
+        }
 
         private bool validate_input()
         {
@@ -477,6 +596,25 @@ namespace MemTestHelper
             }
         }
 
+        private void update_lst_coverage_items()
+        {
+            int threads = (int)cbo_threads.SelectedItem;
+            var items = lst_coverage.Items;
+            if (threads < items.Count)
+            {
+                for (int i = items.Count - 1; i > threads; i--)
+                    items.RemoveAt(i);
+            }
+            else
+            {
+                for (int i = items.Count; i <= threads; i++)
+                {
+                    string[] row = { i.ToString(), "-", "-" };
+                    lst_coverage.Items.Add(new ListViewItem(row));
+                }
+            }
+        }
+
         private void init_cbo_threads()
         {
             for (int i = 0; i < MAX_THREADS; i++)
@@ -542,7 +680,8 @@ namespace MemTestHelper
                 y_offset = (int)ud_y_offset.Value,
                 x_spacing = (int)ud_x_spacing.Value - 5,
                 y_spacing = (int)ud_y_spacing.Value - 3,
-                rows = (int)cbo_rows.SelectedItem;
+                rows = (int)cbo_rows.SelectedItem,
+                cols = (int)cbo_threads.SelectedItem / rows;
 
             Parallel.For(0, (int)cbo_threads.SelectedItem, i =>
             {
@@ -550,8 +689,8 @@ namespace MemTestHelper
                  if (state == null) return;
 
                  IntPtr hwnd = state.proc.MainWindowHandle;
-                 int c = i / rows,
-                     r = i % rows,
+                 int r = i / cols,
+                     c = i % cols,
                      x = c * MEMTEST_WIDTH + c * x_spacing + x_offset,
                      y = r * MEMTEST_HEIGHT + r * y_spacing + y_offset;
 
@@ -643,7 +782,7 @@ namespace MemTestHelper
                         }
 
                         // check error count
-                        if (chk_stop_at_err.Checked)
+                        if (chk_stop_on_err.Checked)
                         {
                             if (errors > 0)
                             {
@@ -855,7 +994,8 @@ namespace MemTestHelper
                              MEMTEST_EDT_RAM = "Edit1",
                              MEMTEST_STATIC_COVERAGE = "Static1",
                              // If you find this free version useful...
-                             MEMTEST_STATIC_FREE_VER = "Static2";
+                             MEMTEST_STATIC_FREE_VER = "Static2",
+                             CFG_FILENAME = "MemTestHelper.cfg";
 
         private const int MEMTEST_WIDTH = 217,
                           MEMTEST_HEIGHT = 247,
