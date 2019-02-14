@@ -190,6 +190,10 @@ namespace MemTestHelper
                     }));
                     break;
             }
+
+            // update the height
+            if (Size.Height >= MinimumSize.Height && Size.Height <= MaximumSize.Height)
+                ud_win_height.Value = Size.Height;
         }
 
         private void btn_auto_ram_Click(object sender, EventArgs e)
@@ -660,7 +664,8 @@ namespace MemTestHelper
                 state.is_finished = false;
                 memtest_states[i] = state;
 
-                Thread.Sleep(threads * 25);
+                // wait for processes to start
+                Thread.Sleep(threads * 50);
 
                 IntPtr hwnd = memtest_states[i].proc.MainWindowHandle;
                 double ram = Convert.ToDouble(txt_ram.Text) / threads;
@@ -926,8 +931,7 @@ namespace MemTestHelper
         {
             IntPtr hwnd = find_window(hwnd_parent, class_name);
             if (hwnd == IntPtr.Zero) return false;
-            SendNotifyMessage(hwnd, WM_LBUTTONDOWN, IntPtr.Zero, null);
-            SendNotifyMessage(hwnd, WM_LBUTTONUP, IntPtr.Zero, null);
+            SendNotifyMessage(hwnd, BM_CLICK, IntPtr.Zero, null);
             return true;
         }
 
@@ -935,8 +939,7 @@ namespace MemTestHelper
         {
             IntPtr hwnd = find_window(hwnd_parent, class_name);
             if (hwnd == IntPtr.Zero) return false;
-            SendMessage(hwnd, WM_SETTEXT, IntPtr.Zero, text);
-            return true;
+            return SendMessage(hwnd, WM_SETTEXT, IntPtr.Zero, text) != IntPtr.Zero;
         }
 
         private string ControlGetText(IntPtr hwnd, string class_name)
@@ -982,7 +985,7 @@ namespace MemTestHelper
         static extern bool IsIconic(IntPtr hWnd);
 
         public const int WM_SETTEXT = 0xC, WM_LBUTTONDOWN = 0x201, WM_LBUTTONUP = 0x202,
-                         SW_SHOW = 5, SW_RESTORE = 9, SW_MINIMIZE = 6;
+                         SW_SHOW = 5, SW_RESTORE = 9, SW_MINIMIZE = 6, BM_CLICK = 0xF5;
 
         private static int NUM_THREADS = Convert.ToInt32(System.Environment.GetEnvironmentVariable("NUMBER_OF_PROCESSORS")),
                            MAX_THREADS = NUM_THREADS * 4,

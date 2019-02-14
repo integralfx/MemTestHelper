@@ -56,7 +56,9 @@
             this.chk_stop_at = new System.Windows.Forms.CheckBox();
             this.cbo_rows = new System.Windows.Forms.ComboBox();
             this.btn_center = new System.Windows.Forms.Button();
+            this.ud_win_height = new System.Windows.Forms.NumericUpDown();
             this.ud_y_offset = new System.Windows.Forms.NumericUpDown();
+            this.lbl_win_height = new System.Windows.Forms.Label();
             this.lbl_y_offset = new System.Windows.Forms.Label();
             this.ud_y_spacing = new System.Windows.Forms.NumericUpDown();
             this.lbl_rows = new System.Windows.Forms.Label();
@@ -69,17 +71,15 @@
             this.txt_discord = new System.Windows.Forms.TextBox();
             this.lbl_discord = new System.Windows.Forms.Label();
             this.lbl_version = new System.Windows.Forms.Label();
-            this.lbl_win_height = new System.Windows.Forms.Label();
-            this.ud_win_height = new System.Windows.Forms.NumericUpDown();
             this.tab_control.SuspendLayout();
             this.tab_main.SuspendLayout();
             this.tab_settings.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ud_win_height)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ud_y_offset)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ud_y_spacing)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ud_x_spacing)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ud_x_offset)).BeginInit();
             this.tab_about.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ud_win_height)).BeginInit();
             this.SuspendLayout();
             // 
             // tab_control
@@ -388,6 +388,29 @@
             this.btn_center.UseVisualStyleBackColor = true;
             this.btn_center.Click += new System.EventHandler(this.btn_center_Click);
             // 
+            // ud_win_height
+            // 
+            this.ud_win_height.Location = new System.Drawing.Point(100, 202);
+            this.ud_win_height.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.ud_win_height.Minimum = new decimal(new int[] {
+            420,
+            0,
+            0,
+            0});
+            this.ud_win_height.Name = "ud_win_height";
+            this.ud_win_height.Size = new System.Drawing.Size(50, 20);
+            this.ud_win_height.TabIndex = 1;
+            this.ud_win_height.Value = new decimal(new int[] {
+            420,
+            0,
+            0,
+            0});
+            this.ud_win_height.ValueChanged += new System.EventHandler(this.ud_win_height_ValueChanged);
+            // 
             // ud_y_offset
             // 
             this.ud_y_offset.Location = new System.Drawing.Point(66, 30);
@@ -405,6 +428,15 @@
             this.ud_y_offset.Size = new System.Drawing.Size(50, 20);
             this.ud_y_offset.TabIndex = 1;
             this.ud_y_offset.ValueChanged += new System.EventHandler(this.offset_changed);
+            // 
+            // lbl_win_height
+            // 
+            this.lbl_win_height.AutoSize = true;
+            this.lbl_win_height.Location = new System.Drawing.Point(18, 204);
+            this.lbl_win_height.Name = "lbl_win_height";
+            this.lbl_win_height.Size = new System.Drawing.Size(81, 13);
+            this.lbl_win_height.TabIndex = 0;
+            this.lbl_win_height.Text = "Window height:";
             // 
             // lbl_y_offset
             // 
@@ -543,39 +575,7 @@
             this.lbl_version.Name = "lbl_version";
             this.lbl_version.Size = new System.Drawing.Size(69, 13);
             this.lbl_version.TabIndex = 0;
-            this.lbl_version.Text = "Version 1.9.1";
-            // 
-            // lbl_win_height
-            // 
-            this.lbl_win_height.AutoSize = true;
-            this.lbl_win_height.Location = new System.Drawing.Point(18, 204);
-            this.lbl_win_height.Name = "lbl_win_height";
-            this.lbl_win_height.Size = new System.Drawing.Size(81, 13);
-            this.lbl_win_height.TabIndex = 0;
-            this.lbl_win_height.Text = "Window height:";
-            // 
-            // ud_win_height
-            // 
-            this.ud_win_height.Location = new System.Drawing.Point(100, 202);
-            this.ud_win_height.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.ud_win_height.Minimum = new decimal(new int[] {
-            420,
-            0,
-            0,
-            0});
-            this.ud_win_height.Name = "ud_win_height";
-            this.ud_win_height.Size = new System.Drawing.Size(50, 20);
-            this.ud_win_height.TabIndex = 1;
-            this.ud_win_height.Value = new decimal(new int[] {
-            420,
-            0,
-            0,
-            0});
-            this.ud_win_height.ValueChanged += new System.EventHandler(this.ud_win_height_ValueChanged);
+            this.lbl_version.Text = "Version 1.9.3";
             // 
             // Form1
             // 
@@ -585,7 +585,7 @@
             this.Controls.Add(this.tab_control);
             this.MaximizeBox = false;
             this.MaximumSize = new System.Drawing.Size(242, 1000);
-            this.MinimumSize = new System.Drawing.Size(242, 0);
+            this.MinimumSize = new System.Drawing.Size(242, 420);
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "MemTestHelper";
@@ -597,13 +597,13 @@
             this.tab_main.PerformLayout();
             this.tab_settings.ResumeLayout(false);
             this.tab_settings.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ud_win_height)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ud_y_offset)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ud_y_spacing)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ud_x_spacing)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ud_x_offset)).EndInit();
             this.tab_about.ResumeLayout(false);
             this.tab_about.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ud_win_height)).EndInit();
             this.ResumeLayout(false);
 
         }
