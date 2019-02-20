@@ -415,12 +415,12 @@
             // 
             this.ud_y_offset.Location = new System.Drawing.Point(66, 30);
             this.ud_y_offset.Maximum = new decimal(new int[] {
-            1000,
+            10000,
             0,
             0,
             0});
             this.ud_y_offset.Minimum = new decimal(new int[] {
-            1000,
+            10000,
             0,
             0,
             -2147483648});
@@ -514,12 +514,12 @@
             // 
             this.ud_x_offset.Location = new System.Drawing.Point(66, 5);
             this.ud_x_offset.Maximum = new decimal(new int[] {
-            1000,
+            10000,
             0,
             0,
             0});
             this.ud_x_offset.Minimum = new decimal(new int[] {
-            1000,
+            10000,
             0,
             0,
             -2147483648});

@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Management;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -198,8 +199,7 @@ namespace MemTestHelper
 
         private void btn_auto_ram_Click(object sender, EventArgs e)
         {
-            UInt64 free = new ComputerInfo().AvailablePhysicalMemory / (1024 * 1024);
-            txt_ram.Text = free.ToString();
+            txt_ram.Text = get_free_ram().ToString();
         }
 
         private void btn_run_Click(object sender, EventArgs e)
@@ -368,6 +368,28 @@ namespace MemTestHelper
 
         // helper functions
 
+        // returns free RAM in MB
+        private UInt64 get_free_ram()
+        {
+            /*
+             * Available RAM = Free + Standby
+             * https://superuser.com/a/1032481
+             * 
+             * Cached = sum of stuff
+             * https://www.reddit.com/r/PowerShell/comments/ao59ha/cached_memory_as_it_appears_in_the_performance/efye75r/
+             * 
+             * Standby = Cached - Modifed
+             */
+            UInt64 avail = new ComputerInfo().AvailablePhysicalMemory;
+            float standby = new PerformanceCounter("Memory", "Cache Bytes").NextValue() +
+                            //new PerformanceCounter("Memory", "Modified Page List Bytes").NextValue() +
+                            new PerformanceCounter("Memory", "Standby Cache Core Bytes").NextValue() +
+                            new PerformanceCounter("Memory", "Standby Cache Normal Priority Bytes").NextValue() +
+                            new PerformanceCounter("Memory", "Standby Cache Reserve Bytes").NextValue();
+
+            return (UInt64)((avail - standby) / (1024 * 1024));
+        }
+
         // TODO: error checking
         private bool load_cfg()
         {
@@ -509,7 +531,7 @@ namespace MemTestHelper
             // automatically input available ram if empty
             if (str_ram.Length == 0)
             {
-                str_ram = avail_ram.ToString();
+                str_ram = get_free_ram().ToString();
                 txt_ram.Text = str_ram;
             }
             else
@@ -668,14 +690,20 @@ namespace MemTestHelper
                 Thread.Sleep(threads * 50);
 
                 IntPtr hwnd = memtest_states[i].proc.MainWindowHandle;
+
+                if (chk_start_min.Checked)
+                    ShowWindow(hwnd, SW_MINIMIZE);
+                else
+                {
+                    move_memtests();
+                    Activate();
+                }
+
                 double ram = Convert.ToDouble(txt_ram.Text) / threads;
 
                 ControlSetText(hwnd, MEMTEST_EDT_RAM, $"{ram:f2}");
                 ControlSetText(hwnd, MEMTEST_STATIC_FREE_VER, "Modified version by ∫ntegral#7834");
                 ControlClick(hwnd, MEMTEST_BTN_START);
-
-                if (chk_start_min.Checked)
-                    ShowWindow(hwnd, SW_MINIMIZE);
             });
         }
 
@@ -726,7 +754,7 @@ namespace MemTestHelper
         private Tuple<double, int> get_coverage_info(IntPtr hwnd)
         {
             string str = ControlGetText(hwnd, MEMTEST_STATIC_COVERAGE);
-            if (str == "") return null;
+            if (str == "" || !str.Contains("Coverage")) return null;
 
             // Test over. 47.3% Coverage, 0 Errors
             //            ^^^^^^^^^^^^^^^^^^^^^^^^
