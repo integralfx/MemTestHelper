@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Management;
@@ -686,25 +687,26 @@ namespace MemTestHelper
                 state.is_finished = false;
                 memtest_states[i] = state;
 
-                // wait for processes to start
-                Thread.Sleep(threads * 50);
-
-                IntPtr hwnd = memtest_states[i].proc.MainWindowHandle;
-
-                if (chk_start_min.Checked)
-                    ShowWindow(hwnd, SW_MINIMIZE);
-                else
+                // wait for process to start
+                while (string.IsNullOrEmpty(state.proc.MainWindowTitle))
                 {
-                    move_memtests();
-                    Activate();
+                    Thread.Sleep(100);
+                    state.proc.Refresh();
                 }
 
+                IntPtr hwnd = state.proc.MainWindowHandle;
                 double ram = Convert.ToDouble(txt_ram.Text) / threads;
 
                 ControlSetText(hwnd, MEMTEST_EDT_RAM, $"{ram:f2}");
                 ControlSetText(hwnd, MEMTEST_STATIC_FREE_VER, "Modified version by ∫ntegral#7834");
                 ControlClick(hwnd, MEMTEST_BTN_START);
+
+                if (chk_start_min.Checked)
+                    ShowWindow(hwnd, SW_MINIMIZE);
             });
+
+            if (!chk_start_min.Checked)
+                move_memtests();
         }
 
         private void move_memtests()
@@ -731,6 +733,7 @@ namespace MemTestHelper
             });
         }
 
+        // only close MemTests started by MemTestHelper
         private void close_memtests()
         {
             Parallel.ForEach(memtest_states, s =>
@@ -742,6 +745,10 @@ namespace MemTestHelper
             });
         }
 
+        /* 
+         * close all MemTests, regardless of if they were
+         * started by MemTestHelper
+         */
         private void close_all_memtests()
         {
             // remove the .exe
@@ -764,7 +771,10 @@ namespace MemTestHelper
 
             // 47.3% Coverage, 0 Errors
             // ^^^^
-            double coverage = Convert.ToDouble(str.Split("%".ToCharArray())[0]);
+            // some countries use a comma as the decimal point
+            string coverage_str = str.Split("%".ToCharArray())[0].Replace(',', '.');
+            double coverage = 0;
+            double.TryParse(coverage_str, NumberStyles.Any, CultureInfo.InvariantCulture, out coverage);
 
             // 47.3% Coverage, 0 Errors
             //                 ^^^^^^^^
