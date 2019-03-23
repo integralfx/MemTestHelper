@@ -10,6 +10,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Management;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -80,31 +81,10 @@ namespace MemTestHelper
 
                     if (total_coverage == 0) return;
 
+                    // round up to next multiple of 100
+                    int cov = ((int)(total_coverage / 100) + 1) * 100;
                     double diff = elapsed.TotalMilliseconds,
-                           est = 0;
-                    int cov = 0;
-                    // use user input coverage %
-                    if (chk_stop_at.Checked)
-                    {
-                        cov = Convert.ToInt32(txt_stop_at.Text);
-
-                        if (chk_stop_at_total.Checked)
-                            est = (diff / total_coverage * cov) - diff;
-                        else
-                        {
-                            // calculate average coverage and use that to estimate
-                            double avg = total_coverage / threads;
-                            est = (diff / avg * cov) - diff;
-                        }
-                    }
-                    else
-                    {
-                        // calculate average coverage and use that to estimate
-                        double avg = total_coverage / threads;
-                        // round up to next multiple of 100
-                        cov = ((int)(avg / 100) + 1) * 100;
-                        est = (diff / avg * cov) - diff;
-                    }
+                           est = (diff / total_coverage * cov) - diff;
 
                     TimeSpan est_time = TimeSpan.FromMilliseconds(est);
                     lbl_estimated_time.Text = String.Format("{0:00}h{1:00}m{2:00}s to {3}%",
@@ -370,7 +350,7 @@ namespace MemTestHelper
         // helper functions
 
         // returns free RAM in MB
-        private UInt64 get_free_ram()
+        private ulong get_free_ram()
         {
             /*
              * Available RAM = Free + Standby
@@ -381,14 +361,15 @@ namespace MemTestHelper
              * 
              * Standby = Cached - Modifed
              */
-            UInt64 avail = new ComputerInfo().AvailablePhysicalMemory;
+            /*
             float standby = new PerformanceCounter("Memory", "Cache Bytes").NextValue() +
                             //new PerformanceCounter("Memory", "Modified Page List Bytes").NextValue() +
                             new PerformanceCounter("Memory", "Standby Cache Core Bytes").NextValue() +
                             new PerformanceCounter("Memory", "Standby Cache Normal Priority Bytes").NextValue() +
                             new PerformanceCounter("Memory", "Standby Cache Reserve Bytes").NextValue();
+            */
 
-            return (UInt64)((avail - standby) / (1024 * 1024));
+            return new ComputerInfo().AvailablePhysicalMemory / (1024 * 1024);
         }
 
         // TODO: error checking
@@ -613,6 +594,13 @@ namespace MemTestHelper
 
         private void init_lst_coverage()
         {
+            /*
+             * stop flickering
+             * https://stackoverflow.com/a/15268338
+             */
+            var method = typeof(ListView).GetMethod("SetStyle", BindingFlags.Instance | BindingFlags.NonPublic);
+            method.Invoke(lst_coverage, new object[] { ControlStyles.OptimizedDoubleBuffer, true });
+
             for (int i = 0; i <= (int)cbo_threads.SelectedItem; i++)
             {
                 string[] row = { i.ToString(), "-", "-" };
