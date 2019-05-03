@@ -73,8 +73,11 @@ namespace MemTestHelper
                     double total_coverage = 0;
                     for (int i = 1; i <= threads; i++)
                     {
-                        var info = get_coverage_info(memtest_states[i - 1].proc.MainWindowHandle);
+                        MemTestState state = memtest_states[i - 1];
+                        var info = get_coverage_info(state.proc.MainWindowHandle);
                         if (info == null) continue;
+
+                        close_nag_msg(state.proc.Id, "Memory error detected!", 10);
 
                         total_coverage += info.Item1;
                     }
@@ -105,8 +108,12 @@ namespace MemTestHelper
         private void Form1_Load(object sender, EventArgs e)
         {
             load_cfg();
+
             update_form_height();
             update_lst_coverage_items();
+            cbo_rows.Items.Clear();
+            init_cbo_rows();
+            center_xy_offsets();
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -249,7 +256,7 @@ namespace MemTestHelper
             while (is_any_memtest_stopping())
                 Thread.Sleep(100);
 
-            MessageBox.Show("MemTest finished");
+            MessageBox.Show("Please press Ok to update coverage and errors", "MemTest finished");
         }
 
         private void btn_show_Click(object sender, EventArgs e)
@@ -668,7 +675,7 @@ namespace MemTestHelper
             close_all_memtests();
 
             int threads = (int)cbo_threads.SelectedItem;
-            Parallel.For(0, threads, i => 
+            Parallel.For(0, threads, i =>
             {
                 MemTestState state = new MemTestState();
                 state.proc = Process.Start(MEMTEST_EXE);
@@ -678,6 +685,7 @@ namespace MemTestHelper
                 // wait for process to start
                 while (string.IsNullOrEmpty(state.proc.MainWindowTitle))
                 {
+                    close_nag_msg(state.proc.Id, "Welcome, New MemTest User");
                     Thread.Sleep(100);
                     state.proc.Refresh();
                 }
@@ -686,8 +694,27 @@ namespace MemTestHelper
                 double ram = Convert.ToDouble(txt_ram.Text) / threads;
 
                 ControlSetText(hwnd, MEMTEST_EDT_RAM, $"{ram:f2}");
-                ControlSetText(hwnd, MEMTEST_STATIC_FREE_VER, "Modified version by ∫ntegral#7834");
+                ControlSetText(hwnd, MEMTEST_STATIC_FREE_VER, "MemTestHelper by ∫ntegral#7834");
                 ControlClick(hwnd, MEMTEST_BTN_START);
+
+                while (true)
+                {
+                    IntPtr msg = FindWindow(MEMTEST_CLASSNAME, "Message for first-time users");
+
+                    if (msg == IntPtr.Zero) continue;
+
+                    uint msg_pid;
+                    GetWindowThreadProcessId(msg, out msg_pid);
+
+                    if (msg_pid == state.proc.Id)
+                    {
+                        while (!close_nag_msg(state.proc.Id, "Message for first-time users"))
+                            Thread.Sleep(100);
+                        break;
+                    }
+
+                    Thread.Sleep(100);
+                }
 
                 if (chk_start_min.Checked)
                     ShowWindow(hwnd, SW_MINIMIZE);
@@ -805,8 +832,7 @@ namespace MemTestHelper
                             {
                                 if (!memtest_states[i - 1].is_finished)
                                 {
-                                    ControlClick(memtest_states[i - 1].proc.MainWindowHandle,
-                                                 MEMTEST_BTN_STOP);
+                                    ControlClick(hwnd, MEMTEST_BTN_STOP);
                                     memtest_states[i - 1].is_finished = true;
                                 }
                             }
@@ -910,6 +936,52 @@ namespace MemTestHelper
             bw.RunWorkerAsync();
         }
 
+        private bool close_nag_msg(int pid, String window_title, int max_attempts = 100)
+        {
+            IntPtr hwnd = IntPtr.Zero;
+            int attempts = 0;
+            do
+            {
+                hwnd = get_hwnd_from_pid(pid, window_title);
+                attempts++;
+            } while (hwnd == IntPtr.Zero && attempts < max_attempts);
+
+            if (hwnd == IntPtr.Zero) return false;
+            else
+            {
+                // click Ok
+                ControlClick(hwnd, "Button1");
+                return true;
+            }
+        }
+
+        private IntPtr get_hwnd_from_pid(int pid, String window_title)
+        {
+            IntPtr hwnd = IntPtr.Zero;
+
+            EnumWindows(
+                delegate (IntPtr curr_hwnd, IntPtr lParam)
+                {
+                    int len = GetWindowTextLength(curr_hwnd);
+                    if (len != window_title.Length) return true;
+                    StringBuilder sb = new StringBuilder(len + 1);
+                    GetWindowText(curr_hwnd, sb, len + 1);
+
+                    uint proc_id;
+                    GetWindowThreadProcessId(curr_hwnd, out proc_id);
+
+                    if (sb.ToString() == window_title && proc_id == pid)
+                    {
+                        hwnd = curr_hwnd;
+                        return false;
+                    }
+                    else return true;
+                }, 
+                IntPtr.Zero);
+
+            return hwnd;
+        }
+
         /*
          * class_name should be <classname><n>
          * tries to split class_name as above
@@ -1010,6 +1082,25 @@ namespace MemTestHelper
         [return: MarshalAs(UnmanagedType.Bool)]
         static extern bool IsIconic(IntPtr hWnd);
 
+        [DllImport("user32.dll", SetLastError = true)]
+        static extern int CloseWindow(IntPtr hWnd);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+
+        public delegate bool EnumWindowsProc(IntPtr hwnd, IntPtr lParam);
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool EnumWindows(EnumWindowsProc lpEnumFunc, IntPtr lParam);
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool EnumChildWindows(IntPtr hwndParent, EnumWindowsProc lpEnumFunc, IntPtr lParam);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
+
         public const int WM_SETTEXT = 0xC, WM_LBUTTONDOWN = 0x201, WM_LBUTTONUP = 0x202,
                          SW_SHOW = 5, SW_RESTORE = 9, SW_MINIMIZE = 6, BM_CLICK = 0xF5;
 
@@ -1017,7 +1108,8 @@ namespace MemTestHelper
                            MAX_THREADS = NUM_THREADS * 4,
                            UPDATE_INTERVAL = 200;   // interval (in ms) for coverage info list
 
-        private const string MEMTEST_EXE = "memtest_6.0_no_nag.exe",
+        private const string MEMTEST_EXE = "memtest.exe",
+                             MEMTEST_CLASSNAME = "#32770",
                              MEMTEST_BTN_START = "Button1",
                              MEMTEST_BTN_STOP = "Button2",
                              MEMTEST_EDT_RAM = "Edit1",
