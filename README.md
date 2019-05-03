@@ -4,8 +4,9 @@
 ![Screenshot](https://github.com/integralfx/MemTestHelper/raw/master/memtest_helper.jpg)
 
 ## Usage
-* Download my [modfied version](https://github.com/integralfx/MemTestHelper/raw/master/memtest_6.0_no_nag.exe) of HCI MemTest
+* Download [HCI MemTest](https://hcidesign.com/memtest/download.html)
 * Download MemTestHelper from [releases](https://github.com/integralfx/MemTestHelper/releases)
+* Ensure 'memtest.exe' is in the same folder as 'MemTestHelper.exe'
 * Run MemTestHelper
 
 ## Settings
