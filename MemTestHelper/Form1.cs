@@ -77,7 +77,10 @@ namespace MemTestHelper
                         var info = get_coverage_info(state.proc.MainWindowHandle);
                         if (info == null) continue;
 
-                        close_nag_msg(state.proc.Id, "Memory error detected!", 10);
+                        // for some reason, this sometimes won't close in start_memtests()
+                        close_nag_msg(state.proc.Id, "Message for first-time users", 1);
+
+                        close_nag_msg(state.proc.Id, "Memory error detected!", 1);
 
                         total_coverage += info.Item1;
                     }
@@ -697,24 +700,8 @@ namespace MemTestHelper
                 ControlSetText(hwnd, MEMTEST_STATIC_FREE_VER, "MemTestHelper by ∫ntegral#7834");
                 ControlClick(hwnd, MEMTEST_BTN_START);
 
-                while (true)
-                {
-                    IntPtr msg = FindWindow(MEMTEST_CLASSNAME, "Message for first-time users");
-
-                    if (msg == IntPtr.Zero) continue;
-
-                    uint msg_pid;
-                    GetWindowThreadProcessId(msg, out msg_pid);
-
-                    if (msg_pid == state.proc.Id)
-                    {
-                        while (!close_nag_msg(state.proc.Id, "Message for first-time users"))
-                            Thread.Sleep(100);
-                        break;
-                    }
-
+                while (!close_nag_msg(state.proc.Id, "Message for first-time users"))
                     Thread.Sleep(100);
-                }
 
                 if (chk_start_min.Checked)
                     ShowWindow(hwnd, SW_MINIMIZE);
