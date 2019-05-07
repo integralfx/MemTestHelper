@@ -1,148 +1,162 @@
 ﻿using Microsoft.VisualBasic.Devices;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
 using System.Drawing;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Management;
 using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Forms;
 
 namespace MemTestHelper
 {
     public partial class Form1 : Form
     {
+        private readonly int NUM_THREADS, MAX_THREADS;
+
+        private const string MEMTEST_EXE = "memtest.exe",
+                             MEMTEST_CLASSNAME = "#32770",
+                             MEMTEST_BTN_START = "Button1",
+                             MEMTEST_BTN_STOP = "Button2",
+                             MEMTEST_EDT_RAM = "Edit1",
+                             MEMTEST_STATIC_COVERAGE = "Static1",
+                             // If you find this free version useful...
+                             MEMTEST_STATIC_FREE_VER = "Static2",
+                             CFG_FILENAME = "MemTestHelper.cfg";
+
+        private const int MEMTEST_WIDTH = 217,
+                          MEMTEST_HEIGHT = 247,
+                          MEMTEST_MAX_RAM = 2048,
+                          // interval (in ms) for coverage info list
+                          UPDATE_INTERVAL = 200;
+
+        private MemTest[] memtests;
+        private BackgroundWorker coverageWorker;
+        private DateTime startTime;
+        private System.Timers.Timer timer;
+        private bool isMinimised = true;
+
         public Form1()
         {
             InitializeComponent();
 
-            init_cbo_threads();
-            init_lst_coverage();
-            init_cbo_rows();
-            center_xy_offsets();
+            NUM_THREADS = Convert.ToInt32(Environment.GetEnvironmentVariable("NUMBER_OF_PROCESSORS"));
+            MAX_THREADS = NUM_THREADS * 4;
+            memtests = new MemTest[MAX_THREADS];
 
-            bw_coverage = new BackgroundWorker();
-            bw_coverage.WorkerSupportsCancellation = true;
-            bw_coverage.DoWork += new DoWorkEventHandler(delegate (object o, DoWorkEventArgs args)
+            InitCboThreads();
+            InitLstCoverage();
+            InitCboRows();
+            CentreXYOffsets();
+
+            coverageWorker = new BackgroundWorker();
+            coverageWorker.WorkerSupportsCancellation = true;
+            coverageWorker.DoWork += new DoWorkEventHandler((sender, e) =>
             {
-                BackgroundWorker worker = o as BackgroundWorker;
-
+                var worker = sender as BackgroundWorker;
                 while (!worker.CancellationPending)
                 {
-                    update_coverage_info();
+                    UpdateCoverageInfo();
                     Thread.Sleep(UPDATE_INTERVAL);
                 }
 
-                args.Cancel = true;
+                e.Cancel = true;
             });
-            bw_coverage.RunWorkerCompleted += 
-            new RunWorkerCompletedEventHandler(delegate (object o, RunWorkerCompletedEventArgs args)
+            coverageWorker.RunWorkerCompleted += 
+            new RunWorkerCompletedEventHandler((sender, e) =>
             {
                 // wait for all MemTests to stop completely
-                while (is_any_memtest_stopping())
+                while (IsAnyMemTestStopping())
                     Thread.Sleep(100);
 
-                update_coverage_info(false);
+                // TODO: figure out why total coverage is sometimes
+                // reporting as 0.0 after stopping
+                UpdateCoverageInfo(false);
             });
 
             timer = new System.Timers.Timer(1000);
-            timer.Elapsed += new System.Timers.ElapsedEventHandler(delegate
-            (object sender, System.Timers.ElapsedEventArgs e)
+            timer.Elapsed += new System.Timers.ElapsedEventHandler((sender, e) =>
             {
                 Invoke(new MethodInvoker(delegate
                 {
-                    int threads = (int)cbo_threads.SelectedItem;
-                    var elapsed = e.SignalTime - start_time;
+                    var threads = (int)cboThreads.SelectedItem;
+                    var elapsed = e.SignalTime - startTime;
 
-                    lbl_elapsed_time.Text = String.Format("{0:00}h{1:00}m{2:00}s",
-                                                          (int)(elapsed.TotalHours),
-                                                          elapsed.Minutes,
-                                                          elapsed.Seconds);
+                    lblElapsedTime.Text = String.Format("{0:00}h{1:00}m{2:00}s",
+                                                        (int)(elapsed.TotalHours),
+                                                        elapsed.Minutes,
+                                                        elapsed.Seconds);
 
-                    double total_coverage = 0;
-                    for (int i = 1; i <= threads; i++)
+                    var total_coverage = 0.0;
+                    for (var i = 1; i <= threads; i++)
                     {
-                        MemTestState state = memtest_states[i - 1];
-                        var info = get_coverage_info(state.proc.MainWindowHandle);
-                        if (info == null) continue;
+                        var memtest = memtests[i - 1];
+                        var info = memtest.GetCoverageInfo();
+                        if (info == null) return;
 
-                        // for some reason, this sometimes won't close in start_memtests()
-                        close_nag_msg(state.proc.Id, "Message for first-time users", 1);
+                        // For some reason, this sometimes won't close.
+                        memtest.ClickNagMessageBox("Message for first-time users", 1);
 
-                        close_nag_msg(state.proc.Id, "Memory error detected!", 1);
+                        memtest.ClickNagMessageBox("Memory error detected!", 1);
 
                         total_coverage += info.Item1;
                     }
 
-                    if (total_coverage == 0) return;
-
                     // round up to next multiple of 100
-                    int cov = ((int)(total_coverage / 100) + 1) * 100;
-                    double diff = elapsed.TotalMilliseconds,
-                           est = (diff / total_coverage * cov) - diff;
+                    var cov = ((int)(total_coverage / 100) + 1) * 100;
+                    var diff = elapsed.TotalMilliseconds;
+                    var est = (diff / total_coverage * cov) - diff;
 
-                    TimeSpan est_time = TimeSpan.FromMilliseconds(est);
-                    lbl_estimated_time.Text = String.Format("{0:00}h{1:00}m{2:00}s to {3}%",
-                                                            (int)(est_time.TotalHours),
-                                                            est_time.Minutes,
-                                                            est_time.Seconds,
-                                                            cov);
+                    TimeSpan estimatedTime = TimeSpan.FromMilliseconds(est);
+                    lblEstimatedTime.Text = String.Format("{0:00}h{1:00}m{2:00}s to {3}%",
+                                                          (int)(estimatedTime.TotalHours),
+                                                          estimatedTime.Minutes,
+                                                          estimatedTime.Seconds,
+                                                          cov);
 
-                    int ram = Convert.ToInt32(txt_ram.Text);
-                    double speed = (total_coverage / 100) * ram / (diff / 1000);
-                    lbl_speed_value.Text = $"{speed:f2}MB/s";
+                    var ram = Convert.ToInt32(txtRAM.Text);
+                    var speed = (total_coverage / 100) * ram / (diff / 1000);
+                    lblSpeedValue.Text = $"{speed:f2}MB/s";
                 }));
             });
         }
 
-        // event handling
+        // Event Handling //
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            load_cfg();
+            LoadConfig();
 
-            update_form_height();
-            update_lst_coverage_items();
-            cbo_rows.Items.Clear();
-            init_cbo_rows();
-            center_xy_offsets();
+            UpdateFormHeight();
+            UpdateLstCoverageItems();
+            cboRows.Items.Clear();
+            InitCboRows();
+            CentreXYOffsets();
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            close_memtests();
-            save_cfg();
+            CloseMemTests();
+            SaveConfig();
         }
 
         private void Form1_Resize(object sender, EventArgs e)
         {
-            int threads = (int)cbo_threads.SelectedItem;
+            var threads = (int)cboThreads.SelectedItem;
             switch (WindowState)
             {
                 // minimise MemTest instances
                 case FormWindowState.Minimized:
-                    run_in_background(new MethodInvoker(delegate
+                    RunInBackground(new MethodInvoker(delegate
                     {
-                        for (int i = 0; i < threads; i++)
+                        for (var i = 0; i < threads; i++)
                         {
-                            if (memtest_states[i] != null)
+                            if (memtests[i] != null)
                             {
-                                IntPtr hwnd = memtest_states[i].proc.MainWindowHandle;
-
-                                if (!IsIconic(hwnd))
-                                    ShowWindow(hwnd, SW_MINIMIZE);
-
+                                memtests[i].Minimised = true;
                                 Thread.Sleep(10);
                             }
                         }
@@ -151,28 +165,25 @@ namespace MemTestHelper
 
                 // restore previous state of MemTest instances
                 case FormWindowState.Normal:
-                    run_in_background(new MethodInvoker(delegate
+                    RunInBackground(new MethodInvoker(delegate
                     {
                         /*
-                         * is_minimised is true when user clicked the hide button
-                         * this means that the memtest instances should be kept minimised
-                         */ 
-                        if (!is_minimised)
+                         * isMinimised is true when user clicked the hide button.
+                         * This means that the memtest instances should be kept minimised.
+                         */
+                        if (!isMinimised)
                         {
-                            for (int i = 0; i < threads; i++)
+                            for (var i = 0; i < threads; i++)
                             {
-                                if (memtest_states[i] != null)
+                                if (memtests[i] != null)
                                 {
-                                    IntPtr hwnd = memtest_states[i].proc.MainWindowHandle;
-
-                                    ShowWindow(hwnd, SW_RESTORE);
-
+                                    memtests[i].Minimised = false;
                                     Thread.Sleep(10);
                                 }
                             }
 
                             // user may have changed offsets while minimised
-                            move_memtests();
+                            LayOutMemTests();
 
                             // hack to bring form to top
                             TopMost = true;
@@ -185,15 +196,15 @@ namespace MemTestHelper
 
             // update the height
             if (Size.Height >= MinimumSize.Height && Size.Height <= MaximumSize.Height)
-                ud_win_height.Value = Size.Height;
+                udWinHeight.Value = Size.Height;
         }
 
-        private void btn_auto_ram_Click(object sender, EventArgs e)
+        private void btnAutoRam_Click(object sender, EventArgs e)
         {
-            txt_ram.Text = get_free_ram().ToString();
+            txtRAM.Text = GetFreeRAM().ToString();
         }
 
-        private void btn_run_Click(object sender, EventArgs e)
+        private void btnRun_Click(object sender, EventArgs e)
         {
             if (!File.Exists(MEMTEST_EXE))
             {
@@ -201,166 +212,158 @@ namespace MemTestHelper
                 return;
             }
 
-            if (!validate_input()) return;
+            if (!ValidateInput()) return;
 
-            btn_auto_ram.Enabled = false;
-            txt_ram.Enabled = false;
-            cbo_threads.Enabled = false;
+            btnAutoRAM.Enabled = false;
+            txtRAM.Enabled = false;
+            cboThreads.Enabled = false;
             //cbo_rows.Enabled = false;
-            btn_run.Enabled = false;
-            btn_stop.Enabled = true;
-            chk_stop_at.Enabled = false;
-            txt_stop_at.Enabled = false;
-            chk_stop_at_total.Enabled = false;
-            chk_stop_on_err.Enabled = false;
-            chk_start_min.Enabled = false;
+            btnRun.Enabled = false;
+            btnStop.Enabled = true;
+            chkStopAt.Enabled = false;
+            txtStopAt.Enabled = false;
+            chkStopAtTotal.Enabled = false;
+            chkStopOnError.Enabled = false;
+            chkStartMin.Enabled = false;
 
             // run in background as start_memtests can block
-            run_in_background(new MethodInvoker(delegate
+            RunInBackground(new MethodInvoker(delegate
             {
-                start_memtests();
+                StartMemTests();
 
-                if (!bw_coverage.IsBusy)
-                    bw_coverage.RunWorkerAsync();
-                start_time = DateTime.Now;
+                if (!coverageWorker.IsBusy)
+                    coverageWorker.RunWorkerAsync();
+                startTime = DateTime.Now;
                 timer.Start();
 
                 Activate();
             }));
         }
 
-        private void btn_stop_Click(object sender, EventArgs e)
+        private void btnStop_Click(object sender, EventArgs e)
         {
-            Parallel.For(0, (int)cbo_threads.SelectedItem, i =>
+            Parallel.For(0, (int)cboThreads.SelectedItem, i =>
             {
-                if (!memtest_states[i].is_finished)
-                    ControlClick(memtest_states[i].proc.MainWindowHandle, MEMTEST_BTN_STOP); 
+                if (!memtests[i].Finished)
+                    memtests[i].Stop();
             });
 
-            bw_coverage.CancelAsync();
+            coverageWorker.CancelAsync();
             timer.Stop();
 
-            btn_auto_ram.Enabled = true;
-            txt_ram.Enabled = true;
-            cbo_threads.Enabled = true;
-            //cbo_rows.Enabled = true;
-            btn_run.Enabled = true;
-            btn_stop.Enabled = false;
-            chk_stop_at.Enabled = true;
-            if (chk_stop_at.Checked)
+            btnAutoRAM.Enabled = true;
+            txtRAM.Enabled = true;
+            cboThreads.Enabled = true;
+            btnRun.Enabled = true;
+            btnStop.Enabled = false;
+            chkStopAt.Enabled = true;
+            if (chkStopAt.Checked)
             {
-                txt_stop_at.Enabled = true;
-                chk_stop_at_total.Enabled = true;
+                txtStopAt.Enabled = true;
+                chkStopAtTotal.Enabled = true;
             }
-            chk_stop_on_err.Enabled = true;
-            chk_start_min.Enabled = true;
+            chkStopOnError.Enabled = true;
+            chkStartMin.Enabled = true;
 
             // wait for all memtests to fully stop
-            while (is_any_memtest_stopping())
+            while (IsAnyMemTestStopping())
                 Thread.Sleep(100);
 
             MessageBox.Show("Please press Ok to update coverage and errors", "MemTest finished");
         }
 
-        private void btn_show_Click(object sender, EventArgs e)
+        private void btnShow_Click(object sender, EventArgs e)
         {
-            // run in background as Thread.Sleep can lockup the GUI
-            int threads = (int)cbo_threads.SelectedItem;
-            run_in_background(new MethodInvoker(delegate
+            // Run in background as Thread.Sleep can lockup the GUI.
+            var threads = (int)cboThreads.SelectedItem;
+            RunInBackground(new MethodInvoker(delegate
             {
-                for (int i = 0; i < threads; i++)
+                for (var i = 0; i < threads; i++)
                 {
-                    if (memtest_states[i] != null)
+                    var memtest = memtests[i];
+                    if (memtest != null)
                     {
-                        IntPtr hwnd = memtest_states[i].proc.MainWindowHandle;
-
-                        if (IsIconic(hwnd))
-                            ShowWindow(hwnd, SW_RESTORE);
-                        else
-                            SetForegroundWindow(hwnd);
+                        memtest.Minimised = false;
 
                         Thread.Sleep(10);
                     }
                 }
 
-                is_minimised = false;
+                isMinimised = false;
 
-                // user may have changed offsets while minimised
-                move_memtests();
+                // User may have changed offsets while minimised.
+                LayOutMemTests();
 
                 Activate();
             }));
         }
 
-        private void btn_hide_Click(object sender, EventArgs e)
+        private void btnHide_Click(object sender, EventArgs e)
         {
-            int threads = (int)cbo_threads.SelectedItem;
-            run_in_background(new MethodInvoker(delegate
+            var threads = (int)cboThreads.SelectedItem;
+            RunInBackground(new MethodInvoker(delegate
             {
-                for (int i = 0; i < threads; i++)
+                for (var i = 0; i < threads; i++)
                 {
-                    if (memtest_states[i] != null)
+                    var memtest = memtests[i];
+                    if (memtest != null)
                     {
-                        IntPtr hwnd = memtest_states[i].proc.MainWindowHandle;
-
-                        if (!IsIconic(hwnd))
-                            ShowWindow(hwnd, SW_MINIMIZE);
-
+                        memtest.Minimised = true;
                         Thread.Sleep(10);
                     }
                 }
 
-                is_minimised = true;
+                isMinimised = true;
             }));
         }
 
-        private void offset_changed(object sender, EventArgs e)
+        private void offset_Changed(object sender, EventArgs e)
         {
-            run_in_background(new MethodInvoker(delegate { move_memtests(); }));
+            RunInBackground(new MethodInvoker(delegate { LayOutMemTests(); }));
         }
 
-        private void btn_center_Click(object sender, EventArgs e)
+        private void btnCenter_Click(object sender, EventArgs e)
         {
-            center_xy_offsets();
+            CentreXYOffsets();
         }
 
-        private void cbo_rows_SelectionChangeCommitted(object sender, EventArgs e)
+        private void cboRows_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            center_xy_offsets();
+            CentreXYOffsets();
         }
 
-        private void cbo_threads_SelectionChangeCommitted(object sender, EventArgs e)
+        private void cboThreads_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            update_lst_coverage_items();
+            UpdateLstCoverageItems();
 
-            cbo_rows.Items.Clear();
-            init_cbo_rows();
-            center_xy_offsets();
+            cboRows.Items.Clear();
+            InitCboRows();
+            CentreXYOffsets();
         }
 
-        private void chk_stop_at_CheckedChanged(object sender, EventArgs e)
+        private void chkStopAt_CheckedChanged(object sender, EventArgs e)
         {
-            if (chk_stop_at.Checked)
+            if (chkStopAt.Checked)
             {
-                txt_stop_at.Enabled = true;
-                chk_stop_at_total.Enabled = true;
+                txtStopAt.Enabled = true;
+                chkStopAtTotal.Enabled = true;
             }
             else
             {
-                txt_stop_at.Enabled = false;
-                chk_stop_at_total.Enabled = false;
+                txtStopAt.Enabled = false;
+                chkStopAtTotal.Enabled = false;
             }
         }
 
-        private void ud_win_height_ValueChanged(object sender, EventArgs e)
+        private void udWinHeight_ValueChanged(object sender, EventArgs e)
         {
-            update_form_height();
+            UpdateFormHeight();
         }
 
-        // helper functions
+        // Helper Functions //
 
-        // returns free RAM in MB
-        private ulong get_free_ram()
+        // Returns free RAM in MB.
+        private ulong GetFreeRAM()
         {
             /*
              * Available RAM = Free + Standby
@@ -383,12 +386,12 @@ namespace MemTestHelper
         }
 
         // TODO: error checking
-        private bool load_cfg()
+        private bool LoadConfig()
         {
-            string[] valid_keys = { "ram", "threads", "x_offset", "y_offset",
-                                    "x_spacing", "y_spacing", "rows", "stop_at",
-                                    "stop_at_value", "stop_at_total", "stop_on_error",
-                                    "start_min", "win_height" };
+            string[] validKeys = { "ram", "threads", "x_offset", "y_offset",
+                                   "x_spacing", "y_spacing", "rows", "stop_at",
+                                   "stop_at_value", "stop_at_total", "stop_on_error",
+                                   "start_min", "win_height" };
 
             try
             {
@@ -397,13 +400,14 @@ namespace MemTestHelper
 
                 foreach (string l in lines)
                 {
-                    string[] s = l.Split('=');
+                    var s = l.Split('=');
                     if (s.Length != 2) continue;
                     s[0] = s[0].Trim();
                     s[1] = s[1].Trim();
 
-                    if (valid_keys.Contains(s[0]))
+                    if (validKeys.Contains(s[0]))
                     {
+                        // skip blank values
                         if (s[1].Length == 0) continue;
 
                         int v;
@@ -414,56 +418,57 @@ namespace MemTestHelper
                     else return false;
                 }
 
+                // input values in controls
                 foreach (KeyValuePair<string, int> kv in cfg)
                 {
                     switch (kv.Key)
                     {
                         case "ram":
-                            txt_ram.Text = kv.Value.ToString();
+                            txtRAM.Text = kv.Value.ToString();
                             break;
                         case "threads":
-                            cbo_threads.SelectedItem = kv.Value;
+                            cboThreads.SelectedItem = kv.Value;
                             break;
 
                         case "x_offset":
-                            ud_x_offset.Value = kv.Value;
+                            udXOffset.Value = kv.Value;
                             break;
                         case "y_offset":
-                            ud_y_offset.Value = kv.Value;
+                            udYOffset.Value = kv.Value;
                             break;
 
                         case "x_spacing":
-                            ud_x_spacing.Value = kv.Value;
+                            udXSpacing.Value = kv.Value;
                             break;
                         case "y_spacing":
-                            ud_y_spacing.Value = kv.Value;
+                            udYSpacing.Value = kv.Value;
                             break;
 
                         case "stop_at":
-                            chk_stop_at.Checked = kv.Value != 0;
+                            chkStopAt.Checked = kv.Value != 0;
                             break;
                         case "stop_at_value":
-                            txt_stop_at.Text = kv.Value.ToString();
+                            txtStopAt.Text = kv.Value.ToString();
                             break;
                         case "stop_at_total":
-                            chk_stop_at_total.Checked = kv.Value != 0;
+                            chkStopAtTotal.Checked = kv.Value != 0;
                             break;
 
                         case "stop_on_error":
-                            chk_stop_on_err.Checked = kv.Value != 0;
+                            chkStopOnError.Checked = kv.Value != 0;
                             break;
 
                         case "start_min":
-                            chk_start_min.Checked = kv.Value != 0;
+                            chkStartMin.Checked = kv.Value != 0;
                             break;
 
                         case "win_height":
-                            ud_win_height.Value = kv.Value;
+                            udWinHeight.Value = kv.Value;
                             break;
                     }
                 }
             }
-            catch(FileNotFoundException e)
+            catch(FileNotFoundException)
             {
                 return false;
             }
@@ -471,81 +476,86 @@ namespace MemTestHelper
             return true;
         }
 
-        private bool save_cfg()
+        private bool SaveConfig()
         {
+            StreamWriter file = null;
             try {
-                var file = new StreamWriter(CFG_FILENAME);
-                List<string> lines = new List<string>();
+                file = new StreamWriter(CFG_FILENAME);
+                var lines = new List<string>();
 
-                lines.Add($"ram = {txt_ram.Text}");
-                lines.Add($"threads = {(int)cbo_threads.SelectedItem}");
+                lines.Add($"ram = {txtRAM.Text}");
+                lines.Add($"threads = {(int)cboThreads.SelectedItem}");
 
-                lines.Add($"x_offset = {ud_x_offset.Value}");
-                lines.Add($"y_offset = {ud_y_offset.Value}");
-                lines.Add($"x_spacing = {ud_x_spacing.Value}");
-                lines.Add($"y_spacing = {ud_y_spacing.Value}");
-                lines.Add($"rows = {cbo_rows.SelectedItem}");
+                lines.Add($"x_offset = {udXOffset.Value}");
+                lines.Add($"y_offset = {udYOffset.Value}");
+                lines.Add($"x_spacing = {udXSpacing.Value}");
+                lines.Add($"y_spacing = {udYSpacing.Value}");
+                lines.Add($"rows = {cboRows.SelectedItem}");
 
-                lines.Add(string.Format("stop_at = {0}", chk_stop_at.Checked ? 1 : 0));
-                lines.Add($"stop_at_value = {txt_stop_at.Text}");
-                lines.Add(string.Format("stop_at_total = {0}", chk_stop_at_total.Checked ? 1 : 0));
-                lines.Add(string.Format("stop_on_error = {0}", chk_stop_on_err.Checked ? 1 : 0));
+                lines.Add(string.Format("stop_at = {0}", chkStopAt.Checked ? 1 : 0));
+                lines.Add($"stop_at_value = {txtStopAt.Text}");
+                lines.Add(string.Format("stop_at_total = {0}", chkStopAtTotal.Checked ? 1 : 0));
+                lines.Add(string.Format("stop_on_error = {0}", chkStopOnError.Checked ? 1 : 0));
 
-                lines.Add(string.Format("start_min = {0}", chk_start_min.Checked ? 1 : 0));
+                lines.Add(string.Format("start_min = {0}", chkStartMin.Checked ? 1 : 0));
 
-                lines.Add($"win_height = {ud_win_height.Value}");
+                lines.Add($"win_height = {udWinHeight.Value}");
 
-                foreach (string l in lines)
+                foreach (var l in lines)
                     file.WriteLine(l);
-
-                file.Close();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return false;
+            }
+            finally
+            {
+                // BaseStream isn't null when open.
+                if (file != null && file.BaseStream != null)
+                    file.Close();
             }
 
             return true;
         }
 
-        private void update_form_height()
+        private void UpdateFormHeight()
         {
-            Size = new Size(Size.Width, (int)ud_win_height.Value);
+            Size = new Size(Size.Width, (int)udWinHeight.Value);
         }
 
-        private bool validate_input()
+        private bool ValidateInput()
         {
-            ComputerInfo ci = new ComputerInfo();
-            UInt64 total_ram = ci.TotalPhysicalMemory / (1024 * 1024),
-                   avail_ram = ci.AvailablePhysicalMemory / (1024 * 1024);
+            var ci = new ComputerInfo();
+            UInt64 totalRAM = ci.TotalPhysicalMemory / (1024 * 1024),
+                   availableRAM = ci.AvailablePhysicalMemory / (1024 * 1024);
 
-            string str_ram = txt_ram.Text;
+            var ramText = txtRAM.Text;
             // automatically input available ram if empty
-            if (str_ram.Length == 0)
+            if (ramText.Length == 0)
             {
-                str_ram = get_free_ram().ToString();
-                txt_ram.Text = str_ram;
+                ramText = GetFreeRAM().ToString();
+                txtRAM.Text = ramText;
             }
             else
             {
-                if (!str_ram.All(char.IsDigit))
+                if (!ramText.All(char.IsDigit))
                 {
-                    show_error_msgbox("Amount of RAM must be an integer");
+                    ShowErrorMsgBox("Amount of RAM must be an integer");
                     return false;
                 }
             }
 
-            int threads = (int)cbo_threads.SelectedItem,
-                ram = Convert.ToInt32(str_ram);
+            int threads = (int)cboThreads.SelectedItem,
+                ram = Convert.ToInt32(ramText);
             if (ram < threads)
             {
-                show_error_msgbox($"Amount of RAM must be greater than {threads}");
+                ShowErrorMsgBox($"Amount of RAM must be greater than {threads}");
                 return false;
             }
 
             if (ram > MEMTEST_MAX_RAM * threads)
             {
-                show_error_msgbox(
+                ShowErrorMsgBox(
                     $"Amount of RAM must be at most {MEMTEST_MAX_RAM * threads}\n" + 
                     "Try increasing the number of threads\n" + 
                     "or reducing amount of RAM"
@@ -553,16 +563,16 @@ namespace MemTestHelper
                 return false;
             }
 
-            if ((UInt64)ram > total_ram)
+            if ((ulong)ram > totalRAM)
             {
-                show_error_msgbox($"Amount of RAM exceeds total RAM ({total_ram})");
+                ShowErrorMsgBox($"Amount of RAM exceeds total RAM ({totalRAM})");
                 return false;
             }
 
-            if ((UInt64)ram > avail_ram)
+            if ((ulong)ram > availableRAM)
             {
                 var res = MessageBox.Show(
-                    $"Amount of RAM exceeds available RAM ({avail_ram})\n" +
+                    $"Amount of RAM exceeds available RAM ({availableRAM})\n" +
                     "This will cause RAM to be paged to your storage,\n" +
                     "which may make MemTest really slow.\n" +
                     "Continue?",
@@ -575,26 +585,26 @@ namespace MemTestHelper
             }
 
             // validate stop at % and error count
-            if (chk_stop_at.Checked)
+            if (chkStopAt.Checked)
             {
-                string str_stop_at = txt_stop_at.Text;
+                var stopAtText = txtStopAt.Text;
 
-                if (str_stop_at == "")
+                if (stopAtText == "")
                 {
-                    show_error_msgbox("Please enter stop at (%)");
+                    ShowErrorMsgBox("Please enter stop at (%)");
                     return false;
                 }
 
-                if (!str_stop_at.All(char.IsDigit))
+                if (!stopAtText.All(char.IsDigit))
                 {
-                    show_error_msgbox("Stop at (%) must be an integer");
+                    ShowErrorMsgBox("Stop at (%) must be an integer");
                     return false;
                 }
 
-                int stop_at = Convert.ToInt32(str_stop_at);
-                if (stop_at <= 0)
+                var stopAt = Convert.ToInt32(stopAtText);
+                if (stopAt <= 0)
                 {
-                    show_error_msgbox("Stop at (%) must be greater than 0");
+                    ShowErrorMsgBox("Stop at (%) must be greater than 0");
                     return false;
                 }
             }
@@ -602,276 +612,219 @@ namespace MemTestHelper
             return true;
         }
 
-        private void init_lst_coverage()
+        private void InitLstCoverage()
         {
-            /*
-             * stop flickering
-             * https://stackoverflow.com/a/15268338
-             */
+            // Stop flickering: https://stackoverflow.com/a/15268338
             var method = typeof(ListView).GetMethod("SetStyle", BindingFlags.Instance | BindingFlags.NonPublic);
-            method.Invoke(lst_coverage, new object[] { ControlStyles.OptimizedDoubleBuffer, true });
+            method.Invoke(lstCoverage, new object[] { ControlStyles.OptimizedDoubleBuffer, true });
 
-            for (int i = 0; i <= (int)cbo_threads.SelectedItem; i++)
+            for (var i = 0; i <= (int)cboThreads.SelectedItem; i++)
             {
                 string[] row = { i.ToString(), "-", "-" };
                 // first row is total
                 if (i == 0) row[0] = "T";
 
-                lst_coverage.Items.Add(new ListViewItem(row));
+                lstCoverage.Items.Add(new ListViewItem(row));
             }
         }
 
-        private void update_lst_coverage_items()
+        private void UpdateLstCoverageItems()
         {
-            int threads = (int)cbo_threads.SelectedItem;
-            var items = lst_coverage.Items;
+            var threads = (int)cboThreads.SelectedItem;
+            var items = lstCoverage.Items;
             if (threads < items.Count)
             {
-                for (int i = items.Count - 1; i > threads; i--)
+                for (var i = items.Count - 1; i > threads; i--)
                     items.RemoveAt(i);
             }
             else
             {
-                for (int i = items.Count; i <= threads; i++)
+                for (var i = items.Count; i <= threads; i++)
                 {
                     string[] row = { i.ToString(), "-", "-" };
-                    lst_coverage.Items.Add(new ListViewItem(row));
+                    lstCoverage.Items.Add(new ListViewItem(row));
                 }
             }
         }
 
-        private void init_cbo_threads()
+        private void InitCboThreads()
         {
-            for (int i = 0; i < MAX_THREADS; i++)
-                cbo_threads.Items.Add(i + 1);
+            for (var i = 0; i < MAX_THREADS; i++)
+                cboThreads.Items.Add(i + 1);
 
-            cbo_threads.SelectedItem = NUM_THREADS;
+            cboThreads.SelectedItem = NUM_THREADS;
         }
 
-        private void init_cbo_rows()
+        private void InitCboRows()
         {
-            int threads = (int)cbo_threads.SelectedItem;
+            var threads = (int)cboThreads.SelectedItem;
 
-            for (int i = 1; i <= threads; i++)
+            for (var i = 1; i <= threads; i++)
             {
                 if (threads % i == 0)
-                    cbo_rows.Items.Add(i);
+                    cboRows.Items.Add(i);
             }
 
-            cbo_rows.SelectedItem = threads % 2 == 0 ? 2 : 1;
+            cboRows.SelectedItem = threads % 2 == 0 ? 2 : 1;
         }
 
-        void center_xy_offsets()
+        private void CentreXYOffsets()
         {
-            Rectangle screen = Screen.FromControl(this).Bounds;
-            int rows = (int)cbo_rows.SelectedItem,
-                cols = (int)cbo_threads.SelectedItem / rows,
-                x_offset = (screen.Width - MEMTEST_WIDTH * cols) / 2,
-                y_offset = (screen.Height - MEMTEST_HEIGHT * rows) / 2;
+            var screen = Screen.FromControl(this).Bounds;
+            int rows = (int)cboRows.SelectedItem,
+                cols = (int)cboThreads.SelectedItem / rows,
+                xOffset = (screen.Width - MEMTEST_WIDTH * cols) / 2,
+                yOffset = (screen.Height - MEMTEST_HEIGHT * rows) / 2;
 
-            ud_x_offset.Value = x_offset;
-            ud_y_offset.Value = y_offset;
+            udXOffset.Value = xOffset;
+            udYOffset.Value = yOffset;
         }
 
-        private void start_memtests()
+        private void StartMemTests()
         {
-            close_all_memtests();
+            CloseAllMemTests();
 
-            int threads = (int)cbo_threads.SelectedItem;
+            var threads = (int)cboThreads.SelectedItem;
             Parallel.For(0, threads, i =>
             {
-                MemTestState state = new MemTestState();
-                state.proc = Process.Start(MEMTEST_EXE);
-                state.is_finished = false;
-                memtest_states[i] = state;
-
-                // wait for process to start
-                while (string.IsNullOrEmpty(state.proc.MainWindowTitle))
-                {
-                    close_nag_msg(state.proc.Id, "Welcome, New MemTest User");
-                    Thread.Sleep(100);
-                    state.proc.Refresh();
-                }
-
-                IntPtr hwnd = state.proc.MainWindowHandle;
-                double ram = Convert.ToDouble(txt_ram.Text) / threads;
-
-                ControlSetText(hwnd, MEMTEST_EDT_RAM, $"{ram:f2}");
-                ControlSetText(hwnd, MEMTEST_STATIC_FREE_VER, "MemTestHelper by ∫ntegral#7834");
-                ControlClick(hwnd, MEMTEST_BTN_START);
-
-                while (!close_nag_msg(state.proc.Id, "Message for first-time users"))
-                    Thread.Sleep(100);
-
-                if (chk_start_min.Checked)
-                    ShowWindow(hwnd, SW_MINIMIZE);
+                double ram = Convert.ToDouble(txtRAM.Text) / threads;
+                memtests[i] = new MemTest();
+                memtests[i].Start(ram, chkStartMin.Checked);
             });
 
-            if (!chk_start_min.Checked)
-                move_memtests();
+            if (!chkStartMin.Checked)
+                LayOutMemTests();
         }
 
-        private void move_memtests()
+        private void LayOutMemTests()
         {
-            int x_offset = (int)ud_x_offset.Value,
-                y_offset = (int)ud_y_offset.Value,
-                x_spacing = (int)ud_x_spacing.Value - 5,
-                y_spacing = (int)ud_y_spacing.Value - 3,
-                rows = (int)cbo_rows.SelectedItem,
-                cols = (int)cbo_threads.SelectedItem / rows;
+            int xOffset = (int)udXOffset.Value,
+                yOffset = (int)udYOffset.Value,
+                xSpacing = (int)udXSpacing.Value - 5,
+                ySpacing = (int)udYSpacing.Value - 3,
+                rows = (int)cboRows.SelectedItem,
+                cols = (int)cboThreads.SelectedItem / rows;
 
-            Parallel.For(0, (int)cbo_threads.SelectedItem, i =>
+            Parallel.For(0, (int)cboThreads.SelectedItem, i =>
             {
-                 MemTestState state = memtest_states[i];
-                 if (state == null) return;
+                 var memtest = memtests[i];
+                 if (memtest == null || !memtest.Started) return;
 
-                 IntPtr hwnd = state.proc.MainWindowHandle;
                  int r = i / cols,
                      c = i % cols,
-                     x = c * MEMTEST_WIDTH + c * x_spacing + x_offset,
-                     y = r * MEMTEST_HEIGHT + r * y_spacing + y_offset;
+                     x = c * MEMTEST_WIDTH + c * xSpacing + xOffset,
+                     y = r * MEMTEST_HEIGHT + r * ySpacing + yOffset;
 
-                 MoveWindow(hwnd, x, y, MEMTEST_WIDTH, MEMTEST_HEIGHT, true);
+                memtest.Location = new Point(x, y);
             });
         }
 
-        // only close MemTests started by MemTestHelper
-        private void close_memtests()
+        // Only close MemTests started by MemTestHelper.
+        private void CloseMemTests()
         {
-            Parallel.ForEach(memtest_states, s =>
+            Parallel.For(0, (int)cboThreads.SelectedItem, i =>
             {
-                try {
-                    if (s != null) s.proc.Kill();
+                try
+                {
+                    memtests[i].Close();
                 }
-                catch (Exception) { }
+                catch (Exception)
+                {
+                    Console.WriteLine($"Failed to close MemTest #{i}");
+                }
             });
         }
 
         /* 
-         * close all MemTests, regardless of if they were
-         * started by MemTestHelper
+         * Close all MemTests, regardless of if they were
+         * started by MemTestHelper.
          */
-        private void close_all_memtests()
+        private void CloseAllMemTests()
         {
             // remove the .exe
-            string name = MEMTEST_EXE.Substring(0, MEMTEST_EXE.Length - 4);
-            var procs = Process.GetProcessesByName(name);
-            Parallel.ForEach(procs, p => { p.Kill(); });
+            var name = MEMTEST_EXE.Substring(0, MEMTEST_EXE.Length - 4);
+            var processes = Process.GetProcessesByName(name);
+            Parallel.ForEach(processes, p => { p.Kill(); });
         }
 
-        // returns (coverage, errors)
-        private Tuple<double, int> get_coverage_info(IntPtr hwnd)
+        private void UpdateCoverageInfo(bool shouldCheck = true)
         {
-            string str = ControlGetText(hwnd, MEMTEST_STATIC_COVERAGE);
-            if (str == "" || !str.Contains("Coverage")) return null;
-
-            // Test over. 47.3% Coverage, 0 Errors
-            //            ^^^^^^^^^^^^^^^^^^^^^^^^
-            int start = str.IndexOfAny("0123456789".ToCharArray());
-            if (start == -1) return null;
-            str = str.Substring(start);
-
-            // 47.3% Coverage, 0 Errors
-            // ^^^^
-            // some countries use a comma as the decimal point
-            string coverage_str = str.Split("%".ToCharArray())[0].Replace(',', '.');
-            double coverage = 0;
-            double.TryParse(coverage_str, NumberStyles.Any, CultureInfo.InvariantCulture, out coverage);
-
-            // 47.3% Coverage, 0 Errors
-            //                 ^^^^^^^^
-            start = str.IndexOf("Coverage, ") + "Coverage, ".Length;
-            str = str.Substring(start);
-            // 0 Errors
-            // ^
-            int errors = Convert.ToInt32(str.Substring(0, str.IndexOf(" Errors")));
-
-            return Tuple.Create(coverage, errors);
-        }
-
-        private void update_coverage_info(bool should_check = true)
-        {
-            lst_coverage.Invoke(new MethodInvoker(delegate
+            lstCoverage.Invoke(new MethodInvoker(delegate
             {
-                int threads = (int)cbo_threads.SelectedItem;
-                double total_coverage = 0;
-                int total_errors = 0;
+                var threads = (int)cboThreads.SelectedItem;
+                var totalCoverage = 0.0;
+                var totalErrors = 0;
 
                 // total is index 0
-                for (int i = 1; i <= threads; i++)
+                for (var i = 1; i <= threads; i++)
                 {
-                    var hwnd = memtest_states[i - 1].proc.MainWindowHandle;
-                    var info = get_coverage_info(hwnd);
+                    var memtest = memtests[i - 1];
+                    var info = memtest.GetCoverageInfo();
                     if (info == null) continue;
                     double coverage = info.Item1;
                     int errors = info.Item2;
 
-                    lst_coverage.Items[i].SubItems[1].Text = string.Format("{0:f1}", coverage);
-                    lst_coverage.Items[i].SubItems[2].Text = errors.ToString();
+                    lstCoverage.Items[i].SubItems[1].Text = string.Format("{0:f1}", coverage);
+                    lstCoverage.Items[i].SubItems[2].Text = errors.ToString();
                         
-                    if (should_check)
+                    if (shouldCheck)
                     {
                         // check coverage %
-                        if (chk_stop_at.Checked && !chk_stop_at_total.Checked)
+                        if (chkStopAt.Checked && !chkStopAtTotal.Checked)
                         {
-                            int stop_at = Convert.ToInt32(txt_stop_at.Text);
-                            if (coverage > stop_at)
+                            var stopAt = Convert.ToInt32(txtStopAt.Text);
+                            if (coverage > stopAt)
                             {
-                                if (!memtest_states[i - 1].is_finished)
-                                {
-                                    ControlClick(hwnd, MEMTEST_BTN_STOP);
-                                    memtest_states[i - 1].is_finished = true;
-                                }
+                                if (!memtest.Finished)
+                                    memtest.Stop();
                             }
                         }
 
                         // check error count
-                        if (chk_stop_on_err.Checked)
+                        if (chkStopOnError.Checked)
                         {
                             if (errors > 0)
                             {
-                                lst_coverage.Items[i].SubItems[1].ForeColor = Color.Red;
-
-                                click_btn_stop();
+                                lstCoverage.Items[i].SubItems[1].ForeColor = Color.Red;
+                                ClickBtnStop();
                             }
                         }
                     }
 
-                    total_coverage += coverage;
-                    total_errors += errors;
+                    totalCoverage += coverage;
+                    totalErrors += errors;
                 }
 
                 // update the total coverage and errors
-                lst_coverage.Items[0].SubItems[1].Text = string.Format("{0:f1}", total_coverage);
-                lst_coverage.Items[0].SubItems[2].Text = total_errors.ToString();
+                lstCoverage.Items[0].SubItems[1].Text = string.Format("{0:f1}", totalCoverage);
+                lstCoverage.Items[0].SubItems[2].Text = totalErrors.ToString();
 
-                if (should_check)
+                if (shouldCheck)
                 {
                     // check total coverage
-                    if (chk_stop_at.Checked && chk_stop_at_total.Checked)
+                    if (chkStopAt.Checked && chkStopAtTotal.Checked)
                     {
-                        int stop_at = Convert.ToInt32(txt_stop_at.Text);
-                        if (total_coverage > stop_at)
-                            click_btn_stop();
+                        var stopAt = Convert.ToInt32(txtStopAt.Text);
+                        if (totalCoverage > stopAt)
+                            ClickBtnStop();
                     }
 
-                    if (is_all_finished())
-                        click_btn_stop();
+                    if (IsAllFinished())
+                        ClickBtnStop();
                 }
             }));
         }
 
         /*
          * MemTest can take a while to stop,
-         * which causes the total to return 0
+         * which causes the total to return 0.
          */
-        private bool is_any_memtest_stopping()
+        private bool IsAnyMemTestStopping()
         {
-            for (int i = 0; i < (int)cbo_threads.SelectedItem; i++)
+            for (var i = 0; i < (int)cboThreads.SelectedItem; i++)
             {
-                IntPtr hwnd = memtest_states[i].proc.MainWindowHandle;
-                string str = ControlGetText(hwnd, MEMTEST_STATIC_COVERAGE);
-                if (str != "" && str.Contains("Ending")) return true;
+                if (memtests[i].Stopping)
+                    return true;
             }
 
             return false;
@@ -880,19 +833,19 @@ namespace MemTestHelper
         /* 
          * PerformClick() only works if the button is visible
          * switch to main tab and PerformClick() then switch
-         * back to the tab that the user was on
+         * back to the tab that the user was on.
          */
-        private void click_btn_stop()
+        private void ClickBtnStop()
         {
-            var curr_tab = tab_control.SelectedTab;
-            if (curr_tab != tab_main)
-                tab_control.SelectedTab = tab_main;
+            var currTab = tabControl.SelectedTab;
+            if (currTab != tab_main)
+                tabControl.SelectedTab = tab_main;
 
-            btn_stop.PerformClick();
-            tab_control.SelectedTab = curr_tab;
+            btnStop.PerformClick();
+            tabControl.SelectedTab = currTab;
         }
 
-        private void show_error_msgbox(string msg)
+        private void ShowErrorMsgBox(string msg)
         {
             MessageBox.Show(
                 msg,
@@ -902,18 +855,18 @@ namespace MemTestHelper
             );
         }
 
-        private bool is_all_finished()
+        private bool IsAllFinished()
         {
-            for (int i = 0; i < (int)cbo_threads.SelectedItem; i++)
+            for (int i = 0; i < (int)cboThreads.SelectedItem; i++)
             {
-                if (!memtest_states[i].is_finished)
+                if (!memtests[i].Finished)
                     return false;
             }
 
             return true;
         }
 
-        private void run_in_background(Delegate method)
+        private void RunInBackground(Delegate method)
         {
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += new DoWorkEventHandler(delegate (object s, DoWorkEventArgs args)
@@ -921,204 +874,6 @@ namespace MemTestHelper
                 Invoke(method);
             });
             bw.RunWorkerAsync();
-        }
-
-        private bool close_nag_msg(int pid, String window_title, int max_attempts = 100)
-        {
-            IntPtr hwnd = IntPtr.Zero;
-            int attempts = 0;
-            do
-            {
-                hwnd = get_hwnd_from_pid(pid, window_title);
-                attempts++;
-            } while (hwnd == IntPtr.Zero && attempts < max_attempts);
-
-            if (hwnd == IntPtr.Zero) return false;
-            else
-            {
-                // click Ok
-                ControlClick(hwnd, "Button1");
-                return true;
-            }
-        }
-
-        private IntPtr get_hwnd_from_pid(int pid, String window_title)
-        {
-            IntPtr hwnd = IntPtr.Zero;
-
-            EnumWindows(
-                delegate (IntPtr curr_hwnd, IntPtr lParam)
-                {
-                    int len = GetWindowTextLength(curr_hwnd);
-                    if (len != window_title.Length) return true;
-                    StringBuilder sb = new StringBuilder(len + 1);
-                    GetWindowText(curr_hwnd, sb, len + 1);
-
-                    uint proc_id;
-                    GetWindowThreadProcessId(curr_hwnd, out proc_id);
-
-                    if (sb.ToString() == window_title && proc_id == pid)
-                    {
-                        hwnd = curr_hwnd;
-                        return false;
-                    }
-                    else return true;
-                }, 
-                IntPtr.Zero);
-
-            return hwnd;
-        }
-
-        /*
-         * class_name should be <classname><n>
-         * tries to split class_name as above
-         * returns (<classname>, <n>) if possible
-         * otherwise, returns null
-         */
-        private Tuple<string, int> split_class_name(string class_name)
-        {
-            Regex regex = new Regex(@"([a-zA-Z]+)(\d+)");
-            Match match = regex.Match(class_name);
-
-            if (!match.Success) return null;
-
-            return Tuple.Create(
-                match.Groups[1].Value,
-                Convert.ToInt32(match.Groups[2].Value)
-            );
-        }
-
-        /*
-         * class_name should be <classname><n>
-         * where <classname> is the name of the class to find
-         *       <n>         is the nth window with that matches <classname> (1 indexed)
-         * e.g. Edit1
-         * returns the handle to the window if found
-         * otherwise, returns IntPtr.Zero
-         */
-        private IntPtr find_window(IntPtr hwnd_parent, string class_name)
-        {
-            if (hwnd_parent == IntPtr.Zero)
-                return IntPtr.Zero;
-
-            var name = split_class_name(class_name);
-            if (name == null) return IntPtr.Zero;
-
-            IntPtr hwnd = IntPtr.Zero;
-            for (int i = 0; i < name.Item2; i++)
-                hwnd = FindWindowEx(hwnd_parent, hwnd, name.Item1, null);
-
-            return hwnd;
-        }
-
-        // emulate AutoIT Control functions
-        private bool ControlClick(IntPtr hwnd_parent, string class_name)
-        {
-            IntPtr hwnd = find_window(hwnd_parent, class_name);
-            if (hwnd == IntPtr.Zero) return false;
-            SendNotifyMessage(hwnd, BM_CLICK, IntPtr.Zero, null);
-            return true;
-        }
-
-        private bool ControlSetText(IntPtr hwnd_parent, string class_name, string text)
-        {
-            IntPtr hwnd = find_window(hwnd_parent, class_name);
-            if (hwnd == IntPtr.Zero) return false;
-            return SendMessage(hwnd, WM_SETTEXT, IntPtr.Zero, text) != IntPtr.Zero;
-        }
-
-        private string ControlGetText(IntPtr hwnd, string class_name)
-        {
-            IntPtr hwnd_control = find_window(hwnd, class_name);
-            if (hwnd_control == IntPtr.Zero) return null;
-            int len = GetWindowTextLength(hwnd_control);
-            StringBuilder str = new StringBuilder(len + 1);
-            GetWindowText(hwnd_control, str, str.Capacity);
-            return str.ToString();
-        }
-
-        [DllImport("user32.dll", SetLastError = true)]
-        internal static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        static extern IntPtr FindWindowEx(IntPtr hwndParent, IntPtr hwndChildAfter, string lpszClass, string lpszWindow);
-
-        // blocks
-        [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        public static extern IntPtr SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, [MarshalAs(UnmanagedType.LPWStr)] string lParam);
-
-        // doesn't block
-        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        static extern bool SendNotifyMessage(IntPtr hWnd, int Msg, IntPtr wParam, [MarshalAs(UnmanagedType.LPWStr)] string lParam);
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
-
-        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        static extern int GetWindowTextLength(IntPtr hWnd);
-
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        static extern bool SetForegroundWindow(IntPtr hWnd);
-
-        [DllImport("user32.dll", EntryPoint = "ShowWindow", SetLastError = true)]
-        static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-
-        // is minimised
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        static extern bool IsIconic(IntPtr hWnd);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        static extern int CloseWindow(IntPtr hWnd);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
-
-        public delegate bool EnumWindowsProc(IntPtr hwnd, IntPtr lParam);
-
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        static extern bool EnumWindows(EnumWindowsProc lpEnumFunc, IntPtr lParam);
-
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool EnumChildWindows(IntPtr hwndParent, EnumWindowsProc lpEnumFunc, IntPtr lParam);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
-
-        public const int WM_SETTEXT = 0xC, WM_LBUTTONDOWN = 0x201, WM_LBUTTONUP = 0x202,
-                         SW_SHOW = 5, SW_RESTORE = 9, SW_MINIMIZE = 6, BM_CLICK = 0xF5;
-
-        private static int NUM_THREADS = Convert.ToInt32(System.Environment.GetEnvironmentVariable("NUMBER_OF_PROCESSORS")),
-                           MAX_THREADS = NUM_THREADS * 4,
-                           UPDATE_INTERVAL = 200;   // interval (in ms) for coverage info list
-
-        private const string MEMTEST_EXE = "memtest.exe",
-                             MEMTEST_CLASSNAME = "#32770",
-                             MEMTEST_BTN_START = "Button1",
-                             MEMTEST_BTN_STOP = "Button2",
-                             MEMTEST_EDT_RAM = "Edit1",
-                             MEMTEST_STATIC_COVERAGE = "Static1",
-                             // If you find this free version useful...
-                             MEMTEST_STATIC_FREE_VER = "Static2",
-                             CFG_FILENAME = "MemTestHelper.cfg";
-
-        private const int MEMTEST_WIDTH = 217,
-                          MEMTEST_HEIGHT = 247,
-                          MEMTEST_MAX_RAM = 2048;
-
-        private MemTestState[] memtest_states = new MemTestState[MAX_THREADS];
-        private BackgroundWorker bw_coverage;
-        private DateTime start_time;
-        private System.Timers.Timer timer;
-        private bool is_minimised = true;
-
-        class MemTestState
-        {
-            public Process proc;
-            public bool is_finished;
         }
     }
 }

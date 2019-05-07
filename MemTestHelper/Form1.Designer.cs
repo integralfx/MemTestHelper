@@ -28,90 +28,90 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.tab_control = new System.Windows.Forms.TabControl();
+            this.tabControl = new System.Windows.Forms.TabControl();
             this.tab_main = new System.Windows.Forms.TabPage();
             this.btn_hide = new System.Windows.Forms.Button();
-            this.lst_coverage = new System.Windows.Forms.ListView();
+            this.lstCoverage = new System.Windows.Forms.ListView();
             this.hdr_no = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.hdr_coverage = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.hdr_errors = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.lbl_speed_value = new System.Windows.Forms.Label();
+            this.lblSpeedValue = new System.Windows.Forms.Label();
             this.lbl_speed = new System.Windows.Forms.Label();
-            this.lbl_estimated_time = new System.Windows.Forms.Label();
+            this.lblEstimatedTime = new System.Windows.Forms.Label();
             this.lbl_estimated = new System.Windows.Forms.Label();
-            this.lbl_elapsed_time = new System.Windows.Forms.Label();
+            this.lblElapsedTime = new System.Windows.Forms.Label();
             this.lbl_elapsed = new System.Windows.Forms.Label();
             this.btn_show = new System.Windows.Forms.Button();
-            this.btn_stop = new System.Windows.Forms.Button();
-            this.btn_run = new System.Windows.Forms.Button();
-            this.cbo_threads = new System.Windows.Forms.ComboBox();
+            this.btnStop = new System.Windows.Forms.Button();
+            this.btnRun = new System.Windows.Forms.Button();
+            this.cboThreads = new System.Windows.Forms.ComboBox();
             this.lbl_num_threads = new System.Windows.Forms.Label();
-            this.txt_ram = new System.Windows.Forms.TextBox();
-            this.btn_auto_ram = new System.Windows.Forms.Button();
+            this.txtRAM = new System.Windows.Forms.TextBox();
+            this.btnAutoRAM = new System.Windows.Forms.Button();
             this.tab_settings = new System.Windows.Forms.TabPage();
-            this.chk_start_min = new System.Windows.Forms.CheckBox();
-            this.chk_stop_at_total = new System.Windows.Forms.CheckBox();
-            this.chk_stop_on_err = new System.Windows.Forms.CheckBox();
-            this.txt_stop_at = new System.Windows.Forms.TextBox();
-            this.chk_stop_at = new System.Windows.Forms.CheckBox();
-            this.cbo_rows = new System.Windows.Forms.ComboBox();
+            this.chkStartMin = new System.Windows.Forms.CheckBox();
+            this.chkStopAtTotal = new System.Windows.Forms.CheckBox();
+            this.chkStopOnError = new System.Windows.Forms.CheckBox();
+            this.txtStopAt = new System.Windows.Forms.TextBox();
+            this.chkStopAt = new System.Windows.Forms.CheckBox();
+            this.cboRows = new System.Windows.Forms.ComboBox();
             this.btn_center = new System.Windows.Forms.Button();
-            this.ud_win_height = new System.Windows.Forms.NumericUpDown();
-            this.ud_y_offset = new System.Windows.Forms.NumericUpDown();
+            this.udWinHeight = new System.Windows.Forms.NumericUpDown();
+            this.udYOffset = new System.Windows.Forms.NumericUpDown();
             this.lbl_win_height = new System.Windows.Forms.Label();
             this.lbl_y_offset = new System.Windows.Forms.Label();
-            this.ud_y_spacing = new System.Windows.Forms.NumericUpDown();
+            this.udYSpacing = new System.Windows.Forms.NumericUpDown();
             this.lbl_rows = new System.Windows.Forms.Label();
             this.lbl_y_spacing = new System.Windows.Forms.Label();
-            this.ud_x_spacing = new System.Windows.Forms.NumericUpDown();
+            this.udXSpacing = new System.Windows.Forms.NumericUpDown();
             this.lbl_x_spacing = new System.Windows.Forms.Label();
-            this.ud_x_offset = new System.Windows.Forms.NumericUpDown();
+            this.udXOffset = new System.Windows.Forms.NumericUpDown();
             this.lbl_x_offset = new System.Windows.Forms.Label();
             this.tab_about = new System.Windows.Forms.TabPage();
             this.txt_discord = new System.Windows.Forms.TextBox();
             this.lbl_discord = new System.Windows.Forms.Label();
             this.lbl_version = new System.Windows.Forms.Label();
-            this.tab_control.SuspendLayout();
+            this.tabControl.SuspendLayout();
             this.tab_main.SuspendLayout();
             this.tab_settings.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ud_win_height)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ud_y_offset)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ud_y_spacing)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ud_x_spacing)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ud_x_offset)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udWinHeight)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udYOffset)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udYSpacing)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udXSpacing)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udXOffset)).BeginInit();
             this.tab_about.SuspendLayout();
             this.SuspendLayout();
             // 
             // tab_control
             // 
-            this.tab_control.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
-            this.tab_control.Controls.Add(this.tab_main);
-            this.tab_control.Controls.Add(this.tab_settings);
-            this.tab_control.Controls.Add(this.tab_about);
-            this.tab_control.Location = new System.Drawing.Point(0, 0);
-            this.tab_control.Margin = new System.Windows.Forms.Padding(0);
-            this.tab_control.Name = "tab_control";
-            this.tab_control.SelectedIndex = 0;
-            this.tab_control.Size = new System.Drawing.Size(227, 382);
-            this.tab_control.TabIndex = 0;
+            this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
+            this.tabControl.Controls.Add(this.tab_main);
+            this.tabControl.Controls.Add(this.tab_settings);
+            this.tabControl.Controls.Add(this.tab_about);
+            this.tabControl.Location = new System.Drawing.Point(0, 0);
+            this.tabControl.Margin = new System.Windows.Forms.Padding(0);
+            this.tabControl.Name = "tab_control";
+            this.tabControl.SelectedIndex = 0;
+            this.tabControl.Size = new System.Drawing.Size(227, 382);
+            this.tabControl.TabIndex = 0;
             // 
             // tab_main
             // 
             this.tab_main.Controls.Add(this.btn_hide);
-            this.tab_main.Controls.Add(this.lst_coverage);
-            this.tab_main.Controls.Add(this.lbl_speed_value);
+            this.tab_main.Controls.Add(this.lstCoverage);
+            this.tab_main.Controls.Add(this.lblSpeedValue);
             this.tab_main.Controls.Add(this.lbl_speed);
-            this.tab_main.Controls.Add(this.lbl_estimated_time);
+            this.tab_main.Controls.Add(this.lblEstimatedTime);
             this.tab_main.Controls.Add(this.lbl_estimated);
-            this.tab_main.Controls.Add(this.lbl_elapsed_time);
+            this.tab_main.Controls.Add(this.lblElapsedTime);
             this.tab_main.Controls.Add(this.lbl_elapsed);
             this.tab_main.Controls.Add(this.btn_show);
-            this.tab_main.Controls.Add(this.btn_stop);
-            this.tab_main.Controls.Add(this.btn_run);
-            this.tab_main.Controls.Add(this.cbo_threads);
+            this.tab_main.Controls.Add(this.btnStop);
+            this.tab_main.Controls.Add(this.btnRun);
+            this.tab_main.Controls.Add(this.cboThreads);
             this.tab_main.Controls.Add(this.lbl_num_threads);
-            this.tab_main.Controls.Add(this.txt_ram);
-            this.tab_main.Controls.Add(this.btn_auto_ram);
+            this.tab_main.Controls.Add(this.txtRAM);
+            this.tab_main.Controls.Add(this.btnAutoRAM);
             this.tab_main.Location = new System.Drawing.Point(4, 22);
             this.tab_main.Margin = new System.Windows.Forms.Padding(0);
             this.tab_main.Name = "tab_main";
@@ -128,22 +128,22 @@
             this.btn_hide.TabIndex = 8;
             this.btn_hide.Text = "Hide";
             this.btn_hide.UseVisualStyleBackColor = true;
-            this.btn_hide.Click += new System.EventHandler(this.btn_hide_Click);
+            this.btn_hide.Click += new System.EventHandler(this.btnHide_Click);
             // 
             // lst_coverage
             // 
-            this.lst_coverage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
-            this.lst_coverage.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.lstCoverage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
+            this.lstCoverage.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.hdr_no,
             this.hdr_coverage,
             this.hdr_errors});
-            this.lst_coverage.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lst_coverage.Location = new System.Drawing.Point(4, 154);
-            this.lst_coverage.Name = "lst_coverage";
-            this.lst_coverage.Size = new System.Drawing.Size(210, 199);
-            this.lst_coverage.TabIndex = 7;
-            this.lst_coverage.UseCompatibleStateImageBehavior = false;
-            this.lst_coverage.View = System.Windows.Forms.View.Details;
+            this.lstCoverage.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lstCoverage.Location = new System.Drawing.Point(4, 154);
+            this.lstCoverage.Name = "lst_coverage";
+            this.lstCoverage.Size = new System.Drawing.Size(210, 199);
+            this.lstCoverage.TabIndex = 7;
+            this.lstCoverage.UseCompatibleStateImageBehavior = false;
+            this.lstCoverage.View = System.Windows.Forms.View.Details;
             // 
             // hdr_no
             // 
@@ -162,12 +162,12 @@
             // 
             // lbl_speed_value
             // 
-            this.lbl_speed_value.AutoSize = true;
-            this.lbl_speed_value.Location = new System.Drawing.Point(81, 137);
-            this.lbl_speed_value.Name = "lbl_speed_value";
-            this.lbl_speed_value.Size = new System.Drawing.Size(54, 13);
-            this.lbl_speed_value.TabIndex = 6;
-            this.lbl_speed_value.Text = "0.00MB/s";
+            this.lblSpeedValue.AutoSize = true;
+            this.lblSpeedValue.Location = new System.Drawing.Point(81, 137);
+            this.lblSpeedValue.Name = "lbl_speed_value";
+            this.lblSpeedValue.Size = new System.Drawing.Size(54, 13);
+            this.lblSpeedValue.TabIndex = 6;
+            this.lblSpeedValue.Text = "0.00MB/s";
             // 
             // lbl_speed
             // 
@@ -180,12 +180,12 @@
             // 
             // lbl_estimated_time
             // 
-            this.lbl_estimated_time.AutoSize = true;
-            this.lbl_estimated_time.Location = new System.Drawing.Point(81, 122);
-            this.lbl_estimated_time.Name = "lbl_estimated_time";
-            this.lbl_estimated_time.Size = new System.Drawing.Size(62, 13);
-            this.lbl_estimated_time.TabIndex = 6;
-            this.lbl_estimated_time.Text = "00h00m00s";
+            this.lblEstimatedTime.AutoSize = true;
+            this.lblEstimatedTime.Location = new System.Drawing.Point(81, 122);
+            this.lblEstimatedTime.Name = "lbl_estimated_time";
+            this.lblEstimatedTime.Size = new System.Drawing.Size(62, 13);
+            this.lblEstimatedTime.TabIndex = 6;
+            this.lblEstimatedTime.Text = "00h00m00s";
             // 
             // lbl_estimated
             // 
@@ -198,12 +198,12 @@
             // 
             // lbl_elapsed_time
             // 
-            this.lbl_elapsed_time.AutoSize = true;
-            this.lbl_elapsed_time.Location = new System.Drawing.Point(81, 107);
-            this.lbl_elapsed_time.Name = "lbl_elapsed_time";
-            this.lbl_elapsed_time.Size = new System.Drawing.Size(62, 13);
-            this.lbl_elapsed_time.TabIndex = 6;
-            this.lbl_elapsed_time.Text = "00h00m00s";
+            this.lblElapsedTime.AutoSize = true;
+            this.lblElapsedTime.Location = new System.Drawing.Point(81, 107);
+            this.lblElapsedTime.Name = "lbl_elapsed_time";
+            this.lblElapsedTime.Size = new System.Drawing.Size(62, 13);
+            this.lblElapsedTime.TabIndex = 6;
+            this.lblElapsedTime.Text = "00h00m00s";
             // 
             // lbl_elapsed
             // 
@@ -222,40 +222,40 @@
             this.btn_show.TabIndex = 5;
             this.btn_show.Text = "Show";
             this.btn_show.UseVisualStyleBackColor = true;
-            this.btn_show.Click += new System.EventHandler(this.btn_show_Click);
+            this.btn_show.Click += new System.EventHandler(this.btnShow_Click);
             // 
             // btn_stop
             // 
-            this.btn_stop.Enabled = false;
-            this.btn_stop.Location = new System.Drawing.Point(112, 53);
-            this.btn_stop.Name = "btn_stop";
-            this.btn_stop.Size = new System.Drawing.Size(85, 25);
-            this.btn_stop.TabIndex = 5;
-            this.btn_stop.Text = "Stop";
-            this.btn_stop.UseVisualStyleBackColor = true;
-            this.btn_stop.Click += new System.EventHandler(this.btn_stop_Click);
+            this.btnStop.Enabled = false;
+            this.btnStop.Location = new System.Drawing.Point(112, 53);
+            this.btnStop.Name = "btn_stop";
+            this.btnStop.Size = new System.Drawing.Size(85, 25);
+            this.btnStop.TabIndex = 5;
+            this.btnStop.Text = "Stop";
+            this.btnStop.UseVisualStyleBackColor = true;
+            this.btnStop.Click += new System.EventHandler(this.btnStop_Click);
             // 
             // btn_run
             // 
-            this.btn_run.Location = new System.Drawing.Point(21, 53);
-            this.btn_run.Name = "btn_run";
-            this.btn_run.Size = new System.Drawing.Size(85, 25);
-            this.btn_run.TabIndex = 5;
-            this.btn_run.Text = "Run";
-            this.btn_run.UseVisualStyleBackColor = true;
-            this.btn_run.Click += new System.EventHandler(this.btn_run_Click);
+            this.btnRun.Location = new System.Drawing.Point(21, 53);
+            this.btnRun.Name = "btn_run";
+            this.btnRun.Size = new System.Drawing.Size(85, 25);
+            this.btnRun.TabIndex = 5;
+            this.btnRun.Text = "Run";
+            this.btnRun.UseVisualStyleBackColor = true;
+            this.btnRun.Click += new System.EventHandler(this.btnRun_Click);
             // 
             // cbo_threads
             // 
-            this.cbo_threads.DropDownHeight = 100;
-            this.cbo_threads.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbo_threads.FormattingEnabled = true;
-            this.cbo_threads.IntegralHeight = false;
-            this.cbo_threads.Location = new System.Drawing.Point(146, 28);
-            this.cbo_threads.Name = "cbo_threads";
-            this.cbo_threads.Size = new System.Drawing.Size(50, 21);
-            this.cbo_threads.TabIndex = 4;
-            this.cbo_threads.SelectionChangeCommitted += new System.EventHandler(this.cbo_threads_SelectionChangeCommitted);
+            this.cboThreads.DropDownHeight = 100;
+            this.cboThreads.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboThreads.FormattingEnabled = true;
+            this.cboThreads.IntegralHeight = false;
+            this.cboThreads.Location = new System.Drawing.Point(146, 28);
+            this.cboThreads.Name = "cbo_threads";
+            this.cboThreads.Size = new System.Drawing.Size(50, 21);
+            this.cboThreads.TabIndex = 4;
+            this.cboThreads.SelectionChangeCommitted += new System.EventHandler(this.cboThreads_SelectionChangeCommitted);
             // 
             // lbl_num_threads
             // 
@@ -268,41 +268,41 @@
             // 
             // txt_ram
             // 
-            this.txt_ram.Location = new System.Drawing.Point(146, 3);
-            this.txt_ram.Name = "txt_ram";
-            this.txt_ram.Size = new System.Drawing.Size(50, 20);
-            this.txt_ram.TabIndex = 2;
+            this.txtRAM.Location = new System.Drawing.Point(146, 3);
+            this.txtRAM.Name = "txt_ram";
+            this.txtRAM.Size = new System.Drawing.Size(50, 20);
+            this.txtRAM.TabIndex = 2;
             // 
             // btn_auto_ram
             // 
-            this.btn_auto_ram.Location = new System.Drawing.Point(21, 3);
-            this.btn_auto_ram.Margin = new System.Windows.Forms.Padding(0);
-            this.btn_auto_ram.Name = "btn_auto_ram";
-            this.btn_auto_ram.Size = new System.Drawing.Size(100, 20);
-            this.btn_auto_ram.TabIndex = 1;
-            this.btn_auto_ram.Text = "RAM to test (MB):";
-            this.btn_auto_ram.UseVisualStyleBackColor = true;
-            this.btn_auto_ram.Click += new System.EventHandler(this.btn_auto_ram_Click);
+            this.btnAutoRAM.Location = new System.Drawing.Point(21, 3);
+            this.btnAutoRAM.Margin = new System.Windows.Forms.Padding(0);
+            this.btnAutoRAM.Name = "btn_auto_ram";
+            this.btnAutoRAM.Size = new System.Drawing.Size(100, 20);
+            this.btnAutoRAM.TabIndex = 1;
+            this.btnAutoRAM.Text = "RAM to test (MB):";
+            this.btnAutoRAM.UseVisualStyleBackColor = true;
+            this.btnAutoRAM.Click += new System.EventHandler(this.btnAutoRam_Click);
             // 
             // tab_settings
             // 
-            this.tab_settings.Controls.Add(this.chk_start_min);
-            this.tab_settings.Controls.Add(this.chk_stop_at_total);
-            this.tab_settings.Controls.Add(this.chk_stop_on_err);
-            this.tab_settings.Controls.Add(this.txt_stop_at);
-            this.tab_settings.Controls.Add(this.chk_stop_at);
-            this.tab_settings.Controls.Add(this.cbo_rows);
+            this.tab_settings.Controls.Add(this.chkStartMin);
+            this.tab_settings.Controls.Add(this.chkStopAtTotal);
+            this.tab_settings.Controls.Add(this.chkStopOnError);
+            this.tab_settings.Controls.Add(this.txtStopAt);
+            this.tab_settings.Controls.Add(this.chkStopAt);
+            this.tab_settings.Controls.Add(this.cboRows);
             this.tab_settings.Controls.Add(this.btn_center);
-            this.tab_settings.Controls.Add(this.ud_win_height);
-            this.tab_settings.Controls.Add(this.ud_y_offset);
+            this.tab_settings.Controls.Add(this.udWinHeight);
+            this.tab_settings.Controls.Add(this.udYOffset);
             this.tab_settings.Controls.Add(this.lbl_win_height);
             this.tab_settings.Controls.Add(this.lbl_y_offset);
-            this.tab_settings.Controls.Add(this.ud_y_spacing);
+            this.tab_settings.Controls.Add(this.udYSpacing);
             this.tab_settings.Controls.Add(this.lbl_rows);
             this.tab_settings.Controls.Add(this.lbl_y_spacing);
-            this.tab_settings.Controls.Add(this.ud_x_spacing);
+            this.tab_settings.Controls.Add(this.udXSpacing);
             this.tab_settings.Controls.Add(this.lbl_x_spacing);
-            this.tab_settings.Controls.Add(this.ud_x_offset);
+            this.tab_settings.Controls.Add(this.udXOffset);
             this.tab_settings.Controls.Add(this.lbl_x_offset);
             this.tab_settings.Location = new System.Drawing.Point(4, 22);
             this.tab_settings.Margin = new System.Windows.Forms.Padding(0);
@@ -314,69 +314,69 @@
             // 
             // chk_start_min
             // 
-            this.chk_start_min.AutoSize = true;
-            this.chk_start_min.Checked = true;
-            this.chk_start_min.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chk_start_min.Location = new System.Drawing.Point(21, 181);
-            this.chk_start_min.Name = "chk_start_min";
-            this.chk_start_min.Size = new System.Drawing.Size(96, 17);
-            this.chk_start_min.TabIndex = 8;
-            this.chk_start_min.Text = "Start minimised";
-            this.chk_start_min.UseVisualStyleBackColor = true;
+            this.chkStartMin.AutoSize = true;
+            this.chkStartMin.Checked = true;
+            this.chkStartMin.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkStartMin.Location = new System.Drawing.Point(21, 181);
+            this.chkStartMin.Name = "chk_start_min";
+            this.chkStartMin.Size = new System.Drawing.Size(96, 17);
+            this.chkStartMin.TabIndex = 8;
+            this.chkStartMin.Text = "Start minimised";
+            this.chkStartMin.UseVisualStyleBackColor = true;
             // 
             // chk_stop_at_total
             // 
-            this.chk_stop_at_total.AutoSize = true;
-            this.chk_stop_at_total.Enabled = false;
-            this.chk_stop_at_total.Location = new System.Drawing.Point(156, 134);
-            this.chk_stop_at_total.Name = "chk_stop_at_total";
-            this.chk_stop_at_total.Size = new System.Drawing.Size(50, 17);
-            this.chk_stop_at_total.TabIndex = 6;
-            this.chk_stop_at_total.Text = "Total";
-            this.chk_stop_at_total.UseVisualStyleBackColor = true;
+            this.chkStopAtTotal.AutoSize = true;
+            this.chkStopAtTotal.Enabled = false;
+            this.chkStopAtTotal.Location = new System.Drawing.Point(156, 134);
+            this.chkStopAtTotal.Name = "chk_stop_at_total";
+            this.chkStopAtTotal.Size = new System.Drawing.Size(50, 17);
+            this.chkStopAtTotal.TabIndex = 6;
+            this.chkStopAtTotal.Text = "Total";
+            this.chkStopAtTotal.UseVisualStyleBackColor = true;
             // 
             // chk_stop_on_err
             // 
-            this.chk_stop_on_err.AutoSize = true;
-            this.chk_stop_on_err.Checked = true;
-            this.chk_stop_on_err.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chk_stop_on_err.Location = new System.Drawing.Point(21, 157);
-            this.chk_stop_on_err.Name = "chk_stop_on_err";
-            this.chk_stop_on_err.Size = new System.Drawing.Size(87, 17);
-            this.chk_stop_on_err.TabIndex = 4;
-            this.chk_stop_on_err.Text = "Stop on error";
-            this.chk_stop_on_err.UseVisualStyleBackColor = true;
+            this.chkStopOnError.AutoSize = true;
+            this.chkStopOnError.Checked = true;
+            this.chkStopOnError.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkStopOnError.Location = new System.Drawing.Point(21, 157);
+            this.chkStopOnError.Name = "chk_stop_on_err";
+            this.chkStopOnError.Size = new System.Drawing.Size(87, 17);
+            this.chkStopOnError.TabIndex = 4;
+            this.chkStopOnError.Text = "Stop on error";
+            this.chkStopOnError.UseVisualStyleBackColor = true;
             // 
             // txt_stop_at
             // 
-            this.txt_stop_at.Enabled = false;
-            this.txt_stop_at.Location = new System.Drawing.Point(100, 131);
-            this.txt_stop_at.Name = "txt_stop_at";
-            this.txt_stop_at.Size = new System.Drawing.Size(50, 20);
-            this.txt_stop_at.TabIndex = 5;
+            this.txtStopAt.Enabled = false;
+            this.txtStopAt.Location = new System.Drawing.Point(100, 131);
+            this.txtStopAt.Name = "txt_stop_at";
+            this.txtStopAt.Size = new System.Drawing.Size(50, 20);
+            this.txtStopAt.TabIndex = 5;
             // 
             // chk_stop_at
             // 
-            this.chk_stop_at.AutoSize = true;
-            this.chk_stop_at.Location = new System.Drawing.Point(21, 134);
-            this.chk_stop_at.Name = "chk_stop_at";
-            this.chk_stop_at.Size = new System.Drawing.Size(80, 17);
-            this.chk_stop_at.TabIndex = 4;
-            this.chk_stop_at.Text = "Stop at (%):";
-            this.chk_stop_at.UseVisualStyleBackColor = true;
-            this.chk_stop_at.CheckedChanged += new System.EventHandler(this.chk_stop_at_CheckedChanged);
+            this.chkStopAt.AutoSize = true;
+            this.chkStopAt.Location = new System.Drawing.Point(21, 134);
+            this.chkStopAt.Name = "chk_stop_at";
+            this.chkStopAt.Size = new System.Drawing.Size(80, 17);
+            this.chkStopAt.TabIndex = 4;
+            this.chkStopAt.Text = "Stop at (%):";
+            this.chkStopAt.UseVisualStyleBackColor = true;
+            this.chkStopAt.CheckedChanged += new System.EventHandler(this.chkStopAt_CheckedChanged);
             // 
             // cbo_rows
             // 
-            this.cbo_rows.DropDownHeight = 100;
-            this.cbo_rows.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbo_rows.FormattingEnabled = true;
-            this.cbo_rows.IntegralHeight = false;
-            this.cbo_rows.Location = new System.Drawing.Point(106, 104);
-            this.cbo_rows.Name = "cbo_rows";
-            this.cbo_rows.Size = new System.Drawing.Size(50, 21);
-            this.cbo_rows.TabIndex = 3;
-            this.cbo_rows.SelectionChangeCommitted += new System.EventHandler(this.cbo_rows_SelectionChangeCommitted);
+            this.cboRows.DropDownHeight = 100;
+            this.cboRows.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboRows.FormattingEnabled = true;
+            this.cboRows.IntegralHeight = false;
+            this.cboRows.Location = new System.Drawing.Point(106, 104);
+            this.cboRows.Name = "cbo_rows";
+            this.cboRows.Size = new System.Drawing.Size(50, 21);
+            this.cboRows.TabIndex = 3;
+            this.cboRows.SelectionChangeCommitted += new System.EventHandler(this.cboRows_SelectionChangeCommitted);
             // 
             // btn_center
             // 
@@ -386,48 +386,48 @@
             this.btn_center.TabIndex = 2;
             this.btn_center.Text = "Center";
             this.btn_center.UseVisualStyleBackColor = true;
-            this.btn_center.Click += new System.EventHandler(this.btn_center_Click);
+            this.btn_center.Click += new System.EventHandler(this.btnCenter_Click);
             // 
             // ud_win_height
             // 
-            this.ud_win_height.Location = new System.Drawing.Point(100, 202);
-            this.ud_win_height.Maximum = new decimal(new int[] {
+            this.udWinHeight.Location = new System.Drawing.Point(100, 202);
+            this.udWinHeight.Maximum = new decimal(new int[] {
             1000,
             0,
             0,
             0});
-            this.ud_win_height.Minimum = new decimal(new int[] {
+            this.udWinHeight.Minimum = new decimal(new int[] {
             420,
             0,
             0,
             0});
-            this.ud_win_height.Name = "ud_win_height";
-            this.ud_win_height.Size = new System.Drawing.Size(50, 20);
-            this.ud_win_height.TabIndex = 1;
-            this.ud_win_height.Value = new decimal(new int[] {
+            this.udWinHeight.Name = "ud_win_height";
+            this.udWinHeight.Size = new System.Drawing.Size(50, 20);
+            this.udWinHeight.TabIndex = 1;
+            this.udWinHeight.Value = new decimal(new int[] {
             420,
             0,
             0,
             0});
-            this.ud_win_height.ValueChanged += new System.EventHandler(this.ud_win_height_ValueChanged);
+            this.udWinHeight.ValueChanged += new System.EventHandler(this.udWinHeight_ValueChanged);
             // 
             // ud_y_offset
             // 
-            this.ud_y_offset.Location = new System.Drawing.Point(66, 30);
-            this.ud_y_offset.Maximum = new decimal(new int[] {
+            this.udYOffset.Location = new System.Drawing.Point(66, 30);
+            this.udYOffset.Maximum = new decimal(new int[] {
             10000,
             0,
             0,
             0});
-            this.ud_y_offset.Minimum = new decimal(new int[] {
+            this.udYOffset.Minimum = new decimal(new int[] {
             10000,
             0,
             0,
             -2147483648});
-            this.ud_y_offset.Name = "ud_y_offset";
-            this.ud_y_offset.Size = new System.Drawing.Size(50, 20);
-            this.ud_y_offset.TabIndex = 1;
-            this.ud_y_offset.ValueChanged += new System.EventHandler(this.offset_changed);
+            this.udYOffset.Name = "ud_y_offset";
+            this.udYOffset.Size = new System.Drawing.Size(50, 20);
+            this.udYOffset.TabIndex = 1;
+            this.udYOffset.ValueChanged += new System.EventHandler(this.offset_Changed);
             // 
             // lbl_win_height
             // 
@@ -449,21 +449,21 @@
             // 
             // ud_y_spacing
             // 
-            this.ud_y_spacing.Location = new System.Drawing.Point(76, 81);
-            this.ud_y_spacing.Maximum = new decimal(new int[] {
+            this.udYSpacing.Location = new System.Drawing.Point(76, 81);
+            this.udYSpacing.Maximum = new decimal(new int[] {
             1000,
             0,
             0,
             0});
-            this.ud_y_spacing.Minimum = new decimal(new int[] {
+            this.udYSpacing.Minimum = new decimal(new int[] {
             1000,
             0,
             0,
             -2147483648});
-            this.ud_y_spacing.Name = "ud_y_spacing";
-            this.ud_y_spacing.Size = new System.Drawing.Size(50, 20);
-            this.ud_y_spacing.TabIndex = 1;
-            this.ud_y_spacing.ValueChanged += new System.EventHandler(this.offset_changed);
+            this.udYSpacing.Name = "ud_y_spacing";
+            this.udYSpacing.Size = new System.Drawing.Size(50, 20);
+            this.udYSpacing.TabIndex = 1;
+            this.udYSpacing.ValueChanged += new System.EventHandler(this.offset_Changed);
             // 
             // lbl_rows
             // 
@@ -485,21 +485,21 @@
             // 
             // ud_x_spacing
             // 
-            this.ud_x_spacing.Location = new System.Drawing.Point(76, 56);
-            this.ud_x_spacing.Maximum = new decimal(new int[] {
+            this.udXSpacing.Location = new System.Drawing.Point(76, 56);
+            this.udXSpacing.Maximum = new decimal(new int[] {
             1000,
             0,
             0,
             0});
-            this.ud_x_spacing.Minimum = new decimal(new int[] {
+            this.udXSpacing.Minimum = new decimal(new int[] {
             1000,
             0,
             0,
             -2147483648});
-            this.ud_x_spacing.Name = "ud_x_spacing";
-            this.ud_x_spacing.Size = new System.Drawing.Size(50, 20);
-            this.ud_x_spacing.TabIndex = 1;
-            this.ud_x_spacing.ValueChanged += new System.EventHandler(this.offset_changed);
+            this.udXSpacing.Name = "ud_x_spacing";
+            this.udXSpacing.Size = new System.Drawing.Size(50, 20);
+            this.udXSpacing.TabIndex = 1;
+            this.udXSpacing.ValueChanged += new System.EventHandler(this.offset_Changed);
             // 
             // lbl_x_spacing
             // 
@@ -512,21 +512,21 @@
             // 
             // ud_x_offset
             // 
-            this.ud_x_offset.Location = new System.Drawing.Point(66, 5);
-            this.ud_x_offset.Maximum = new decimal(new int[] {
+            this.udXOffset.Location = new System.Drawing.Point(66, 5);
+            this.udXOffset.Maximum = new decimal(new int[] {
             10000,
             0,
             0,
             0});
-            this.ud_x_offset.Minimum = new decimal(new int[] {
+            this.udXOffset.Minimum = new decimal(new int[] {
             10000,
             0,
             0,
             -2147483648});
-            this.ud_x_offset.Name = "ud_x_offset";
-            this.ud_x_offset.Size = new System.Drawing.Size(50, 20);
-            this.ud_x_offset.TabIndex = 1;
-            this.ud_x_offset.ValueChanged += new System.EventHandler(this.offset_changed);
+            this.udXOffset.Name = "ud_x_offset";
+            this.udXOffset.Size = new System.Drawing.Size(50, 20);
+            this.udXOffset.TabIndex = 1;
+            this.udXOffset.ValueChanged += new System.EventHandler(this.offset_Changed);
             // 
             // lbl_x_offset
             // 
@@ -582,7 +582,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(226, 381);
-            this.Controls.Add(this.tab_control);
+            this.Controls.Add(this.tabControl);
             this.MaximizeBox = false;
             this.MaximumSize = new System.Drawing.Size(242, 1000);
             this.MinimumSize = new System.Drawing.Size(242, 420);
@@ -592,16 +592,16 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.Resize += new System.EventHandler(this.Form1_Resize);
-            this.tab_control.ResumeLayout(false);
+            this.tabControl.ResumeLayout(false);
             this.tab_main.ResumeLayout(false);
             this.tab_main.PerformLayout();
             this.tab_settings.ResumeLayout(false);
             this.tab_settings.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ud_win_height)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ud_y_offset)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ud_y_spacing)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ud_x_spacing)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ud_x_offset)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udWinHeight)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udYOffset)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udYSpacing)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udXSpacing)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udXOffset)).EndInit();
             this.tab_about.ResumeLayout(false);
             this.tab_about.PerformLayout();
             this.ResumeLayout(false);
@@ -610,48 +610,48 @@
 
         #endregion
 
-        private System.Windows.Forms.TabControl tab_control;
+        private System.Windows.Forms.TabControl tabControl;
         private System.Windows.Forms.TabPage tab_main;
         private System.Windows.Forms.TabPage tab_settings;
         private System.Windows.Forms.TabPage tab_about;
-        private System.Windows.Forms.Button btn_auto_ram;
-        private System.Windows.Forms.TextBox txt_ram;
+        private System.Windows.Forms.Button btnAutoRAM;
+        private System.Windows.Forms.TextBox txtRAM;
         private System.Windows.Forms.Label lbl_num_threads;
-        private System.Windows.Forms.ComboBox cbo_threads;
+        private System.Windows.Forms.ComboBox cboThreads;
         private System.Windows.Forms.Button btn_show;
-        private System.Windows.Forms.Button btn_stop;
-        private System.Windows.Forms.Button btn_run;
-        private System.Windows.Forms.Label lbl_speed_value;
+        private System.Windows.Forms.Button btnStop;
+        private System.Windows.Forms.Button btnRun;
+        private System.Windows.Forms.Label lblSpeedValue;
         private System.Windows.Forms.Label lbl_speed;
-        private System.Windows.Forms.Label lbl_estimated_time;
+        private System.Windows.Forms.Label lblEstimatedTime;
         private System.Windows.Forms.Label lbl_estimated;
-        private System.Windows.Forms.Label lbl_elapsed_time;
+        private System.Windows.Forms.Label lblElapsedTime;
         private System.Windows.Forms.Label lbl_elapsed;
-        private System.Windows.Forms.ListView lst_coverage;
+        private System.Windows.Forms.ListView lstCoverage;
         private System.Windows.Forms.ColumnHeader hdr_no;
         private System.Windows.Forms.ColumnHeader hdr_coverage;
         private System.Windows.Forms.ColumnHeader hdr_errors;
         private System.Windows.Forms.Label lbl_x_offset;
-        private System.Windows.Forms.NumericUpDown ud_x_offset;
-        private System.Windows.Forms.NumericUpDown ud_y_offset;
+        private System.Windows.Forms.NumericUpDown udXOffset;
+        private System.Windows.Forms.NumericUpDown udYOffset;
         private System.Windows.Forms.Label lbl_y_offset;
-        private System.Windows.Forms.NumericUpDown ud_y_spacing;
+        private System.Windows.Forms.NumericUpDown udYSpacing;
         private System.Windows.Forms.Label lbl_y_spacing;
-        private System.Windows.Forms.NumericUpDown ud_x_spacing;
+        private System.Windows.Forms.NumericUpDown udXSpacing;
         private System.Windows.Forms.Label lbl_x_spacing;
         private System.Windows.Forms.Button btn_center;
-        private System.Windows.Forms.ComboBox cbo_rows;
+        private System.Windows.Forms.ComboBox cboRows;
         private System.Windows.Forms.Label lbl_rows;
-        private System.Windows.Forms.CheckBox chk_stop_at_total;
-        private System.Windows.Forms.TextBox txt_stop_at;
-        private System.Windows.Forms.CheckBox chk_stop_at;
-        private System.Windows.Forms.CheckBox chk_stop_on_err;
+        private System.Windows.Forms.CheckBox chkStopAtTotal;
+        private System.Windows.Forms.TextBox txtStopAt;
+        private System.Windows.Forms.CheckBox chkStopAt;
+        private System.Windows.Forms.CheckBox chkStopOnError;
         private System.Windows.Forms.TextBox txt_discord;
         private System.Windows.Forms.Label lbl_discord;
         private System.Windows.Forms.Label lbl_version;
-        private System.Windows.Forms.CheckBox chk_start_min;
+        private System.Windows.Forms.CheckBox chkStartMin;
         private System.Windows.Forms.Button btn_hide;
-        private System.Windows.Forms.NumericUpDown ud_win_height;
+        private System.Windows.Forms.NumericUpDown udWinHeight;
         private System.Windows.Forms.Label lbl_win_height;
     }
 }
