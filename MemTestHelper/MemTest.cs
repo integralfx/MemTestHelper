@@ -195,7 +195,6 @@ namespace MemTestHelper
                         break;
                 }
 
-                // click Ok
                 WinAPI.ControlClick(hwnd, strBtn);
                 return true;
             }

@@ -127,7 +127,6 @@ namespace MemTestHelper
 
             UpdateFormHeight();
             UpdateLstCoverageItems();
-            cboRows.Items.Clear();
             InitCboRows();
             CentreXYOffsets();
         }
@@ -145,7 +144,7 @@ namespace MemTestHelper
             {
                 // minimise MemTest instances
                 case FormWindowState.Minimized:
-                    RunInBackground(new MethodInvoker(delegate
+                    RunInBackground(() =>
                     {
                         for (var i = 0; i < threads; i++)
                         {
@@ -155,12 +154,12 @@ namespace MemTestHelper
                                 Thread.Sleep(10);
                             }
                         }
-                    }));
+                    });
                     break;
 
                 // restore previous state of MemTest instances
                 case FormWindowState.Normal:
-                    RunInBackground(new MethodInvoker(delegate
+                    RunInBackground(() =>
                     {
                         /*
                          * isMinimised is true when user clicked the hide button.
@@ -177,15 +176,15 @@ namespace MemTestHelper
                                 }
                             }
 
-                            // user may have changed offsets while minimised
+                            // User may have changed offsets while minimised.
                             LayOutMemTests();
 
-                            // hack to bring form to top
+                            // Hack to bring form to top.
                             TopMost = true;
                             Thread.Sleep(10);
                             TopMost = false;
                         }
-                    }));
+                    });
                     break;
             }
 
@@ -221,7 +220,7 @@ namespace MemTestHelper
             chkStartMin.Enabled = false;
 
             // Run in background as StartMemTests() can block.
-            RunInBackground(new MethodInvoker(delegate
+            RunInBackground(() =>
             {
                 StartMemTests();
 
@@ -232,7 +231,7 @@ namespace MemTestHelper
                 timer.Start();
 
                 Activate();
-            }));
+            });
         }
 
         private void btnStop_Click(object sender, EventArgs e)
@@ -271,7 +270,7 @@ namespace MemTestHelper
         {
             // Run in background as Thread.Sleep can lockup the GUI.
             var threads = (int)cboThreads.SelectedItem;
-            RunInBackground(new MethodInvoker(delegate
+            RunInBackground(() =>
             {
                 for (var i = 0; i < threads; i++)
                 {
@@ -290,13 +289,13 @@ namespace MemTestHelper
                 LayOutMemTests();
 
                 Activate();
-            }));
+            });
         }
 
         private void btnHide_Click(object sender, EventArgs e)
         {
             var threads = (int)cboThreads.SelectedItem;
-            RunInBackground(new MethodInvoker(delegate
+            RunInBackground(() =>
             {
                 for (var i = 0; i < threads; i++)
                 {
@@ -309,12 +308,12 @@ namespace MemTestHelper
                 }
 
                 isMinimised = true;
-            }));
+            });
         }
 
         private void offset_Changed(object sender, EventArgs e)
         {
-            RunInBackground(new MethodInvoker(delegate { LayOutMemTests(); }));
+            RunInBackground(() => { LayOutMemTests(); });
         }
 
         private void btnCenter_Click(object sender, EventArgs e)
@@ -356,6 +355,47 @@ namespace MemTestHelper
         }
 
         // Helper Functions //
+
+        private void InitCboThreads()
+        {
+            cboThreads.Items.Clear();
+
+            for (var i = 0; i < MAX_THREADS; i++)
+                cboThreads.Items.Add(i + 1);
+
+            cboThreads.SelectedItem = NUM_THREADS;
+        }
+
+        private void InitCboRows()
+        {
+            cboRows.Items.Clear();
+
+            var threads = (int)cboThreads.SelectedItem;
+
+            for (var i = 1; i <= threads; i++)
+            {
+                if (threads % i == 0)
+                    cboRows.Items.Add(i);
+            }
+
+            cboRows.SelectedItem = threads % 2 == 0 ? 2 : 1;
+        }
+
+        private void InitLstCoverage()
+        {
+            // Stop flickering: https://stackoverflow.com/a/15268338
+            var method = typeof(ListView).GetMethod("SetStyle", BindingFlags.Instance | BindingFlags.NonPublic);
+            method.Invoke(lstCoverage, new object[] { ControlStyles.OptimizedDoubleBuffer, true });
+
+            for (var i = 0; i <= (int)cboThreads.SelectedItem; i++)
+            {
+                string[] row = { i.ToString(), "-", "-" };
+                // first row is total
+                if (i == 0) row[0] = "T";
+
+                lstCoverage.Items.Add(new ListViewItem(row));
+            }
+        }
 
         // Returns free RAM in MB.
         private ulong GetFreeRAM()
@@ -465,6 +505,7 @@ namespace MemTestHelper
             }
             catch(FileNotFoundException)
             {
+                Console.WriteLine(CFG_FILENAME + " not found");
                 return false;
             }
 
@@ -501,6 +542,7 @@ namespace MemTestHelper
             }
             catch (Exception)
             {
+                Console.WriteLine("Failed to save " + CFG_FILENAME);
                 return false;
             }
             finally
@@ -607,22 +649,6 @@ namespace MemTestHelper
             return true;
         }
 
-        private void InitLstCoverage()
-        {
-            // Stop flickering: https://stackoverflow.com/a/15268338
-            var method = typeof(ListView).GetMethod("SetStyle", BindingFlags.Instance | BindingFlags.NonPublic);
-            method.Invoke(lstCoverage, new object[] { ControlStyles.OptimizedDoubleBuffer, true });
-
-            for (var i = 0; i <= (int)cboThreads.SelectedItem; i++)
-            {
-                string[] row = { i.ToString(), "-", "-" };
-                // first row is total
-                if (i == 0) row[0] = "T";
-
-                lstCoverage.Items.Add(new ListViewItem(row));
-            }
-        }
-
         private void UpdateLstCoverageItems()
         {
             var threads = (int)cboThreads.SelectedItem;
@@ -640,27 +666,6 @@ namespace MemTestHelper
                     lstCoverage.Items.Add(new ListViewItem(row));
                 }
             }
-        }
-
-        private void InitCboThreads()
-        {
-            for (var i = 0; i < MAX_THREADS; i++)
-                cboThreads.Items.Add(i + 1);
-
-            cboThreads.SelectedItem = NUM_THREADS;
-        }
-
-        private void InitCboRows()
-        {
-            var threads = (int)cboThreads.SelectedItem;
-
-            for (var i = 1; i <= threads; i++)
-            {
-                if (threads % i == 0)
-                    cboRows.Items.Add(i);
-            }
-
-            cboRows.SelectedItem = threads % 2 == 0 ? 2 : 1;
         }
 
         private void CentreXYOffsets()
@@ -837,8 +842,8 @@ namespace MemTestHelper
         private void ClickBtnStop()
         {
             var currTab = tabControl.SelectedTab;
-            if (currTab != tab_main)
-                tabControl.SelectedTab = tab_main;
+            if (currTab != tabMain)
+                tabControl.SelectedTab = tabMain;
 
             btnStop.PerformClick();
             tabControl.SelectedTab = currTab;
@@ -856,7 +861,7 @@ namespace MemTestHelper
 
         private bool IsAllFinished()
         {
-            for (int i = 0; i < (int)cboThreads.SelectedItem; i++)
+            for (var i = 0; i < (int)cboThreads.SelectedItem; i++)
             {
                 if (!memtests[i].Finished)
                     return false;
@@ -865,10 +870,10 @@ namespace MemTestHelper
             return true;
         }
 
-        private void RunInBackground(Delegate method)
+        private void RunInBackground(Action method)
         {
             BackgroundWorker bw = new BackgroundWorker();
-            bw.DoWork += new DoWorkEventHandler(delegate (object s, DoWorkEventArgs args)
+            bw.DoWork += new DoWorkEventHandler((sender, e) =>
             {
                 Invoke(method);
             });

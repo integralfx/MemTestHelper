@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.tabControl = new System.Windows.Forms.TabControl();
-            this.tab_main = new System.Windows.Forms.TabPage();
+            this.tabMain = new System.Windows.Forms.TabPage();
             this.btn_hide = new System.Windows.Forms.Button();
             this.lstCoverage = new System.Windows.Forms.ListView();
             this.hdr_no = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -72,7 +72,7 @@
             this.lbl_discord = new System.Windows.Forms.Label();
             this.lbl_version = new System.Windows.Forms.Label();
             this.tabControl.SuspendLayout();
-            this.tab_main.SuspendLayout();
+            this.tabMain.SuspendLayout();
             this.tab_settings.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.udWinHeight)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.udYOffset)).BeginInit();
@@ -85,7 +85,7 @@
             // tabControl
             // 
             this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
-            this.tabControl.Controls.Add(this.tab_main);
+            this.tabControl.Controls.Add(this.tabMain);
             this.tabControl.Controls.Add(this.tab_settings);
             this.tabControl.Controls.Add(this.tab_about);
             this.tabControl.Location = new System.Drawing.Point(0, 0);
@@ -97,28 +97,28 @@
             // 
             // tab_main
             // 
-            this.tab_main.Controls.Add(this.btn_hide);
-            this.tab_main.Controls.Add(this.lstCoverage);
-            this.tab_main.Controls.Add(this.lblSpeedValue);
-            this.tab_main.Controls.Add(this.lbl_speed);
-            this.tab_main.Controls.Add(this.lblEstimatedTime);
-            this.tab_main.Controls.Add(this.lbl_estimated);
-            this.tab_main.Controls.Add(this.lblElapsedTime);
-            this.tab_main.Controls.Add(this.lbl_elapsed);
-            this.tab_main.Controls.Add(this.btn_show);
-            this.tab_main.Controls.Add(this.btnStop);
-            this.tab_main.Controls.Add(this.btnRun);
-            this.tab_main.Controls.Add(this.cboThreads);
-            this.tab_main.Controls.Add(this.lbl_num_threads);
-            this.tab_main.Controls.Add(this.txtRAM);
-            this.tab_main.Controls.Add(this.btnAutoRAM);
-            this.tab_main.Location = new System.Drawing.Point(4, 22);
-            this.tab_main.Margin = new System.Windows.Forms.Padding(0);
-            this.tab_main.Name = "tab_main";
-            this.tab_main.Size = new System.Drawing.Size(219, 356);
-            this.tab_main.TabIndex = 0;
-            this.tab_main.Text = "Main";
-            this.tab_main.UseVisualStyleBackColor = true;
+            this.tabMain.Controls.Add(this.btn_hide);
+            this.tabMain.Controls.Add(this.lstCoverage);
+            this.tabMain.Controls.Add(this.lblSpeedValue);
+            this.tabMain.Controls.Add(this.lbl_speed);
+            this.tabMain.Controls.Add(this.lblEstimatedTime);
+            this.tabMain.Controls.Add(this.lbl_estimated);
+            this.tabMain.Controls.Add(this.lblElapsedTime);
+            this.tabMain.Controls.Add(this.lbl_elapsed);
+            this.tabMain.Controls.Add(this.btn_show);
+            this.tabMain.Controls.Add(this.btnStop);
+            this.tabMain.Controls.Add(this.btnRun);
+            this.tabMain.Controls.Add(this.cboThreads);
+            this.tabMain.Controls.Add(this.lbl_num_threads);
+            this.tabMain.Controls.Add(this.txtRAM);
+            this.tabMain.Controls.Add(this.btnAutoRAM);
+            this.tabMain.Location = new System.Drawing.Point(4, 22);
+            this.tabMain.Margin = new System.Windows.Forms.Padding(0);
+            this.tabMain.Name = "tab_main";
+            this.tabMain.Size = new System.Drawing.Size(219, 356);
+            this.tabMain.TabIndex = 0;
+            this.tabMain.Text = "Main";
+            this.tabMain.UseVisualStyleBackColor = true;
             // 
             // btn_hide
             // 
@@ -593,8 +593,8 @@
             this.Load += new System.EventHandler(this.Form1_Load);
             this.Resize += new System.EventHandler(this.Form1_Resize);
             this.tabControl.ResumeLayout(false);
-            this.tab_main.ResumeLayout(false);
-            this.tab_main.PerformLayout();
+            this.tabMain.ResumeLayout(false);
+            this.tabMain.PerformLayout();
             this.tab_settings.ResumeLayout(false);
             this.tab_settings.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.udWinHeight)).EndInit();
@@ -611,7 +611,7 @@
         #endregion
 
         private System.Windows.Forms.TabControl tabControl;
-        private System.Windows.Forms.TabPage tab_main;
+        private System.Windows.Forms.TabPage tabMain;
         private System.Windows.Forms.TabPage tab_settings;
         private System.Windows.Forms.TabPage tab_about;
         private System.Windows.Forms.Button btnAutoRAM;
