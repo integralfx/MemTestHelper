@@ -68,12 +68,12 @@ namespace MemTestHelper
             coverageWorker.RunWorkerCompleted += 
             new RunWorkerCompletedEventHandler((sender, e) =>
             {
-                // wait for all MemTests to stop completely
+                // Wait for all MemTests to stop completely.
                 while (IsAnyMemTestStopping())
                     Thread.Sleep(100);
 
                 // TODO: figure out why total coverage is sometimes
-                // reporting as 0.0 after stopping
+                // reporting 0.0 after stopping
                 UpdateCoverageInfo(false);
             });
 
@@ -96,11 +96,6 @@ namespace MemTestHelper
                         var memtest = memtests[i - 1];
                         var info = memtest.GetCoverageInfo();
                         if (info == null) return;
-
-                        // For some reason, this sometimes won't close.
-                        memtest.ClickNagMessageBox("Message for first-time users", 1);
-
-                        memtest.ClickNagMessageBox("Memory error detected!", 1);
 
                         total_coverage += info.Item1;
                     }
@@ -217,7 +212,6 @@ namespace MemTestHelper
             btnAutoRAM.Enabled = false;
             txtRAM.Enabled = false;
             cboThreads.Enabled = false;
-            //cbo_rows.Enabled = false;
             btnRun.Enabled = false;
             btnStop.Enabled = true;
             chkStopAt.Enabled = false;
@@ -226,13 +220,14 @@ namespace MemTestHelper
             chkStopOnError.Enabled = false;
             chkStartMin.Enabled = false;
 
-            // run in background as start_memtests can block
+            // Run in background as StartMemTests() can block.
             RunInBackground(new MethodInvoker(delegate
             {
                 StartMemTests();
 
                 if (!coverageWorker.IsBusy)
                     coverageWorker.RunWorkerAsync();
+
                 startTime = DateTime.Now;
                 timer.Start();
 
@@ -759,8 +754,9 @@ namespace MemTestHelper
                 for (var i = 1; i <= threads; i++)
                 {
                     var memtest = memtests[i - 1];
+                    if (memtest == null) return;
                     var info = memtest.GetCoverageInfo();
-                    if (info == null) continue;
+                    if (info == null) return;
                     double coverage = info.Item1;
                     int errors = info.Item2;
 
@@ -769,7 +765,7 @@ namespace MemTestHelper
                         
                     if (shouldCheck)
                     {
-                        // check coverage %
+                        // Check coverage %.
                         if (chkStopAt.Checked && !chkStopAtTotal.Checked)
                         {
                             var stopAt = Convert.ToInt32(txtStopAt.Text);
@@ -780,14 +776,17 @@ namespace MemTestHelper
                             }
                         }
 
-                        // check error count
+                        // Check error count.
                         if (chkStopOnError.Checked)
                         {
                             if (errors > 0)
                             {
-                                lstCoverage.Items[i].SubItems[1].ForeColor = Color.Red;
+                                memtest.ClickNagMessageBox("MemTest Error", MemTest.MsgBoxButton.NO);
+
+                                lstCoverage.Items[i].ForeColor = Color.Red;
                                 ClickBtnStop();
                             }
+                            else lstCoverage.Items[i].ForeColor = SystemColors.WindowText;
                         }
                     }
 

@@ -10,7 +10,8 @@ namespace MemTestHelper
         public const int WM_SETTEXT = 0xC, WM_LBUTTONDOWN = 0x201, WM_LBUTTONUP = 0x202,
                          SW_SHOW = 5, SW_RESTORE = 9, SW_MINIMIZE = 6, BM_CLICK = 0xF5;
 
-        // Emulate AutoIT Control functions
+        // Emulate AutoIT Control functions //
+
         public static bool ControlClick(IntPtr hwndParent, string className)
         {
             IntPtr hwnd = FindWindow(hwndParent, className);
@@ -46,7 +47,7 @@ namespace MemTestHelper
                     int len = GetWindowTextLength(curr_hwnd);
                     if (len != window_title.Length) return true;
                     StringBuilder sb = new StringBuilder(len + 1);
-                    GetWindowText(curr_hwnd, sb, len + 1);
+                    GetWindowText(curr_hwnd, sb, sb.Capacity);
 
                     uint proc_id;
                     GetWindowThreadProcessId(curr_hwnd, out proc_id);
@@ -59,6 +60,7 @@ namespace MemTestHelper
                         {
                             if (sb.ToString() == window_title)
                                 hwnd = curr_hwnd;
+                            else return true;
                         }
                         
                         return false;
@@ -70,7 +72,7 @@ namespace MemTestHelper
             return hwnd;
         }
 
-        // Imports
+        // Imports //
 
         [DllImport("user32.dll", SetLastError = true)]
         public static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
@@ -125,7 +127,7 @@ namespace MemTestHelper
 
         /*
          * className should be <classname><n>
-         * tries to split class_name as above
+         * tries to split className as above
          * returns (<classname>, <n>) if possible
          * otherwise, returns null
          */

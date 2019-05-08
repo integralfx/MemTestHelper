@@ -15,12 +15,18 @@ namespace MemTestHelper
                              MEMTEST_EDT_RAM = "Edit1",
                              MEMTEST_STATIC_COVERAGE = "Static1",
                              // If you find this free version useful...
-                             MEMTEST_STATIC_FREE_VER = "Static2";
+                             MEMTEST_STATIC_FREE_VER = "Static2",
+                             MEMTEST_MSGBOX_OK = "Button1",
+                             MEMTEST_MSGBOX_YES = "Button1",
+                             MEMTEST_MSGBOX_NO = "Button2";
+
         private const int MEMTEST_WIDTH = 217,
                           MEMTEST_HEIGHT = 247;
 
         private Process process = null;
         private bool hasStarted = false, isFinished = false;
+
+        public enum MsgBoxButton { OK, YES, NO }
 
         public bool Started
         {
@@ -83,7 +89,7 @@ namespace MemTestHelper
             hasStarted = true;
             isFinished = false;
 
-            // wait for process to start
+            // Wait for process to start.
             while (string.IsNullOrEmpty(process.MainWindowTitle))
             {
                 ClickNagMessageBox("Welcome, New MemTest User");
@@ -156,7 +162,7 @@ namespace MemTestHelper
             return Tuple.Create(coverage, errors);
         }
 
-        public bool ClickNagMessageBox(String messageBoxCaption, int maxAttempts = 100)
+        public bool ClickNagMessageBox(string messageBoxCaption, MsgBoxButton button = MsgBoxButton.OK, int maxAttempts = 10)
         {
             if (!hasStarted || isFinished || process == null || process.HasExited)
                 return false;
@@ -167,13 +173,30 @@ namespace MemTestHelper
             {
                 hwnd = WinAPI.GetHWNDFromPID(process.Id, messageBoxCaption);
                 attempts++;
+                Thread.Sleep(10);
             } while (hwnd == IntPtr.Zero && attempts < maxAttempts);
 
             if (hwnd == IntPtr.Zero) return false;
             else
             {
+                string strBtn = "";
+                switch (button)
+                {
+                    case MsgBoxButton.OK:
+                        strBtn = MEMTEST_MSGBOX_OK;
+                        break;
+
+                    case MsgBoxButton.YES:
+                        strBtn = MEMTEST_MSGBOX_YES;
+                        break;
+
+                    case MsgBoxButton.NO:
+                        strBtn = MEMTEST_MSGBOX_NO;
+                        break;
+                }
+
                 // click Ok
-                WinAPI.ControlClick(hwnd, "Button1");
+                WinAPI.ControlClick(hwnd, strBtn);
                 return true;
             }
         }

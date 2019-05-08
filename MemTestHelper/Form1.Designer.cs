@@ -82,7 +82,7 @@
             this.tab_about.SuspendLayout();
             this.SuspendLayout();
             // 
-            // tab_control
+            // tabControl
             // 
             this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
             this.tabControl.Controls.Add(this.tab_main);
@@ -90,7 +90,7 @@
             this.tabControl.Controls.Add(this.tab_about);
             this.tabControl.Location = new System.Drawing.Point(0, 0);
             this.tabControl.Margin = new System.Windows.Forms.Padding(0);
-            this.tabControl.Name = "tab_control";
+            this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
             this.tabControl.Size = new System.Drawing.Size(227, 382);
             this.tabControl.TabIndex = 0;
@@ -130,7 +130,7 @@
             this.btn_hide.UseVisualStyleBackColor = true;
             this.btn_hide.Click += new System.EventHandler(this.btnHide_Click);
             // 
-            // lst_coverage
+            // lstCoverage
             // 
             this.lstCoverage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
             this.lstCoverage.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
@@ -139,7 +139,7 @@
             this.hdr_errors});
             this.lstCoverage.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstCoverage.Location = new System.Drawing.Point(4, 154);
-            this.lstCoverage.Name = "lst_coverage";
+            this.lstCoverage.Name = "lstCoverage";
             this.lstCoverage.Size = new System.Drawing.Size(210, 199);
             this.lstCoverage.TabIndex = 7;
             this.lstCoverage.UseCompatibleStateImageBehavior = false;
@@ -160,11 +160,11 @@
             this.hdr_errors.Text = "Errors";
             this.hdr_errors.Width = 70;
             // 
-            // lbl_speed_value
+            // lblSpeedValue
             // 
             this.lblSpeedValue.AutoSize = true;
             this.lblSpeedValue.Location = new System.Drawing.Point(81, 137);
-            this.lblSpeedValue.Name = "lbl_speed_value";
+            this.lblSpeedValue.Name = "lblSpeedValue";
             this.lblSpeedValue.Size = new System.Drawing.Size(54, 13);
             this.lblSpeedValue.TabIndex = 6;
             this.lblSpeedValue.Text = "0.00MB/s";
@@ -178,11 +178,11 @@
             this.lbl_speed.TabIndex = 6;
             this.lbl_speed.Text = "Speed:";
             // 
-            // lbl_estimated_time
+            // lblEstimatedTime
             // 
             this.lblEstimatedTime.AutoSize = true;
             this.lblEstimatedTime.Location = new System.Drawing.Point(81, 122);
-            this.lblEstimatedTime.Name = "lbl_estimated_time";
+            this.lblEstimatedTime.Name = "lblEstimatedTime";
             this.lblEstimatedTime.Size = new System.Drawing.Size(62, 13);
             this.lblEstimatedTime.TabIndex = 6;
             this.lblEstimatedTime.Text = "00h00m00s";
@@ -196,11 +196,11 @@
             this.lbl_estimated.TabIndex = 6;
             this.lbl_estimated.Text = "Estimated:";
             // 
-            // lbl_elapsed_time
+            // lblElapsedTime
             // 
             this.lblElapsedTime.AutoSize = true;
             this.lblElapsedTime.Location = new System.Drawing.Point(81, 107);
-            this.lblElapsedTime.Name = "lbl_elapsed_time";
+            this.lblElapsedTime.Name = "lblElapsedTime";
             this.lblElapsedTime.Size = new System.Drawing.Size(62, 13);
             this.lblElapsedTime.TabIndex = 6;
             this.lblElapsedTime.Text = "00h00m00s";
@@ -224,35 +224,35 @@
             this.btn_show.UseVisualStyleBackColor = true;
             this.btn_show.Click += new System.EventHandler(this.btnShow_Click);
             // 
-            // btn_stop
+            // btnStop
             // 
             this.btnStop.Enabled = false;
             this.btnStop.Location = new System.Drawing.Point(112, 53);
-            this.btnStop.Name = "btn_stop";
+            this.btnStop.Name = "btnStop";
             this.btnStop.Size = new System.Drawing.Size(85, 25);
             this.btnStop.TabIndex = 5;
             this.btnStop.Text = "Stop";
             this.btnStop.UseVisualStyleBackColor = true;
             this.btnStop.Click += new System.EventHandler(this.btnStop_Click);
             // 
-            // btn_run
+            // btnRun
             // 
             this.btnRun.Location = new System.Drawing.Point(21, 53);
-            this.btnRun.Name = "btn_run";
+            this.btnRun.Name = "btnRun";
             this.btnRun.Size = new System.Drawing.Size(85, 25);
             this.btnRun.TabIndex = 5;
             this.btnRun.Text = "Run";
             this.btnRun.UseVisualStyleBackColor = true;
             this.btnRun.Click += new System.EventHandler(this.btnRun_Click);
             // 
-            // cbo_threads
+            // cboThreads
             // 
             this.cboThreads.DropDownHeight = 100;
             this.cboThreads.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboThreads.FormattingEnabled = true;
             this.cboThreads.IntegralHeight = false;
             this.cboThreads.Location = new System.Drawing.Point(146, 28);
-            this.cboThreads.Name = "cbo_threads";
+            this.cboThreads.Name = "cboThreads";
             this.cboThreads.Size = new System.Drawing.Size(50, 21);
             this.cboThreads.TabIndex = 4;
             this.cboThreads.SelectionChangeCommitted += new System.EventHandler(this.cboThreads_SelectionChangeCommitted);
@@ -266,18 +266,18 @@
             this.lbl_num_threads.TabIndex = 3;
             this.lbl_num_threads.Text = "Number of threads:";
             // 
-            // txt_ram
+            // txtRAM
             // 
             this.txtRAM.Location = new System.Drawing.Point(146, 3);
-            this.txtRAM.Name = "txt_ram";
+            this.txtRAM.Name = "txtRAM";
             this.txtRAM.Size = new System.Drawing.Size(50, 20);
             this.txtRAM.TabIndex = 2;
             // 
-            // btn_auto_ram
+            // btnAutoRAM
             // 
             this.btnAutoRAM.Location = new System.Drawing.Point(21, 3);
             this.btnAutoRAM.Margin = new System.Windows.Forms.Padding(0);
-            this.btnAutoRAM.Name = "btn_auto_ram";
+            this.btnAutoRAM.Name = "btnAutoRAM";
             this.btnAutoRAM.Size = new System.Drawing.Size(100, 20);
             this.btnAutoRAM.TabIndex = 1;
             this.btnAutoRAM.Text = "RAM to test (MB):";
@@ -312,68 +312,68 @@
             this.tab_settings.Text = "Settings";
             this.tab_settings.UseVisualStyleBackColor = true;
             // 
-            // chk_start_min
+            // chkStartMin
             // 
             this.chkStartMin.AutoSize = true;
             this.chkStartMin.Checked = true;
             this.chkStartMin.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkStartMin.Location = new System.Drawing.Point(21, 181);
-            this.chkStartMin.Name = "chk_start_min";
+            this.chkStartMin.Name = "chkStartMin";
             this.chkStartMin.Size = new System.Drawing.Size(96, 17);
             this.chkStartMin.TabIndex = 8;
             this.chkStartMin.Text = "Start minimised";
             this.chkStartMin.UseVisualStyleBackColor = true;
             // 
-            // chk_stop_at_total
+            // chkStopAtTotal
             // 
             this.chkStopAtTotal.AutoSize = true;
             this.chkStopAtTotal.Enabled = false;
             this.chkStopAtTotal.Location = new System.Drawing.Point(156, 134);
-            this.chkStopAtTotal.Name = "chk_stop_at_total";
+            this.chkStopAtTotal.Name = "chkStopAtTotal";
             this.chkStopAtTotal.Size = new System.Drawing.Size(50, 17);
             this.chkStopAtTotal.TabIndex = 6;
             this.chkStopAtTotal.Text = "Total";
             this.chkStopAtTotal.UseVisualStyleBackColor = true;
             // 
-            // chk_stop_on_err
+            // chkStopOnError
             // 
             this.chkStopOnError.AutoSize = true;
             this.chkStopOnError.Checked = true;
             this.chkStopOnError.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkStopOnError.Location = new System.Drawing.Point(21, 157);
-            this.chkStopOnError.Name = "chk_stop_on_err";
+            this.chkStopOnError.Name = "chkStopOnError";
             this.chkStopOnError.Size = new System.Drawing.Size(87, 17);
             this.chkStopOnError.TabIndex = 4;
             this.chkStopOnError.Text = "Stop on error";
             this.chkStopOnError.UseVisualStyleBackColor = true;
             // 
-            // txt_stop_at
+            // txtStopAt
             // 
             this.txtStopAt.Enabled = false;
             this.txtStopAt.Location = new System.Drawing.Point(100, 131);
-            this.txtStopAt.Name = "txt_stop_at";
+            this.txtStopAt.Name = "txtStopAt";
             this.txtStopAt.Size = new System.Drawing.Size(50, 20);
             this.txtStopAt.TabIndex = 5;
             // 
-            // chk_stop_at
+            // chkStopAt
             // 
             this.chkStopAt.AutoSize = true;
             this.chkStopAt.Location = new System.Drawing.Point(21, 134);
-            this.chkStopAt.Name = "chk_stop_at";
+            this.chkStopAt.Name = "chkStopAt";
             this.chkStopAt.Size = new System.Drawing.Size(80, 17);
             this.chkStopAt.TabIndex = 4;
             this.chkStopAt.Text = "Stop at (%):";
             this.chkStopAt.UseVisualStyleBackColor = true;
             this.chkStopAt.CheckedChanged += new System.EventHandler(this.chkStopAt_CheckedChanged);
             // 
-            // cbo_rows
+            // cboRows
             // 
             this.cboRows.DropDownHeight = 100;
             this.cboRows.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboRows.FormattingEnabled = true;
             this.cboRows.IntegralHeight = false;
             this.cboRows.Location = new System.Drawing.Point(106, 104);
-            this.cboRows.Name = "cbo_rows";
+            this.cboRows.Name = "cboRows";
             this.cboRows.Size = new System.Drawing.Size(50, 21);
             this.cboRows.TabIndex = 3;
             this.cboRows.SelectionChangeCommitted += new System.EventHandler(this.cboRows_SelectionChangeCommitted);
@@ -388,7 +388,7 @@
             this.btn_center.UseVisualStyleBackColor = true;
             this.btn_center.Click += new System.EventHandler(this.btnCenter_Click);
             // 
-            // ud_win_height
+            // udWinHeight
             // 
             this.udWinHeight.Location = new System.Drawing.Point(100, 202);
             this.udWinHeight.Maximum = new decimal(new int[] {
@@ -401,7 +401,7 @@
             0,
             0,
             0});
-            this.udWinHeight.Name = "ud_win_height";
+            this.udWinHeight.Name = "udWinHeight";
             this.udWinHeight.Size = new System.Drawing.Size(50, 20);
             this.udWinHeight.TabIndex = 1;
             this.udWinHeight.Value = new decimal(new int[] {
@@ -411,7 +411,7 @@
             0});
             this.udWinHeight.ValueChanged += new System.EventHandler(this.udWinHeight_ValueChanged);
             // 
-            // ud_y_offset
+            // udYOffset
             // 
             this.udYOffset.Location = new System.Drawing.Point(66, 30);
             this.udYOffset.Maximum = new decimal(new int[] {
@@ -424,7 +424,7 @@
             0,
             0,
             -2147483648});
-            this.udYOffset.Name = "ud_y_offset";
+            this.udYOffset.Name = "udYOffset";
             this.udYOffset.Size = new System.Drawing.Size(50, 20);
             this.udYOffset.TabIndex = 1;
             this.udYOffset.ValueChanged += new System.EventHandler(this.offset_Changed);
@@ -447,7 +447,7 @@
             this.lbl_y_offset.TabIndex = 0;
             this.lbl_y_offset.Text = "Y offset:";
             // 
-            // ud_y_spacing
+            // udYSpacing
             // 
             this.udYSpacing.Location = new System.Drawing.Point(76, 81);
             this.udYSpacing.Maximum = new decimal(new int[] {
@@ -460,7 +460,7 @@
             0,
             0,
             -2147483648});
-            this.udYSpacing.Name = "ud_y_spacing";
+            this.udYSpacing.Name = "udYSpacing";
             this.udYSpacing.Size = new System.Drawing.Size(50, 20);
             this.udYSpacing.TabIndex = 1;
             this.udYSpacing.ValueChanged += new System.EventHandler(this.offset_Changed);
@@ -483,7 +483,7 @@
             this.lbl_y_spacing.TabIndex = 0;
             this.lbl_y_spacing.Text = "Y spacing:";
             // 
-            // ud_x_spacing
+            // udXSpacing
             // 
             this.udXSpacing.Location = new System.Drawing.Point(76, 56);
             this.udXSpacing.Maximum = new decimal(new int[] {
@@ -496,7 +496,7 @@
             0,
             0,
             -2147483648});
-            this.udXSpacing.Name = "ud_x_spacing";
+            this.udXSpacing.Name = "udXSpacing";
             this.udXSpacing.Size = new System.Drawing.Size(50, 20);
             this.udXSpacing.TabIndex = 1;
             this.udXSpacing.ValueChanged += new System.EventHandler(this.offset_Changed);
@@ -510,7 +510,7 @@
             this.lbl_x_spacing.TabIndex = 0;
             this.lbl_x_spacing.Text = "X spacing:";
             // 
-            // ud_x_offset
+            // udXOffset
             // 
             this.udXOffset.Location = new System.Drawing.Point(66, 5);
             this.udXOffset.Maximum = new decimal(new int[] {
@@ -523,7 +523,7 @@
             0,
             0,
             -2147483648});
-            this.udXOffset.Name = "ud_x_offset";
+            this.udXOffset.Name = "udXOffset";
             this.udXOffset.Size = new System.Drawing.Size(50, 20);
             this.udXOffset.TabIndex = 1;
             this.udXOffset.ValueChanged += new System.EventHandler(this.offset_Changed);
@@ -552,7 +552,7 @@
             // 
             // txt_discord
             // 
-            this.txt_discord.Location = new System.Drawing.Point(100, 145);
+            this.txt_discord.Location = new System.Drawing.Point(92, 145);
             this.txt_discord.Name = "txt_discord";
             this.txt_discord.ReadOnly = true;
             this.txt_discord.Size = new System.Drawing.Size(80, 20);
@@ -562,7 +562,7 @@
             // lbl_discord
             // 
             this.lbl_discord.AutoSize = true;
-            this.lbl_discord.Location = new System.Drawing.Point(50, 150);
+            this.lbl_discord.Location = new System.Drawing.Point(42, 150);
             this.lbl_discord.Name = "lbl_discord";
             this.lbl_discord.Size = new System.Drawing.Size(46, 13);
             this.lbl_discord.TabIndex = 0;
@@ -571,11 +571,11 @@
             // lbl_version
             // 
             this.lbl_version.AutoSize = true;
-            this.lbl_version.Location = new System.Drawing.Point(84, 120);
+            this.lbl_version.Location = new System.Drawing.Point(75, 120);
             this.lbl_version.Name = "lbl_version";
             this.lbl_version.Size = new System.Drawing.Size(69, 13);
             this.lbl_version.TabIndex = 0;
-            this.lbl_version.Text = "Version 1.9.5";
+            this.lbl_version.Text = "Version 1.9.6";
             // 
             // Form1
             // 
