@@ -1,7 +1,7 @@
 # MemTestHelper
-~~AutoIT~~ C# WinForms (since v1.7) GUI to automate HCI MemTest
+C# WPF to automate HCI MemTest
 
-![Screenshot](https://github.com/integralfx/MemTestHelper/raw/master/memtest_helper.jpg)
+![Screenshot](https://github.com/integralfx/MemTestHelper/blob/master/memtesthelper.png)
 
 ## Usage
 * Download [HCI MemTest](https://hcidesign.com/memtest/download.html)
