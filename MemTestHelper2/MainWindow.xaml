@@ -1,0 +1,94 @@
+﻿<mah:MetroWindow 
+    x:Class="MemTestHelper2.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:MemTestHelper2"
+    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+    mc:Ignorable="d"
+    Background="#252525"
+    Title="MemTestHelper" Height="270" Width="445" 
+    WindowStartupLocation="CenterScreen" MaxWidth="525" MaxHeight="270" 
+    ResizeMode="CanMinimize" Loaded="Window_Loaded" Closing="Window_Closing" StateChanged="Window_StateChanged">
+    <Grid>
+        <mah:MetroAnimatedTabControl x:Name="tabControl" HorizontalAlignment="Left" Height="239" VerticalAlignment="Top" Width="438">
+            <TabItem x:Name="tabMain" Header="Main">
+                <Grid Background="#252525" Margin="0">
+                    <ListView Name="lstCoverage"
+                              HorizontalAlignment="Left" 
+                              Height="200" Width="223"
+                              Margin="215,0,0,0" VerticalAlignment="Top" 
+                              ScrollViewer.VerticalScrollBarVisibility="Visible"
+                              ScrollViewer.HorizontalScrollBarVisibility="Hidden" 
+                              BorderBrush="#252525"
+                              Foreground="#252525">
+                        <ListView.View>
+                            <GridView>
+                                <!-- Disable resizing of columns -->
+                                <GridView.ColumnHeaderContainerStyle>
+                                    <Style BasedOn="{StaticResource {x:Type GridViewColumnHeader}}" TargetType="{x:Type GridViewColumnHeader}">
+                                        <Setter Property="IsHitTestVisible" Value="False"/>
+                                    </Style>
+                                </GridView.ColumnHeaderContainerStyle>
+                                <GridViewColumn Header="No." Width="50" DisplayMemberBinding="{Binding No}"/>
+                                <GridViewColumn Header="Coverage" Width="80">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Coverage, StringFormat='f1'}"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="Errors" Width="76" DisplayMemberBinding="{Binding Errors}"/>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                    <Label Content="RAM to test (MB):" HorizontalAlignment="Left" VerticalAlignment="Top" Width="113" Margin="5,0,0,0"/>
+                    <TextBox x:Name="txtRAM" HorizontalAlignment="Left" Height="23" Margin="123,2,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80"/>
+                    <Label Content="Number of threads:" HorizontalAlignment="Left" Margin="5,31,0,0" VerticalAlignment="Top"/>
+                    <ComboBox x:Name="cboThreads" HorizontalAlignment="Left" Margin="123,33,0,0" VerticalAlignment="Top" Width="80" SelectionChanged="cboThreads_SelectionChanged"/>
+                    <Button x:Name="btnStart" Content="Start" HorizontalAlignment="Left" Margin="10,125,0,0" VerticalAlignment="Top" Width="95" Height="40" Click="btnStart_Click"/>
+                    <Button x:Name="btnStop" Content="Stop" HorizontalAlignment="Left" Margin="115,125,0,0" VerticalAlignment="Top" Width="95" Height="40" Click="btnStop_Click"/>
+                    <Button x:Name="btnShow" Content="Show" HorizontalAlignment="Left" Margin="10,170,0,0" VerticalAlignment="Top" Width="95" Height="20" Click="btnShow_Click"/>
+                    <Button x:Name="btnHide" Content="Hide" HorizontalAlignment="Left" Margin="115,170,0,0" VerticalAlignment="Top" Width="95" Height="20" Click="btnHide_Click"/>
+                    <Label Content="Elapsed:" HorizontalAlignment="Left" Margin="5,59,0,0" VerticalAlignment="Top"/>
+                    <Label x:Name="lblElapsedTime" Content="00h00m00s" HorizontalAlignment="Left" Margin="70,59,0,0" VerticalAlignment="Top"/>
+                    <Label Content="Estimated:" HorizontalAlignment="Left" Margin="5,79,0,0" VerticalAlignment="Top"/>
+                    <Label x:Name="lblEstimatedTime" Content="00h00m00s" HorizontalAlignment="Left" Margin="70,79,0,0" VerticalAlignment="Top"/>
+                    <Label Content="Speed:" HorizontalAlignment="Left" Margin="5,99,0,0" VerticalAlignment="Top"/>
+                    <Label x:Name="lblSpeed" Content="0.00MB/s" HorizontalAlignment="Left" Margin="70,99,0,0" VerticalAlignment="Top"/>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Settings">
+                <Grid Background="#252525" Margin="0">
+                    <Label Content="X Offset:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                    <mah:NumericUpDown x:Name="udXOffset" Margin="65,0,288,174" HasDecimals="False" NumericInputMode="Numbers" Maximum="9999" Minimum="-9999" Value="0" ValueChanged="Offset_Changed"/>
+                    <Label Content="Y Offset:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="163,0,0,0"/>
+                    <mah:NumericUpDown x:Name="udYOffset" Margin="228,0,125,174" HasDecimals="False" NumericInputMode="Numbers" Maximum="9999" Minimum="-9999" Value="0" ValueChanged="Offset_Changed"/>
+                    <Button x:Name="btnCentre" Content="Centre" HorizontalAlignment="Left" Margin="333,0,0,0" VerticalAlignment="Top" Width="105" Height="26" Click="btnCentre_Click"/>
+                    <Label Content="X Spacing:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,31,0,0"/>
+                    <mah:NumericUpDown x:Name="udXSpacing" Margin="65,31,288,143" HasDecimals="False" NumericInputMode="Numbers" Maximum="9999" Minimum="-9999" Value="0" ValueChanged="Offset_Changed"/>
+                    <Label Content="Y Spacing:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="163,31,0,0"/>
+                    <mah:NumericUpDown x:Name="udYSpacing" Margin="228,31,125,143" HasDecimals="False" NumericInputMode="Numbers" Maximum="9999" Minimum="-9999" Value="0" ValueChanged="Offset_Changed"/>
+                    <ComboBox x:Name="cboRows" HorizontalAlignment="Left" Margin="378,31,0,0" VerticalAlignment="Top" Width="60" SelectionChanged="cboRows_SelectionChanged"/>
+                    <Label x:Name="___No_Name_" Content="Rows:" HorizontalAlignment="Left" Margin="333,31,0,0" VerticalAlignment="Top"/>
+                    <TextBox x:Name="txtStopAt" HorizontalAlignment="Left" Height="25" Margin="85,62,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="40" MaxLength="4" MinHeight="20" IsEnabled="False"/>
+                    <CheckBox x:Name="chkStopAtTotal" Content="Total" HorizontalAlignment="Left" Margin="130,69,0,0" VerticalAlignment="Top" IsEnabled="False"/>
+                    <CheckBox x:Name="chkStopAt" Content="Stop at %:" HorizontalAlignment="Left" Margin="3,69,0,0" VerticalAlignment="Top" Checked="chkStopAt_Checked" Unchecked="chkStopAt_Unchecked"/>
+                    <CheckBox x:Name="chkStopOnError" Content="Stop on error" HorizontalAlignment="Left" Margin="219,69,0,0" VerticalAlignment="Top" IsChecked="True"/>
+                    <CheckBox x:Name="chkStartMin" Content="Start minimised" HorizontalAlignment="Left" Margin="332,69,0,0" VerticalAlignment="Top" IsChecked="True"/>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="About">
+                <Grid Background="#252525" Margin="0">
+                    <Label Content="Version 2.0.0" HorizontalAlignment="Center" Margin="180,70,180,104" VerticalAlignment="Center"/>
+                    <Label Content="Discord:" HorizontalAlignment="Center" Margin="138,98,248,76" VerticalAlignment="Center"/>
+                    <TextBox x:Name="txtDiscord" HorizontalAlignment="Left" Margin="190,98,0,0" TextWrapping="Wrap" 
+                             Text="∫ntegral#7834" VerticalAlignment="Top" IsReadOnly="True" Width="89" PreviewMouseDoubleClick="txtDiscord_DoubleClick"/>
+                </Grid>
+            </TabItem>
+        </mah:MetroAnimatedTabControl>
+    </Grid>
+</mah:MetroWindow>
