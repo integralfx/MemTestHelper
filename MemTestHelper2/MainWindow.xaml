@@ -48,7 +48,7 @@
                     <Label Content="Number of threads:" HorizontalAlignment="Left" Margin="5,31,0,0" VerticalAlignment="Top"/>
                     <ComboBox x:Name="cboThreads" HorizontalAlignment="Left" Margin="123,33,0,0" VerticalAlignment="Top" Width="80" SelectionChanged="cboThreads_SelectionChanged"/>
                     <Button x:Name="btnStart" Content="Start" HorizontalAlignment="Left" Margin="10,125,0,0" VerticalAlignment="Top" Width="95" Height="40" Click="btnStart_Click"/>
-                    <Button x:Name="btnStop" Content="Stop" HorizontalAlignment="Left" Margin="115,125,0,0" VerticalAlignment="Top" Width="95" Height="40" Click="btnStop_Click"/>
+                    <Button x:Name="btnStop" Content="Stop" HorizontalAlignment="Left" Margin="115,125,0,0" VerticalAlignment="Top" Width="95" Height="40" Click="btnStop_Click" IsEnabled="False"/>
                     <Button x:Name="btnShow" Content="Show" HorizontalAlignment="Left" Margin="10,170,0,0" VerticalAlignment="Top" Width="95" Height="20" Click="btnShow_Click"/>
                     <Button x:Name="btnHide" Content="Hide" HorizontalAlignment="Left" Margin="115,170,0,0" VerticalAlignment="Top" Width="95" Height="20" Click="btnHide_Click"/>
                     <Label Content="Elapsed:" HorizontalAlignment="Left" Margin="5,59,0,0" VerticalAlignment="Top"/>
