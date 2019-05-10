@@ -8,6 +8,7 @@ namespace MemTestHelper2
     class WinAPI
     {
         public const int WM_SETTEXT = 0xC, WM_LBUTTONDOWN = 0x201, WM_LBUTTONUP = 0x202,
+                         WM_SYSCOMMAND = 0x112, SC_MINIMIZE = 0xF020,
                          SW_SHOW = 5, SW_RESTORE = 9, SW_MINIMIZE = 6, BM_CLICK = 0xF5;
 
         // Emulate AutoIT Control functions //
@@ -124,6 +125,10 @@ namespace MemTestHelper2
 
         [DllImport("user32.dll", SetLastError = true)]
         public static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
+
+        [return: MarshalAs(UnmanagedType.Bool)]
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
 
         /*
          * className should be <classname><n>

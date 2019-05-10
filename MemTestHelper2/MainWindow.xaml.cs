@@ -15,6 +15,7 @@ using System.Windows.Automation.Peers;
 using System.Windows.Automation.Provider;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Interop;
 using System.Windows.Media;
 
 namespace MemTestHelper2
@@ -175,12 +176,10 @@ namespace MemTestHelper2
                             // User may have changed offsets while minimised.
                             LayOutMemTests();
 
-                            Activate();
-
                             // Hack to bring form to top.
-                            //Topmost = true;
-                            //Thread.Sleep(10);
-                            //Topmost = false;
+                            Topmost = true;
+                            Thread.Sleep(10);
+                            Topmost = false;
                         }
                     });
                     break;

@@ -45,16 +45,16 @@ namespace MemTestHelper2
             {
                 if (hasStarted)
                 {
+                    var hwnd = process.MainWindowHandle;
+
                     if (value)
-                    {
-                        WinAPI.ShowWindow(process.MainWindowHandle, WinAPI.SW_MINIMIZE);
-                    }
+                        WinAPI.ShowWindow(hwnd, WinAPI.SW_MINIMIZE);
                     else
                     {
-                        if (WinAPI.IsIconic(process.MainWindowHandle))
-                            WinAPI.ShowWindow(process.MainWindowHandle, WinAPI.SW_RESTORE);
+                        if (WinAPI.IsIconic(hwnd))
+                            WinAPI.ShowWindow(hwnd, WinAPI.SW_RESTORE);
                         else
-                            WinAPI.SetForegroundWindow(process.MainWindowHandle);
+                            WinAPI.SetForegroundWindow(hwnd);
                     }
                 }
             }
@@ -106,7 +106,11 @@ namespace MemTestHelper2
                 Thread.Sleep(100);
 
             if (startMinimised)
-                WinAPI.ShowWindow(hwnd, WinAPI.SW_MINIMIZE);
+            {
+                WinAPI.PostMessage(hwnd, WinAPI.WM_SYSCOMMAND,
+                                   new IntPtr(WinAPI.SC_MINIMIZE), 
+                                   IntPtr.Zero);
+            }
         }
 
         public void Stop()
@@ -199,6 +203,5 @@ namespace MemTestHelper2
                 return true;
             }
         }
-
     }
 }
