@@ -8,6 +8,7 @@
       3. [Voltage Scaling](#voltage-scaling)
       4. [Expected Max Frequency](#expected-max-frequency)
       5. [Binning](#binning)
+      6. [Maximum Recommended Daily Voltage](#maximum-recommended-daily-voltage)
    3. [Integrated Memory Controller (IMC)](#integrated-memory-controller-imc)
       1. [Intel - LGA1151](#intel---lga1151)
       2. [AMD - AM4](#amd---am4)
@@ -94,6 +95,11 @@
   `3000 / 16 = 187.5` but `3200 / 18 = 177.78`.  
   As you can see, 3000 15-16-16 is a tighter bin than 3200 16-18-18. This means that a kit rated for 3000 15-16-16 will probably be able to do 3200 16-18-18 but a kit rated for 3200 16-18-18 might not be able to do 3000 15-16-16.
   
+### Maximum Recommended Daily Voltage
+* [JEDEC (p.174)](http://www.softnology.biz/pdf/JESD79-4B.pdf) specifies that the absolute maximum is 1.50v.
+  > Stresses greater than those listed under “Absolute Maximum Ratings” may cause permanent damage to the device. This is a stress rating only and functional operation of the device at these or any other conditions above those indicated in the operational sections of this specification is not implied. Exposure to absolute maximum rating conditions for extended periods may affect reliability.
+* That being said, I'd only recommend running 1.50v on B-die as it's known to have high voltage tolerance. For every other IC, 1.45v is the max recommended daily voltage.
+  
 ## Integrated Memory Controller (IMC)
 ### Intel - LGA1151
 * Intel's IMC is pretty strong, so it shouldn't be the bottleneck when overclocking.  
@@ -129,7 +135,7 @@
 # Overclocking
 ## Finding the Maximum Frequency
 1. On Intel, start off with 1.15v VCCSA and VCCIO. On AMD, start off with 1.10v SOC.
-2. Set DRAM voltage to 1.40v. If you're using Micron/SpecTek ICs, exluding Rev. E.
+2. Set DRAM voltage to 1.40v. If you're using Micron/SpecTek ICs, exluding Rev. E, set 1.35v.
 3. Set primary timings to 16-20-20-40 (tCL-tRCD-tRP-tRAS).
 4. Increase the DRAM frequency until it doesn't boot into Windows any more. Keep in mind the expectations detailed above.
    * If you're on Intel, a quick way of knowing if you're unstable is to examine the RTLs and IOLs. Each group of RTLs and IOLs correspond to a channel. Within each group, there are 2 values which correspond to each DIMM.  
@@ -161,8 +167,8 @@
    * Desynchronising MCLK and FCLK can incur a massive latency penalty, so you're better off tightening timings to keep your MCLK:FCLK 1:1.
    * Otherwise, set FCLK to whatever is stable (1800MHz if you're unsure).
 2. Loosen primary timings to 18-22-22-42.
-3. Follow steps 4-7 from [Finding the Maximum Frequency](Finding-the-Maximum-Frequency).
-4. Proceed to [Tightening Timings](Tightening-Timings).
+3. Follow steps 4-7 from [Finding the Maximum Frequency](#finding-the-maximum-frequency).
+4. Proceed to [Tightening Timings](#tightening-timings).
    
 ## Tightening Timings
 1. I would recommend to tighten some of the secondary timings first, as they can speed up memory testing.
