@@ -217,6 +217,7 @@
      
     * If you're on Intel, tune the tertiaries one group at a time.
       * For example, drop all of tRDRD_sg/dg/dr/dd by 1 and run a memory test.  
+      Note that dr only affects dual rank sticks, so if you have single rank sticks you can ignore this timing.  
       Do the same with the next group until you've done all the tertiaries.  
       [These](https://i.imgur.com/61ZtPpR.jpg) are my timings on B-die, for reference.
       * tREFI is also a timing that can help with performance. Unlike all the other timings, higher is better for tREFI.  
