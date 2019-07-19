@@ -209,18 +209,18 @@
    * On Intel, tWTRS/L should be left on auto and controlled with tWRRD_dg/sg respectively. Dropping tWRRD_dg by 1 will drop tWTRS by 1. Likewise with tWRRD_sg. Once they're as low as you can go, manually set tWTRS/L.
    
 5. Now for the tertiaries:
-  * If you're on AMD, refer to [this post](https://redd.it/ahs5a2).
+    * If you're on AMD, refer to [this post](https://redd.it/ahs5a2).
   
-     | Timing | Safe | Tight | Extreme |
-     | ------ | ---- | ----- | ------- |
-     | tRDRDSCL tWRWRSCL | 4 4 | 3 3 | 2 2 |
+       | Timing | Safe | Tight | Extreme |
+       | ------ | ---- | ----- | ------- |
+       | tRDRDSCL tWRWRSCL | 4 4 | 3 3 | 2 2 |
      
-  * If you're on Intel, tune the tertiaries one group at a time.
-    * For example, drop all of tRDRD_sg/dg/dr/dd by 1 and run a memory test.  
-    Do the same with the next group until you've done all the tertiaries.  
-    [These](https://i.imgur.com/61ZtPpR.jpg) are my timings on B-die, for reference.
-    * tREFI is also a timing that can help with performance. Unlike all the other timings, higher is better for tREFI.  
-    It's typically not a good idea to increase tREFI too much as ambient temperature changes (e.g. winter to summer) can be enough to cause instability.
+    * If you're on Intel, tune the tertiaries one group at a time.
+      * For example, drop all of tRDRD_sg/dg/dr/dd by 1 and run a memory test.  
+      Do the same with the next group until you've done all the tertiaries.  
+      [These](https://i.imgur.com/61ZtPpR.jpg) are my timings on B-die, for reference.
+      * tREFI is also a timing that can help with performance. Unlike all the other timings, higher is better for tREFI.  
+      It's typically not a good idea to increase tREFI too much as ambient temperature changes (e.g. winter to summer) can be enough to cause instability.
     
 ## Miscellaneous Tips
 ### Intel
