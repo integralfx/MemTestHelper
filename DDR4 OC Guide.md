@@ -1,3 +1,24 @@
+# Table of Contents
+1. [Setup](#setup)
+2. [Expectations/Limitations](#expectationslimitations)
+   1. [Motherboard](#motherboard)
+   2. [ICs](#integrated-circuits-ics)
+      1. [Thaiphoon Report](#thaiphoon-report)
+      2. [A Note on Ranks and Density](#a-note-on-ranks-and-density)
+      3. [Voltage Scaling](#voltage-scaling)
+      4. [Expected Max Frequency](#expected-max-frequency)
+      5. [Binning](#binning)
+   3. [Integrated Memory Controller (IMC)](#integrated-memory-controller-imc)
+      1. [Intel - LGA1151](#intel---lga1151)
+      2. [AMD - AM4](#amd---am4)
+3. [Overclocking](#overclocking)
+   1. [Finding the Maximum Frequency](#finding-the-maximum-frequency)
+   2. [Trying Higher Frequencies](#trying-higher-frequencies)
+   3. [Tightening Timings](#tightening-timings)
+   4. [Miscellaneous Tips](#miscellaneous-tips)
+      1. [Intel](#intel)
+      2. [AMD](#amd)
+
 # Setup
 * Ensure your sticks are in the recommended DIMM slots (usually 2 and 4).
 * Make sure your CPU is fully stable before overclocking RAM, as an unstable CPU can lead to memory errors. When pushing high frequency with tight timings, it's possible that your CPU can become unstable.
