@@ -153,7 +153,8 @@
   This section is not for those who are having trouble stabilising frequencies within the expected range.
 1. Intel:
    * Increase VCCSA and VCCIO to 1.25v.
-   * Set command rate (CR) to 2T if it isn't already. 
+   * Set command rate (CR) to 2T if it isn't already.
+   * Set tCCDL to 8. Asus UEFIs don't expose this timing.
    
    Ryzen 3000:
    * Desynchronising MCLK and FCLK can incur a massive latency penalty, so you're better off tightening timings to keep your MCLK:FCLK 1:1.
@@ -216,9 +217,8 @@
     
 ## Miscellaneous Tips
 ### Intel
-* Try setting tCCDL to 8 if you can't boot. Asus UEFIs don't expose this timing.
-  * If you have an Asus Maximus motherboard, you can try tweaking the skew control values.  
-    More info [here](https://rog.asus.com/forum/showthread.php?47670-Maximus-7-Gene-The-road-to-overclocking-memory-without-increasing-voltage).
+* If you have an Asus Maximus motherboard and you can't boot, you can try tweaking the skew control values.  
+  More info [here](https://rog.asus.com/forum/showthread.php?47670-Maximus-7-Gene-The-road-to-overclocking-memory-without-increasing-voltage).
 * Increase IOL offsets to reduce RTLs and IOLs. Make sure to run a memory test after.
 * Higher cache frequency can increase bandwidth and reduce latency.
 ### AMD
