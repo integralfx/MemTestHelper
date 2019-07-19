@@ -83,10 +83,10 @@
   
 ### Binning
 * Binning is basically separating components based on their frequency.  
-Manufacturers would separate ICs into different containers/bins depending on their frequency. Hence the term binning.
+  Manufacturers would separate ICs into different containers/bins depending on their frequency. Hence the term binning.
 * B-die binned for 2400 15-15-15 is significantly worse than good B-die binned for 3200 14-14-14 or even 3000 14-14-14. Don't expect it to have the same voltage scaling characteristics as good B-die.
 * To figure out which frequency and timings are a better (tighter) bin within the same IC at the same voltage, find out which timing doesn't scale from voltage.  
-Simply divide the frequency by that timing and the higher value is the tighter bin.
+  Simply divide the frequency by that timing and the higher value is the tighter bin.
   * For example, Crucial Ballistix 3000 15-16-16 and 3200 16-18-18 both use Micron Rev. E ICs. Simply dividing the frequency by tCL gives us the same value (200), so does that mean they're the same bin?  
   No.  
   tRCD doesn't scale with voltage, which means it needs to be increased as you increase frequency.  
@@ -96,9 +96,10 @@ Simply divide the frequency by that timing and the higher value is the tighter b
 ## Integrated Memory Controller (IMC)
 ### Intel - LGA1151
 * Intel's IMC is pretty strong, so it shouldn't be the bottleneck when overclocking.  
-What would you expect from 14+++++?
-* There are 2 voltages you need to change if overclocking RAM: system agent (VCCSA) and IO (VCCIO). **DO NOT** leave these on auto, as they can pump dangerous levels of voltage into your IMC, potentially degrading or even killing it. Most of the time you can keep VCCSA and VCCIO the same, but sometimes too much can harm stability. I wouldn't recommend going above 1.25v on each.  
-Below are my suggested VCCSA and VCCIO for 2 single rank DIMMs:
+  What would you expect from 14+++++?
+* There are 2 voltages you need to change if overclocking RAM: system agent (VCCSA) and IO (VCCIO).  
+  **DO NOT** leave these on auto, as they can pump dangerous levels of voltage into your IMC, potentially degrading or even killing it. Most of the time you can keep VCCSA and VCCIO the same, but sometimes too much can harm stability. I wouldn't recommend going above 1.25v on each.  
+  Below are my suggested VCCSA and VCCIO for 2 single rank DIMMs:
 
   | Frequency | VCCSA/VCCIO |
   | --------- | ----------- |
@@ -149,7 +150,7 @@ Below are my suggested VCCSA and VCCIO for 2 single rank DIMMs:
    
 ## Trying Higher Frequencies
 * This section is applicable if you're not at the limit of your motherboard, ICs and IMC.  
-This section is not for those who are having trouble stabilising frequencies within the expected range.
+  This section is not for those who are having trouble stabilising frequencies within the expected range.
 1. Intel:
    * Increase VCCSA and VCCIO to 1.25v.
    * Set command rate (CR) to 2T if it isn't already. 
