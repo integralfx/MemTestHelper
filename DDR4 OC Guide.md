@@ -212,8 +212,7 @@
     Do the same with the next group until you've done all the tertiaries.  
     [These](https://i.imgur.com/61ZtPpR.jpg) are my timings on B-die, for reference.
     * tREFI is also a timing that can help with performance. Unlike all the other timings, higher is better for tREFI.  
-    If your sticks get warm, it may not be a good idea to increase tREFI as it can introduce instability.  
-    Start with 2 * default and gradually increase it by 10000 or so until you encounter instability.
+    It's typically not a good idea to increase tREFI too much as ambient temperature changes (e.g. winter to summer) can be enough for it to be unstable.
     
 ## Miscellaneous Tips
 ### Intel
