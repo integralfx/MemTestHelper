@@ -18,6 +18,7 @@
    4. [Miscellaneous Tips](#miscellaneous-tips)
       1. [Intel](#intel)
       2. [AMD](#amd)
+4. [Useful Information](#useful-information)
 
 # Setup
 * Ensure your sticks are in the recommended DIMM slots (usually 2 and 4).
