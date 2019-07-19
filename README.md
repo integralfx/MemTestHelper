@@ -1,3 +1,5 @@
+[DDR4 OC Guide](https://github.com/integralfx/MemTestHelper/blob/master/DDR4%20OC%20Guide.md)
+
 # MemTestHelper
 C# WPF to automate HCI MemTest
 
