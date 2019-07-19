@@ -212,13 +212,21 @@
     Do the same with the next group until you've done all the tertiaries.  
     [These](https://i.imgur.com/61ZtPpR.jpg) are my timings on B-die, for reference.
     * tREFI is also a timing that can help with performance. Unlike all the other timings, higher is better for tREFI.  
-    It's typically not a good idea to increase tREFI too much as ambient temperature changes (e.g. winter to summer) can be enough for it to be unstable.
+    It's typically not a good idea to increase tREFI too much as ambient temperature changes (e.g. winter to summer) can be enough to cause instability.
     
 ## Miscellaneous Tips
 ### Intel
 * Try setting tCCDL to 8 if you can't boot. Asus UEFIs don't expose this timing.
+  * If you have an Asus Maximus motherboard, you can try tweaking the skew control values.  
+    More info [here](https://rog.asus.com/forum/showthread.php?47670-Maximus-7-Gene-The-road-to-overclocking-memory-without-increasing-voltage).
 * Increase IOL offsets to reduce RTLs and IOLs. Make sure to run a memory test after.
 * Higher cache frequency can increase bandwidth and reduce latency.
 ### AMD
 * Try playing around with ProcODT if you can't boot. You should try values between 40Ω and 68.6Ω.
 * Lower SOC voltage may help with stability.
+
+# Useful Information
+* [Demystifying Memory Overclocking on Ryzen: OC Guidelines and Explaining Subtimings, Resistances, Voltages, and More!](https://redd.it/ahs5a2)
+* [Intel Memory Overclocking Quick Reference by sdch](https://www.overclock.net/forum/27784556-post7836.html)
+* [The road to overclocking memory without increasing voltage by Raja@ASUS](https://rog.asus.com/forum/showthread.php?47670-Maximus-7-Gene-The-road-to-overclocking-memory-without-increasing-voltage)
+* [Advanced Skylake Overclocking: Tune DDR4 Memory RTL/IO on Maximus VIII with Alex@ro's Guide](https://hwbot.org/newsflash/3058_advanced_skylake_overclocking_tune_ddr4_memory_rtlio_on_maximus_viii_with_alexaros_guide)
