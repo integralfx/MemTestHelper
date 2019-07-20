@@ -32,6 +32,11 @@
   * AMD: 
     * Ryzen 1000/2000: [Ryzen Timing Checker](https://www.techpowerup.com/download/ryzen-timing-checker/).
     * Ryzen 3000: [Ryzen Master](https://www.amd.com/en/technologies/ryzen-master).
+* Benchmarks:
+  * [AIDA64](https://www.aida64.com/downloads) - free 30 day trial. We'll be using the cache and memory benchmark (found under tools) to see how our memory is performing. You can right click the start benchmark button and run memory tests only to skip the cache tests.
+  * [MaxxMEM2](https://www.softpedia.com/get/System/Benchmarks/MaxxMEM2.shtml) - free alternative to AIDA64, but bandwidth tests seem to be a lot lower so it isn't directly comparable to AIDA64.
+  * [Super Pi Mod v1.5 XS](https://www.techpowerup.com/download/super-pi/) - another memory sensitive benchmark, but I haven't used it as much as AIDA64. 1M - 8M digits should be enough for a quick benchmark. You only need to look at the last (total) time, where lower is better.
+  * [HWBOT x265 Benchmark](https://hwbot.org/benchmark/hwbot_x265_benchmark_-_1080p/) - I've heard that this benchmark is also sensitive to memory, but I haven't really tested it myself.
 
 # Expectations/Limitations
 ## Motherboard
@@ -64,7 +69,7 @@
 * Here are a table of common ICs and if the timing scales with voltage:
 
   | IC | tCL | tRCD | tRP |
-  | -- | --- | ---- | --- |
+  | :-: | :-: | :--: | :-: |
   | 8Gb AFR | Y | N | N | 
   | 8Gb CJR | Y | Y (?) | N |
   | 8Gb Rev. E | Y | N | Y |
@@ -75,7 +80,7 @@
 * Below are the expected max frequency for some of the common ICs:
 
   | IC | Expected Max Frequency |
-  | -- | ---------------------- |
+  | :-: | :--------------------: |
   | 8Gb AFR | 3600 |
   | 8Gb CJR | 4000<sup>1</sup> |
   | 8Gb Rev. E | 4000+ |
@@ -109,13 +114,14 @@
   Below are my suggested VCCSA and VCCIO for 2 single rank DIMMs:
 
   | Frequency | VCCSA/VCCIO |
-  | --------- | ----------- |
+  | :-------: | :---------: |
   | 3000 - 3600 | 1.10 - 1.15 |
   | 3600 - 4000 | 1.15 - 1.20 |
   | 4000+ | 1.20 - 1.25 |
   * With more DIMMs and/or dual rank DIMMs, you may need higher VCCSA and VCCIO than suggested.
 * tRCD and tRP are linked, meaning if you set tRCD 16 but tRP 17, both will run at the higher timing (17). This limitation is why many ICs don't do as well on Intel and why B-die is a good match for Intel.
-  * On Asrock UEFIs, they're combined into tRCDtRP. On ASUS UEFIs, tRP is hidden. On MSI UEFIs, tRCD and tRP are visible but setting them to different values just sets both of them to the higher value.
+  * On Asrock and EVGA UEFIs, they're combined into tRCDtRP. On ASUS UEFIs, tRP is hidden. On MSI and Gigabyte UEFIs, tRCD and tRP are visible but setting them to different values just sets both of them to the higher value.
+  * Expected memory latency range: 40ns - 50ns.
   
 ### AMD - AM4
 * Ryzen 1000 and 2000's IMC can be a bit finnicky when overclocking and can't hit as high frequencies as Intel can. Ryzen 3000's IMC is much better and is more or less on par with Intel.
@@ -123,16 +129,28 @@
   * On Ryzen 3000, there's also CLDO_VDDG (not to be confused with CLDO_VDD**P**), which is the voltage to the Infinity Fabric. I've read that SOC voltage should be 40mV above CLDO_VDDG, but other than that there's not much information about it.
 * Below are the expected frequency ranges for 2 single rank DIMMs, provided your motherboard and ICs are capable:
 
-  | Generation | Frequency |
-  | ---------- | --------- |
-  | 1st | 3000 - 3466 |
-  | 2nd | 3200 - 3600 |
-  | 3rd | 3466 - 3800 (1:1 MCLK:FCLK), 3800+ (2:1 MCLK:FCLK) |
+  | Ryzen | Frequency |
+  | :---: | :-------: |
+  | 1000 | 3000 - 3466 |
+  | 2000 | 3200 - 3600 |
+  | 3000 | 3466 - 3800 (1:1 MCLK:FCLK) <br/> 3800+ (2:1 MCLK:FCLK) |
   * With more DIMMs and/or dual rank DIMMs, the expected frequency can be lower.
 * tRCD is split into tRCDRD (read) and tRCDWR (write). Usually, tRCDWR can go lower than tRCDRD, but I haven't noticed any performance improvements from lowering tRCDWR. It's best to keep them the same.
 * Geardown mode is automatically enabled above 2666MHz, which forces even tCL, tCWL (?) and CR 1T. If you want to run odd tCL, disable GDM . If you're unstable try running CR 2T, but that may negate the performance gain from dropping tCL.
+* On single CCD Ryzen 3000 CPUs (CPUs below 3900X), write bandwidth is halved.
+  > In memory bandwidth, we see something odd, the write speed of AMD's 3700X, and that's because of the CDD to IOD connection, where the writes are 16B/cycle on the 3700X, but it's double that on the 3900X. AMD said this let them conserve power, which accounts for part of the lower TDP AMD aimed for. AMD says applications rarely do pure writes, but it did hurt the 3700X's performance in one of our benchmarks on the next page.  
+  [~ TweakTown](https://www.tweaktown.com/reviews/9051/amd-ryzen-3900x-3700x-zen2-review/index3.html)
+* Expected memory latency range:
+
+  | Ryzen | Latency (ns) |
+  | :---: | :----------: |
+  | 1000 | 65 - 75 |
+  | 2000 | 60 - 70 |
+  | 3000 | 65 - 75 (1:1 MCLK:FCLK) <br/> 75+ |
   
 # Overclocking
+* Disclaimer: The silicon lottery will affect your overclocking potential so there may be some deviation from my suggestions.
+
 ## Finding the Maximum Frequency
 1. On Intel, start off with 1.15v VCCSA and VCCIO. On AMD, start off with 1.10v SOC.
 2. Set DRAM voltage to 1.40v. If you're using Micron/SpecTek ICs, exluding Rev. E, set 1.35v.
@@ -167,10 +185,28 @@
    * Desynchronising MCLK and FCLK can incur a massive latency penalty, so you're better off tightening timings to keep your MCLK:FCLK 1:1.
    * Otherwise, set FCLK to whatever is stable (1800MHz if you're unsure).
 2. Loosen primary timings to 18-22-22-42.
-3. Follow steps 4-7 from [Finding the Maximum Frequency](#finding-the-maximum-frequency).
-4. Proceed to [Tightening Timings](#tightening-timings).
+3. Increase DRAM voltage to 1.45v.
+5. Follow steps 4-7 from [Finding the Maximum Frequency](#finding-the-maximum-frequency).
+6. Proceed to [Tightening Timings](#tightening-timings).
    
 ## Tightening Timings
+* Make sure to run a memory test and benchmark after each change to ensure performance is improving.
+  * I would recommend to benchmark 3 to 5 times and average the results, as memory benchmarks can have a bit of variance.
+  * Thereotical maximum bandwidth (MB/s) = `ddr_freq * num_channels * 64 / 8`.
+  
+    | Frequency (MHz) | Max Dual Channel Bandwidth |
+    | :-------------: | :------------------------: |
+    | 3000 | 48000 |
+    | 3200 | 51200 |
+    | 3400 | 54440 |
+    | 3466 | 55456 |
+    | 3600 | 57600 |
+    | 3733 | 59728 |
+    | 3800 | 60800 |
+    | 4000 | 64000 |
+    * Your read and write bandwidth should be 90% - 95% of the theoretical maximum bandwidth.
+      * On single CCD Ryzen 3000 CPUs, write bandwidth should be 90% - 95% of half of the theoretical maximum bandwidth.
+
 1. I would recommend to tighten some of the secondary timings first, as they can speed up memory testing.
 
    | Timing | Safe | Tight | Extreme |
@@ -179,15 +215,14 @@
    | tWR | 16 | 12 | 10 |
    * Minimum tFAW can be is tRRDS * 4.
    
-2. Next are the primary timings. Drop each by 1, running a memory test after each change.
-   * Only tCL, tRCD and tRP on Ryzen. Only tCL and tRCD on Intel.
+2. Drop the primary timings (tCL, tRCD, tRP) one by one until you get instability.
    * After the above timings are as tight as they can go, set `tRAS = tCL + tRCD(RD) + 2` and `tRC = tRP + tRAS`.
      * Setting tRAS lower than this can incur a [performance penalty](https://www.overclock.net/forum/25801780-post3757.html).
      * tRC is only available on AMD and some Intel UEFIs.
      
 3. Next is tRFC. Default for 8Gb ICs is 350**ns** (note the units).
    * To convert to ns: `2000 * timing / ddr_freq`.  
-   For example, tRFC 250 at 3200MHz is `2000 * 250 / 3200 = 156.25 ns`.
+   For example, tRFC 250 at 3200MHz is `2000 * 250 / 3200 = 156.25ns`.
    * To convert from ns: `ns * ddr_freq / 2000`.  
    For example, 180ns at 3600MHz is `180 * 3600 / 2000 = 324`.
    * Below are the typical tRFC in ns for the common ICs:
@@ -224,11 +259,16 @@
       It's typically not a good idea to increase tREFI too much as ambient temperature changes (e.g. winter to summer) can be enough to cause instability.
     
 ## Miscellaneous Tips
+* Usually a 200MHz increase in DRAM frequency negates the latency penalty of loosening tCL, tRCD and tRP by 1, but has the benefit of more bandwidth.  
+  For example, 3200 16-18-18 has the same latency as 3200 16-18-18, but 3200 16-18-18 has higher bandwidth.
+
 ### Intel
+* Higher cache (aka uncore, ring) frequency can increase bandwidth and reduce latency.
+* Increase IOL offsets to reduce RTLs and IOLs. Make sure to run a memory test after.  
+  More info [here](https://hwbot.org/newsflash/3058_advanced_skylake_overclocking_tune_ddr4_memory_rtlio_on_maximus_viii_with_alexaros_guide).
 * If you have an Asus Maximus motherboard and you can't boot, you can try tweaking the skew control values.  
   More info [here](https://rog.asus.com/forum/showthread.php?47670-Maximus-7-Gene-The-road-to-overclocking-memory-without-increasing-voltage).
-* Increase IOL offsets to reduce RTLs and IOLs. Make sure to run a memory test after.
-* Higher cache frequency can increase bandwidth and reduce latency.
+
 ### AMD
 * Try playing around with ProcODT if you can't boot. You should try values between 40Ω and 68.6Ω.
 * Lower SOC voltage may help with stability.
