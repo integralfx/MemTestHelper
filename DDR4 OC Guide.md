@@ -165,9 +165,10 @@
    * If you're on Ryzen 3000, make sure that the Infinity Fabric frequency (FCLK) is set to half your effective DRAM frequency.
 5. Run a memory tester of your choice.  
    * Windows will use ~2000MB so make sure to account for that when entering the amount of RAM to test. I have 16GB of RAM and usually test 14000MB.
-   * MemTestHelper (HCI MemTest): 200% per thread.
-   * Karhu RAMTest: 5000%.
-     * In the advanced tab, make sure CPU cache is set to enabled. This will speed up testing by ~33% (?).
+   * Minimum recommended coverage:
+     * MemTestHelper (HCI MemTest): 200% per thread.
+     * Karhu RAMTest: 5000%.
+       * In the advanced tab, make sure CPU cache is set to enabled. This will speed up testing by ~33% (?).
 6. If you crash/freeze/BSOD or get an error, drop the DRAM frequency by a notch and test again.
 7. Save your overclock profile in your UEFI.
 8. From this point on you can either: try to go for a higher frequency or work on tightening the timings.
