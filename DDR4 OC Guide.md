@@ -194,7 +194,7 @@
   * I would recommend to benchmark 3 to 5 times and average the results, as memory benchmarks can have a bit of variance.
   * Thereotical maximum bandwidth (MB/s) = `ddr_freq * num_channels * 64 / 8`.
   
-    | Frequency (MHz) | Max Dual Channel Bandwidth |
+    | Frequency (MHz) | Max Dual Channel Bandwidth (MB/s) |
     | :-------------: | :------------------------: |
     | 3000 | 48000 |
     | 3200 | 51200 |
