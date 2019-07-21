@@ -125,7 +125,10 @@
   
 ### AMD - AM4
 * Ryzen 1000 and 2000's IMC can be a bit finnicky when overclocking and can't hit as high frequencies as Intel can. Ryzen 3000's IMC is much better and is more or less on par with Intel.
-* SOC voltage is the voltage to the IMC and like with Intel, it's not recommended to leave it on auto. You typically want 1.0 - 1.1v as above 1.1v doesn't help much if at all.
+* SOC voltage is the voltage to the IMC and like with Intel, it's not recommended to leave it on auto. You typically want 1.0 - 1.1v as above 1.1v doesn't help much if at all.  
+  On Ryzen 2000 (possibly 1000 and 3000 as well), above 1.15v can negatively impact overclocking.
+  > There are clear differences in how the memory controller behaves on the different CPU specimens. The majority of the CPUs will do 3466MHz or higher at 1.050V SoC voltage, however the difference lies in how the different specimens react to the voltage. Some of the specimens seem scale with the increased SoC voltage, while the others simply refuse to scale at all or in some cases even illustrate negative scaling. All of the tested samples illustrated negative scaling (i.e. more errors or failures to train) when higher than 1.150V SoC was used. In all cases the maximum memory frequency was achieved at =< 1.100V SoC voltage.  
+  [~ The Stilt](https://forums.anandtech.com/threads/ryzen-strictly-technical.2500572/page-72#post-39391302)
   * On Ryzen 3000, there's also CLDO_VDDG (not to be confused with CLDO_VDD**P**), which is the voltage to the Infinity Fabric. I've read that SOC voltage should be 40mV above CLDO_VDDG, but other than that there's not much information about it.
 * Below are the expected frequency ranges for 2 single rank DIMMs, provided your motherboard and ICs are capable:
 
@@ -141,7 +144,8 @@ Both the 3600 and 3700X did 1800MHz UCLK on 1 DPC DR config, but most likely due
 Meanwhile with 2 DPC SR config there is no issue in reaching 1866MHz FCLK/UCLK.  
 [~ The Stilt](https://www.overclock.net/forum/10-amd-cpus/1728758-strictly-technical-matisse-not-really-26.html)
 * tRCD is split into tRCDRD (read) and tRCDWR (write). Usually, tRCDWR can go lower than tRCDRD, but I haven't noticed any performance improvements from lowering tRCDWR. It's best to keep them the same.
-* Geardown mode is automatically enabled above 2666MHz, which forces even tCL, tCWL (?) and CR 1T. If you want to run odd tCL, disable GDM . If you're unstable try running CR 2T, but that may negate the performance gain from dropping tCL.
+* Geardown mode is automatically enabled above 2666MHz, which forces even tCL, tCWL (?) and CR 1T. If you want to run odd tCL, disable GDM. If you're unstable try running CR 2T, but that may negate the performance gain from dropping tCL.
+  * In terms of performance: GDM disabled CR 1T > GDM enabled CR 1T > GDM disabled CR 2T.
 * On single CCD Ryzen 3000 CPUs (CPUs below 3900X), write bandwidth is halved.
   > In memory bandwidth, we see something odd, the write speed of AMD's 3700X, and that's because of the CDD to IOD connection, where the writes are 16B/cycle on the 3700X, but it's double that on the 3900X. AMD said this let them conserve power, which accounts for part of the lower TDP AMD aimed for. AMD says applications rarely do pure writes, but it did hurt the 3700X's performance in one of our benchmarks on the next page.  
   [~ TweakTown](https://www.tweaktown.com/reviews/9051/amd-ryzen-3900x-3700x-zen2-review/index3.html)
@@ -213,16 +217,19 @@ Meanwhile with 2 DPC SR config there is no issue in reaching 1866MHz FCLK/UCLK.
     * Your read and write bandwidth should be 90% - 95% of the theoretical maximum bandwidth.
       * On single CCD Ryzen 3000 CPUs, write bandwidth should be 90% - 95% of half of the theoretical maximum bandwidth.
 
-1. I would recommend to tighten some of the secondary timings first, as they can speed up memory testing.
-
+1. I would recommend to tighten some of the secondary timings first, as they can speed up memory testing.  
+   My suggestions:
+   
    | Timing | Safe | Tight | Extreme |
    | ------ | ---- | ----- | ------- |
    | tRRDS tRRDL tFAW | 6 6 24 | 4 6 16 | 4 4 16 |
    | tWR | 16 | 12 | 10 |
    * Minimum tFAW can be is tRRDS * 4.
-   * Note that you don't have to run all of the timings at one preset. You might only be able to run tRRDS tRRDL tFAW at the tight preset, but you may be able to run tWR at the extreme preset.
+   * You don't have to run all of the timings at one preset. You might only be able to run tRRDS tRRDL tFAW at the tight preset, but you may be able to run tWR at the extreme preset.
    
-2. Drop the primary timings (tCL, tRCD, tRP) one by one until you get instability.
+2. Next are the primary timings (tCL, tRCD, tRP).
+   * Start with tCL and drop that by 1 until you get instability.
+   * Do the same with tRCD and tRP.
    * After the above timings are as tight as they can go, set `tRAS = tCL + tRCD(RD) + 2` and `tRC = tRP + tRAS`.
      * Setting tRAS lower than this can incur a [performance penalty](https://www.overclock.net/forum/25801780-post3757.html).
      * tRC is only available on AMD and some Intel UEFIs.
@@ -235,23 +242,24 @@ Meanwhile with 2 DPC SR config there is no issue in reaching 1866MHz FCLK/UCLK.
    * Below are the typical tRFC in ns for the common ICs:
    
      | IC | tRFC (ns) |
-     | -- | --------- |
+     | :-: | :-------: |
      | 8Gb AFR | 260 - 280 |
      | 8Gb CJR | 260 - 280 |
      | 8Gb Rev. E | 300 - 350 |
      | 8Gb B-die | 160 - 180 |
      
-4. Now for the rest of the secondaries:
+4. Here are my suggestions for the rest of the secondaries:
 
    | Timing | Safe | Tight | Extreme |
-   | ------ | ---- | ----- | ------- |
+   | :----: | :--: | :---: | :-----: |
    | tWTRS tWTRL | 4 12 | 4 8 | - |
    | tRTP | 12 | 10 | 8 |
    | tCWL | tCL | tCL - 1 | tCL - 2 |
    * On Intel, tWTRS/L should be left on auto and controlled with tWRRD_dg/sg respectively. Dropping tWRRD_dg by 1 will drop tWTRS by 1. Likewise with tWRRD_sg. Once they're as low as you can go, manually set tWTRS/L.
    
 5. Now for the tertiaries:
-    * If you're on AMD, refer to [this post](https://redd.it/ahs5a2).
+    * If you're on AMD, refer to [this post](https://redd.it/ahs5a2).  
+      My suggestion:
   
        | Timing | Safe | Tight | Extreme |
        | ------ | ---- | ----- | ------- |
