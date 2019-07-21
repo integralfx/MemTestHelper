@@ -121,7 +121,7 @@
   * With more DIMMs and/or dual rank DIMMs, you may need higher VCCSA and VCCIO than suggested.
 * tRCD and tRP are linked, meaning if you set tRCD 16 but tRP 17, both will run at the higher timing (17). This limitation is why many ICs don't do as well on Intel and why B-die is a good match for Intel.
   * On Asrock and EVGA UEFIs, they're combined into tRCDtRP. On ASUS UEFIs, tRP is hidden. On MSI and Gigabyte UEFIs, tRCD and tRP are visible but setting them to different values just sets both of them to the higher value.
-  * Expected memory latency range: 40ns - 50ns.
+* Expected memory latency range: 40ns - 50ns.
   
 ### AMD - AM4
 * Ryzen 1000 and 2000's IMC can be a bit finnicky when overclocking and can't hit as high frequencies as Intel can. Ryzen 3000's IMC is much better and is more or less on par with Intel.
