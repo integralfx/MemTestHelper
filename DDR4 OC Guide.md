@@ -61,7 +61,8 @@
 
 ### Voltage Scaling
 * Voltage scaling simply means how the IC responds to voltage.
-* On many ICs, tCL scales with voltage, meaning giving it more voltage can allow you to drop tCL. Conversely, tRCD and tRP typically do not scale with voltage on many ICs, meaning no matter how much voltage you pump into it, it will not budge. Only tCL, tRCD and tRP respond to voltage (?).
+* On many ICs, tCL scales with voltage, meaning giving it more voltage can allow you to drop tCL. Conversely, tRCD and tRP typically do not scale with voltage on many ICs, meaning no matter how much voltage you pump into it, it will not budge.  
+As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage scaling.
 * Similarly, if a timing scales with voltage that means you can increase the voltage to run the same timing at a higher frequency.
 ![8Gbit CJR CL11 Voltage Scaling](https://i.imgur.com/TSiwR7H.png)
   * You can see that tCL scales linearly with voltage on 8Gb CJR.
@@ -144,7 +145,7 @@ Both the 3600 and 3700X did 1800MHz UCLK on 1 DPC DR config, but most likely due
 Meanwhile with 2 DPC SR config there is no issue in reaching 1866MHz FCLK/UCLK.  
 [~ The Stilt](https://www.overclock.net/forum/10-amd-cpus/1728758-strictly-technical-matisse-not-really-26.html)
 * tRCD is split into tRCDRD (read) and tRCDWR (write). Usually, tRCDWR can go lower than tRCDRD, but I haven't noticed any performance improvements from lowering tRCDWR. It's best to keep them the same.
-* Geardown mode is automatically enabled above 2666MHz, which forces even tCL, tCWL (?) and CR 1T. If you want to run odd tCL, disable GDM. If you're unstable try running CR 2T, but that may negate the performance gain from dropping tCL.
+* Geardown mode is automatically enabled above 2666MHz, which forces even tCL, even tCWL (?) and CR 1T. If you want to run odd tCL, disable GDM. If you're unstable try running CR 2T, but that may negate the performance gain from dropping tCL.
   * In terms of performance: GDM disabled CR 1T > GDM enabled CR 1T > GDM disabled CR 2T.
 * On single CCD Ryzen 3000 CPUs (CPUs below 3900X), write bandwidth is halved.
   > In memory bandwidth, we see something odd, the write speed of AMD's 3700X, and that's because of the CDD to IOD connection, where the writes are 16B/cycle on the 3700X, but it's double that on the 3900X. AMD said this let them conserve power, which accounts for part of the lower TDP AMD aimed for. AMD says applications rarely do pure writes, but it did hurt the 3700X's performance in one of our benchmarks on the next page.  
