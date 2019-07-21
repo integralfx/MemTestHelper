@@ -193,7 +193,7 @@ Meanwhile with 2 DPC SR config there is no issue in reaching 1866MHz FCLK/UCLK.
    
    Ryzen 3000:
    * Desynchronising MCLK and FCLK can incur a massive latency penalty, so you're better off tightening timings to keep your MCLK:FCLK 1:1.
-   * Otherwise, set FCLK to whatever is stable (1800MHz if you're unsure).
+   * Otherwise, set FCLK to whatever is stable (1600MHz if you're unsure).
 2. Loosen primary timings to 18-22-22-42.
 3. Increase DRAM voltage to 1.45v.
 5. Follow steps 4-7 from [Finding the Maximum Frequency](#finding-the-maximum-frequency).
