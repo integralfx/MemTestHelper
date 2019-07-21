@@ -79,8 +79,8 @@
 ### Expected Max Frequency
 * Below are the expected max frequency for some of the common ICs:
 
-  | IC | Expected Max Frequency |
-  | :-: | :--------------------: |
+  | IC | Expected Max Frequency (MHz) |
+  | :-: | :-------------------------: |
   | 8Gb AFR | 3600 |
   | 8Gb CJR | 4000<sup>1</sup> |
   | 8Gb Rev. E | 4000+ |
@@ -113,8 +113,8 @@
   **DO NOT** leave these on auto, as they can pump dangerous levels of voltage into your IMC, potentially degrading or even killing it. Most of the time you can keep VCCSA and VCCIO the same, but sometimes too much can harm stability. I wouldn't recommend going above 1.25v on each.  
   Below are my suggested VCCSA and VCCIO for 2 single rank DIMMs:
 
-  | Frequency | VCCSA/VCCIO |
-  | :-------: | :---------: |
+  | Frequency (MHz) | VCCSA/VCCIO (v) |
+  | :-------------: | :-------------: |
   | 3000 - 3600 | 1.10 - 1.15 |
   | 3600 - 4000 | 1.15 - 1.20 |
   | 4000+ | 1.20 - 1.25 |
@@ -129,12 +129,17 @@
   * On Ryzen 3000, there's also CLDO_VDDG (not to be confused with CLDO_VDD**P**), which is the voltage to the Infinity Fabric. I've read that SOC voltage should be 40mV above CLDO_VDDG, but other than that there's not much information about it.
 * Below are the expected frequency ranges for 2 single rank DIMMs, provided your motherboard and ICs are capable:
 
-  | Ryzen | Frequency |
-  | :---: | :-------: |
+  | Ryzen | Expected Frequency (MHz) |
+  | :---: | :----------------------: |
   | 1000 | 3000 - 3466 |
   | 2000 | 3200 - 3600 |
   | 3000 | 3466 - 3800 (1:1 MCLK:FCLK) <br/> 3800+ (2:1 MCLK:FCLK) |
   * With more DIMMs and/or dual rank DIMMs, the expected frequency can be lower.
+  * 2 CCD Ryzen 3000 CPUs (3900X and 3950X) seem to prefer 2 dual rank sticks over 4 single rank sticks.
+    > For 2 CCD SKUs, 2 DPC SR configuration seems to be the way to go.
+Both the 3600 and 3700X did 1800MHz UCLK on 1 DPC DR config, but most likely due to the discrepancy of the two CCDs in 3900X, it barely does 1733MHz on those DIMMs.
+Meanwhile with 2 DPC SR config there is no issue in reaching 1866MHz FCLK/UCLK.  
+[~ The Stilt](https://www.overclock.net/forum/10-amd-cpus/1728758-strictly-technical-matisse-not-really-26.html)
 * tRCD is split into tRCDRD (read) and tRCDWR (write). Usually, tRCDWR can go lower than tRCDRD, but I haven't noticed any performance improvements from lowering tRCDWR. It's best to keep them the same.
 * Geardown mode is automatically enabled above 2666MHz, which forces even tCL, tCWL (?) and CR 1T. If you want to run odd tCL, disable GDM . If you're unstable try running CR 2T, but that may negate the performance gain from dropping tCL.
 * On single CCD Ryzen 3000 CPUs (CPUs below 3900X), write bandwidth is halved.
@@ -146,7 +151,7 @@
   | :---: | :----------: |
   | 1000 | 65 - 75 |
   | 2000 | 60 - 70 |
-  | 3000 | 65 - 75 (1:1 MCLK:FCLK) <br/> 75+ |
+  | 3000 | 65 - 75 (1:1 MCLK:FCLK) <br/> 75+ (2:1 MCLK:FCLK) |
   
 # Overclocking
 * Disclaimer: The silicon lottery will affect your overclocking potential so there may be some deviation from my suggestions.
@@ -215,6 +220,7 @@
    | tRRDS tRRDL tFAW | 6 6 24 | 4 6 16 | 4 4 16 |
    | tWR | 16 | 12 | 10 |
    * Minimum tFAW can be is tRRDS * 4.
+   * Note that you don't have to run all of the timings at one preset. You might only be able to run tRRDS tRRDL tFAW at the tight preset, but you may be able to run tWR at the extreme preset.
    
 2. Drop the primary timings (tCL, tRCD, tRP) one by one until you get instability.
    * After the above timings are as tight as they can go, set `tRAS = tCL + tRCD(RD) + 2` and `tRC = tRP + tRAS`.
@@ -260,8 +266,8 @@
       It's typically not a good idea to increase tREFI too much as ambient temperature changes (e.g. winter to summer) can be enough to cause instability.
     
 ## Miscellaneous Tips
-* Usually a 200MHz increase in DRAM frequency negates the latency penalty of loosening tCL, tRCD and tRP by 1, but has the benefit of more bandwidth.  
-  For example, 3200 16-18-18 has the same latency as 3200 16-18-18, but 3200 16-18-18 has higher bandwidth.
+* Usually a 200MHz increase in DRAM frequency negates the latency penalty of loosening tCL, tRCD and tRP by 1, but has the benefit of higher bandwidth.  
+  For example, 3000 15-17-17 has the same latency as 3200 16-18-18, but 3200 16-18-18 has higher bandwidth.
 
 ### Intel
 * Higher cache (aka uncore, ring) frequency can increase bandwidth and reduce latency.
@@ -271,8 +277,14 @@
   More info [here](https://rog.asus.com/forum/showthread.php?47670-Maximus-7-Gene-The-road-to-overclocking-memory-without-increasing-voltage).
 
 ### AMD
-* Try playing around with ProcODT if you can't boot. You should try values between 40Ω and 68.6Ω.
+* Try playing around with ProcODT if you can't boot. On Ryzen 1000 and 2000, you should try values between 40Ω and 68.6Ω.  
+On Ryzen 3000, [1usmus](https://www.overclock.net/forum/13-amd-general/1640919-new-dram-calculator-ryzena-1-5-1-overclocking-dram-am4-membench-0-7-dram-bench-480.html#post28049664) suggests 28Ω - 40Ω.  
+This seems to line up with [The Stilt's](https://www.overclock.net/forum/10-amd-cpus/1728758-strictly-technical-matisse-not-really-26.html) settings.
+  > Phy at AGESA defaults, except ProcODT of 40.0Ohm, which is an ASUS auto-rule for Optimem III.
 * Lower SOC voltage may help with stability.
+* On Ryzen 3000, higher CLDO_VDDP can help with stability above 3600MHz.
+  > Increasing cLDO_VDDP seems beneficial > 3600MHz MEMCLKs, as increasing it seems to improve the margins and hence help with potential training issues.  
+  [~ The Stilt](https://www.overclock.net/forum/10-amd-cpus/1728758-strictly-technical-matisse-not-really-26.html)
 
 # Useful Information
 * [Demystifying Memory Overclocking on Ryzen: OC Guidelines and Explaining Subtimings, Resistances, Voltages, and More! by varexos717](https://redd.it/ahs5a2)
