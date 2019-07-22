@@ -104,7 +104,7 @@ As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage 
 ### Maximum Recommended Daily Voltage
 * [JEDEC (p.174)](http://www.softnology.biz/pdf/JESD79-4B.pdf) specifies that the absolute maximum is 1.50v.
   > Stresses greater than those listed under “Absolute Maximum Ratings” may cause permanent damage to the device. This is a stress rating only and functional operation of the device at these or any other conditions above those indicated in the operational sections of this specification is not implied. Exposure to absolute maximum rating conditions for extended periods may affect reliability.
-* That being said, I'd only recommend running 1.50v on B-die as it's known to have high voltage tolerance. For every other IC, 1.45v is the max recommended daily voltage.
+* That being said, I'd only recommend running 1.50v on B-die as it's known to have high voltage tolerance. At least for the common ICs (4/8Gb AFR, 8Gb CJR, 8Gb Rev. E, 4/8Gb MFR), the max recommended voltage is 1.45v. Some of the lesser known ICs like [8Gb C-die](https://www.hardwareluxx.de/community/f13/samsung-8gbit-ddr4-c-die-k4a8g045wc-overclocking-ergebnisse-im-startbeitrag-1198323.html) have been reported to scale negatively or even die above 1.20v, though YMMV.
   
 ## Integrated Memory Controller (IMC)
 ### Intel - LGA1151
