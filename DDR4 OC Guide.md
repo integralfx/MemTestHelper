@@ -139,7 +139,7 @@ As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage 
   | 2000 | 3200 - 3600 |
   | 3000 | 3466 - 3800 (1:1 MCLK:FCLK) <br/> 3800+ (2:1 MCLK:FCLK) |
   * With more DIMMs and/or dual rank DIMMs, the expected frequency can be lower.
-  * 2 CCD Ryzen 3000 CPUs (3900X and 3950X) seem to prefer 2 dual rank sticks over 4 single rank sticks.
+  * 2 CCD Ryzen 3000 CPUs (3900X and 3950X) seem to prefer 4 single rank sticks over 2 dual rank sticks.
     > For 2 CCD SKUs, 2 DPC SR configuration seems to be the way to go.
 Both the 3600 and 3700X did 1800MHz UCLK on 1 DPC DR config, but most likely due to the discrepancy of the two CCDs in 3900X, it barely does 1733MHz on those DIMMs.
 Meanwhile with 2 DPC SR config there is no issue in reaching 1866MHz FCLK/UCLK.  
