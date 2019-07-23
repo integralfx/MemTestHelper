@@ -179,7 +179,7 @@ Meanwhile with 2 DPC SR config there is no issue in reaching 1866MHz FCLK/UCLK.
    * Minimum recommended coverage:
      * MemTestHelper (HCI MemTest): 200% per thread.
      * Karhu RAMTest: 5000%.
-       * In the advanced tab, make sure CPU cache is set to enabled. This will speed up testing by ~33% (?).
+       * In the advanced tab, make sure CPU cache is set to enabled. This will speed up testing by ~20%.
 6. If you crash/freeze/BSOD or get an error, drop the DRAM frequency by a notch and test again.
 7. Save your overclock profile in your UEFI.
 8. From this point on you can either: try to go for a higher frequency or work on tightening the timings.
@@ -219,7 +219,13 @@ Meanwhile with 2 DPC SR config there is no issue in reaching 1866MHz FCLK/UCLK.
     * Your read and write bandwidth should be 90% - 95% of the theoretical maximum bandwidth.
       * On single CCD Ryzen 3000 CPUs, write bandwidth should be 90% - 95% of half of the theoretical maximum bandwidth.
 
-1. I would recommend to tighten some of the secondary timings first, as they can speed up memory testing.  
+1. AMD:
+   * Try disabling GDM and setting CR to 1T. If that doesn't work, leave GDM enabled.
+   
+   Intel:
+   * Try setting CR to 1T. If that doesn't work, leave CR on 2T.
+
+2. I would recommend to tighten some of the secondary timings first, as they can speed up memory testing.  
    My suggestions:
    
    | Timing | Safe | Tight | Extreme |
@@ -229,14 +235,14 @@ Meanwhile with 2 DPC SR config there is no issue in reaching 1866MHz FCLK/UCLK.
    * Minimum tFAW can be is tRRDS * 4.
    * You don't have to run all of the timings at one preset. You might only be able to run tRRDS tRRDL tFAW at the tight preset, but you may be able to run tWR at the extreme preset.
    
-2. Next are the primary timings (tCL, tRCD, tRP).
+3. Next are the primary timings (tCL, tRCD, tRP).
    * Start with tCL and drop that by 1 until you get instability.
    * Do the same with tRCD and tRP.
    * After the above timings are as tight as they can go, set `tRAS = tCL + tRCD(RD) + 2` and `tRC = tRP + tRAS`.
      * Setting tRAS lower than this can incur a [performance penalty](https://www.overclock.net/forum/25801780-post3757.html).
      * tRC is only available on AMD and some Intel UEFIs.
      
-3. Next is tRFC. Default for 8Gb ICs is 350**ns** (note the units).
+4. Next is tRFC. Default for 8Gb ICs is 350**ns** (note the units).
    * To convert to ns: `2000 * timing / ddr_freq`.  
    For example, tRFC 250 at 3200MHz is `2000 * 250 / 3200 = 156.25ns`.
    * To convert from ns: `ns * ddr_freq / 2000`.  
@@ -250,7 +256,7 @@ Meanwhile with 2 DPC SR config there is no issue in reaching 1866MHz FCLK/UCLK.
      | 8Gb Rev. E | 300 - 350 |
      | 8Gb B-die | 160 - 180 |
      
-4. Here are my suggestions for the rest of the secondaries:
+5. Here are my suggestions for the rest of the secondaries:
 
    | Timing | Safe | Tight | Extreme |
    | :----: | :--: | :---: | :-----: |
@@ -259,7 +265,7 @@ Meanwhile with 2 DPC SR config there is no issue in reaching 1866MHz FCLK/UCLK.
    | tCWL | tCL | tCL - 1 | tCL - 2 |
    * On Intel, tWTRS/L should be left on auto and controlled with tWRRD_dg/sg respectively. Dropping tWRRD_dg by 1 will drop tWTRS by 1. Likewise with tWRRD_sg. Once they're as low as you can go, manually set tWTRS/L.
    
-5. Now for the tertiaries:
+6. Now for the tertiaries:
     * If you're on AMD, refer to [this post](https://redd.it/ahs5a2).  
       My suggestion:
   
