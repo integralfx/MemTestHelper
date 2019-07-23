@@ -217,7 +217,8 @@ Meanwhile with 2 DPC SR config there is no issue in reaching 1866MHz FCLK/UCLK.
     | 3800 | 60800 |
     | 4000 | 64000 |
     * Your read and write bandwidth should be 90% - 95% of the theoretical maximum bandwidth.
-      * On single CCD Ryzen 3000 CPUs, write bandwidth should be 90% - 95% of half of the theoretical maximum bandwidth.
+      * On single CCD Ryzen 3000 CPUs, write bandwidth should be 90% - 95% of half of the theoretical maximum bandwidth.  
+        It is possible to hit half of the theoretical maximum write bandwidth. See [here](https://redd.it/cgc9bh).
 
 1. AMD:
    * Try disabling GDM and setting CR to 1T. If that doesn't work, leave GDM enabled.
