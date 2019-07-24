@@ -45,6 +45,7 @@
   * On motherboards that use a daisy chain [memory trace layout](https://www.youtube.com/watch?v=3vQwGGbW1AE), 2 sticks are preferred. Using 4 sticks may significantly impact your maximum memory frequency.
   * On the other hand, motherboards that use T-topology will overclock the best with 4 sticks. Using 2 sticks won't impact your maximum memory frequency as much as using 4 sticks on a daisy chain motherboard (?).
   * Most vendors don't advertise what memory trace layout they use, but you can make an educated guess based on the QVL. For example, the [Z390 Aorus Master](http://download.gigabyte.asia/FileList/Memory/mb_memory_z390-aorus-master_20190214.pdf) *probably* uses a T-toplogy layout as its highest validated frequency is with 4 DIMMs. If the highest validated frequency were done with 2 DIMMs, it *probably* uses a daisy chain layout.
+  * According to buildzoid, daisy chain VS T-topology only matters above 4000MHz. If you're on Ryzen 3000, this doesn't matter as 3800MHz is the typical max memory frequency when running MCLK:FCLK 1:1.
 * Lower end motherboard may not overclock as well, possibly due to the lower PCB quality and number of layers (?).
   
 ## Integrated Circuits (ICs)
