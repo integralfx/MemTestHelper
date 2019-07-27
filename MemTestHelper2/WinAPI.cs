@@ -38,29 +38,32 @@ namespace MemTestHelper2
             return str.ToString();
         }
 
+        // Finds the first window that matches pid, and if non-empty, windowTitle.
         public static IntPtr GetHWNDFromPID(int pid, String windowTitle = "")
         {
             IntPtr hwnd = IntPtr.Zero;
 
             EnumWindows(
-                delegate (IntPtr curr_hwnd, IntPtr lParam)
+                delegate (IntPtr currHwnd, IntPtr lParam)
                 {
-                    int len = GetWindowTextLength(curr_hwnd);
-                    if (len != windowTitle.Length) return true;
+                    int len = GetWindowTextLength(currHwnd);
+                    if (windowTitle.Length > 0 && len != windowTitle.Length)
+                        return true;
+
                     StringBuilder sb = new StringBuilder(len + 1);
-                    GetWindowText(curr_hwnd, sb, sb.Capacity);
+                    GetWindowText(currHwnd, sb, sb.Capacity);
 
-                    uint proc_id;
-                    GetWindowThreadProcessId(curr_hwnd, out proc_id);
+                    uint currPid;
+                    GetWindowThreadProcessId(currHwnd, out currPid);
 
-                    if (proc_id == pid)
+                    if (currPid == pid)
                     {
                         if (windowTitle.Length == 0)
-                            hwnd = curr_hwnd;
+                            hwnd = currHwnd;
                         else
                         {
                             if (sb.ToString() == windowTitle)
-                                hwnd = curr_hwnd;
+                                hwnd = currHwnd;
                             else return true;
                         }
                         
