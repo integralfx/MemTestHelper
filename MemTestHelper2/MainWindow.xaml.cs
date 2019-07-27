@@ -437,7 +437,7 @@ namespace MemTestHelper2
                             txtRAM.Text = appSettings[key];
                             break;
                         case "threads":
-                            cboThreads.SelectedItem = appSettings[key];
+                            cboThreads.SelectedItem = Int32.Parse(appSettings[key]);
                             break;
 
                         case "xOffset":
@@ -502,7 +502,7 @@ namespace MemTestHelper2
             {
                 var dict = new Dictionary<string, string>();
                 dict.Add("ram", txtRAM.Text);
-                dict.Add("threads", cboThreads.SelectedItem.ToString());
+                dict.Add("threads", ((int)cboThreads.SelectedItem).ToString());
                 dict.Add("xOffset", udXOffset.Value.ToString());
                 dict.Add("yOffset", udYOffset.Value.ToString());
                 dict.Add("xSpacing", udXSpacing.Value.ToString());
@@ -683,7 +683,7 @@ namespace MemTestHelper2
         // Only close MemTests started by MemTestHelper.
         private void CloseMemTests()
         {
-            Parallel.For(0, (int)cboThreads.SelectedItem, i =>
+            Parallel.For(0, memtests.Length, i =>
             {
                 try
                 {
