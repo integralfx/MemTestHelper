@@ -2,6 +2,7 @@
 using Microsoft.VisualBasic.Devices;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
@@ -419,108 +420,76 @@ namespace MemTestHelper2
         // Returns free RAM in MB.
         private ulong GetFreeRAM()
         {
-            /*
-             * Available RAM = Free + Standby
-             * https://superuser.com/a/1032481
-             * 
-             * Cached = sum of stuff
-             * https://www.reddit.com/r/PowerShell/comments/ao59ha/cached_memory_as_it_appears_in_the_performance/efye75r/
-             * 
-             * Standby = Cached - Modifed
-             */
-            /*
-            float standby = new PerformanceCounter("Memory", "Cache Bytes").NextValue() +
-                            //new PerformanceCounter("Memory", "Modified Page List Bytes").NextValue() +
-                            new PerformanceCounter("Memory", "Standby Cache Core Bytes").NextValue() +
-                            new PerformanceCounter("Memory", "Standby Cache Normal Priority Bytes").NextValue() +
-                            new PerformanceCounter("Memory", "Standby Cache Reserve Bytes").NextValue();
-            */
-
             return new ComputerInfo().AvailablePhysicalMemory / (1024 * 1024);
         }
 
-        // TODO: error checking
         private bool LoadConfig()
         {
-            string[] validKeys = { "ram", "threads", "x_offset", "y_offset",
-                                   "x_spacing", "y_spacing", "rows", "stop_at",
-                                   "stop_at_value", "stop_at_total", "stop_on_error",
-                                   "start_min" };
-
             try
             {
-                string[] lines = File.ReadAllLines(CFG_FILENAME);
-                Dictionary<string, int> cfg = new Dictionary<string, int>();
+                var appSettings = ConfigurationManager.AppSettings;
 
-                foreach (string l in lines)
+                foreach (var key in appSettings.AllKeys)
                 {
-                    var s = l.Split('=');
-                    if (s.Length != 2) continue;
-                    s[0] = s[0].Trim();
-                    s[1] = s[1].Trim();
-
-                    if (validKeys.Contains(s[0]))
-                    {
-                        // skip blank values
-                        if (s[1].Length == 0) continue;
-
-                        int v;
-                        if (Int32.TryParse(s[1], out v))
-                            cfg.Add(s[0], v);
-                        else return false;
-                    }
-                    else return false;
-                }
-
-                // input values in controls
-                foreach (KeyValuePair<string, int> kv in cfg)
-                {
-                    switch (kv.Key)
+                    switch (key)
                     {
                         case "ram":
-                            txtRAM.Text = kv.Value.ToString();
+                            txtRAM.Text = appSettings[key];
                             break;
                         case "threads":
-                            cboThreads.SelectedItem = kv.Value;
+                            cboThreads.SelectedItem = appSettings[key];
                             break;
 
-                        case "x_offset":
-                            udXOffset.Value = kv.Value;
+                        case "xOffset":
+                            udXOffset.Value = Int32.Parse(appSettings[key]);
                             break;
-                        case "y_offset":
-                            udYOffset.Value = kv.Value;
-                            break;
-
-                        case "x_spacing":
-                            udXSpacing.Value = kv.Value;
-                            break;
-                        case "y_spacing":
-                            udYSpacing.Value = kv.Value;
+                        case "yOffset":
+                            udYOffset.Value = Int32.Parse(appSettings[key]);
                             break;
 
-                        case "stop_at":
-                            chkStopAt.IsChecked = kv.Value != 0;
+                        case "xSpacing":
+                            udXSpacing.Value = Int32.Parse(appSettings[key]);
                             break;
-                        case "stop_at_value":
-                            txtStopAt.Text = kv.Value.ToString();
-                            break;
-                        case "stop_at_total":
-                            chkStopAtTotal.IsChecked = kv.Value != 0;
+                        case "ySpacing":
+                            udYSpacing.Value = Int32.Parse(appSettings[key]);
                             break;
 
-                        case "stop_on_error":
-                            chkStopOnError.IsChecked = kv.Value != 0;
+                        case "rows":
+                            cboRows.SelectedItem = Int32.Parse(appSettings[key]);
                             break;
 
-                        case "start_min":
-                            chkStartMin.IsChecked = kv.Value != 0;
+                        case "stopAt":
+                            chkStopAt.IsChecked = Boolean.Parse(appSettings[key]);
+                            break;
+                        case "stopAtValue":
+                            txtStopAt.Text = appSettings[key];
+                            break;
+                        case "stopAtTotal":
+                            chkStopAtTotal.IsChecked = Boolean.Parse(appSettings[key]);
+                            break;
+
+                        case "stopOnError":
+                            chkStopOnError.IsChecked = Boolean.Parse(appSettings[key]);
+                            break;
+
+                        case "startMin":
+                            chkStartMin.IsChecked = Boolean.Parse(appSettings[key]);
+                            break;
+
+                        default:
+                            MessageBox.Show($"Unknown key: {key}");
                             break;
                     }
                 }
             }
-            catch (FileNotFoundException)
+            catch (ConfigurationErrorsException e)
             {
-                Console.WriteLine(CFG_FILENAME + " not found");
+                MessageBox.Show(e.BareMessage);
+                return false;
+            }
+            catch (FormatException e)
+            {
+                MessageBox.Show(e.Message);
                 return false;
             }
 
@@ -529,41 +498,39 @@ namespace MemTestHelper2
 
         private bool SaveConfig()
         {
-            StreamWriter file = null;
             try
             {
-                file = new StreamWriter(CFG_FILENAME);
-                var lines = new List<string>();
+                var dict = new Dictionary<string, string>();
+                dict.Add("ram", txtRAM.Text);
+                dict.Add("threads", cboThreads.SelectedItem.ToString());
+                dict.Add("xOffset", udXOffset.Value.ToString());
+                dict.Add("yOffset", udYOffset.Value.ToString());
+                dict.Add("xSpacing", udXSpacing.Value.ToString());
+                dict.Add("ySpacing", udYSpacing.Value.ToString());
+                dict.Add("rows", cboRows.SelectedItem.ToString());
+                dict.Add("stopAt", chkStopAt.IsChecked.ToString());
+                dict.Add("stopAtValue", txtStopAt.Text);
+                dict.Add("stopAtTotal", chkStopAtTotal.IsChecked.ToString());
+                dict.Add("stopOnError", chkStopOnError.IsChecked.ToString());
+                dict.Add("startMin", chkStartMin.IsChecked.ToString());
 
-                lines.Add($"ram = {txtRAM.Text}");
-                lines.Add($"threads = {(int)cboThreads.SelectedItem}");
+                var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                var settings = configFile.AppSettings.Settings;
 
-                lines.Add($"x_offset = {udXOffset.Value}");
-                lines.Add($"y_offset = {udYOffset.Value}");
-                lines.Add($"x_spacing = {udXSpacing.Value}");
-                lines.Add($"y_spacing = {udYSpacing.Value}");
-                lines.Add($"rows = {cboRows.SelectedItem}");
+                foreach (var pair in dict)
+                {
+                    if (settings[pair.Key] == null)
+                        settings.Add(pair.Key, pair.Value);
+                    else settings[pair.Key].Value = pair.Value;
+                }
 
-                lines.Add(string.Format("stop_at = {0}", chkStopAt.IsChecked.Value ? 1 : 0));
-                lines.Add($"stop_at_value = {txtStopAt.Text}");
-                lines.Add(string.Format("stop_at_total = {0}", chkStopAtTotal.IsChecked.Value ? 1 : 0));
-                lines.Add(string.Format("stop_on_error = {0}", chkStopOnError.IsChecked.Value ? 1 : 0));
-
-                lines.Add(string.Format("start_min = {0}", chkStartMin.IsChecked.Value ? 1 : 0));
-
-                foreach (var l in lines)
-                    file.WriteLine(l);
+                configFile.Save(ConfigurationSaveMode.Modified);
+                ConfigurationManager.RefreshSection(configFile.AppSettings.SectionInformation.Name);
             }
-            catch (Exception)
+            catch (ConfigurationErrorsException e)
             {
-                Console.WriteLine("Failed to save " + CFG_FILENAME);
+                MessageBox.Show(e.BareMessage);
                 return false;
-            }
-            finally
-            {
-                // BaseStream isn't null when open.
-                if (file != null && file.BaseStream != null)
-                    file.Close();
             }
 
             return true;
