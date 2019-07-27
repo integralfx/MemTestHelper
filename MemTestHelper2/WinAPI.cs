@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -17,8 +18,7 @@ namespace MemTestHelper2
         {
             IntPtr hwnd = FindWindow(hwndParent, className);
             if (hwnd == IntPtr.Zero) return false;
-            SendNotifyMessage(hwnd, BM_CLICK, IntPtr.Zero, null);
-            return true;
+            return SendNotifyMessage(hwnd, BM_CLICK, IntPtr.Zero, null) != 0;
         }
 
         public static bool ControlSetText(IntPtr hwndParent, string className, string text)
@@ -76,6 +76,30 @@ namespace MemTestHelper2
             return hwnd;
         }
 
+        public static List<IntPtr> FindAllWindows(string windowTitle)
+        {
+            var windows = new List<IntPtr>();
+
+            EnumWindows(
+                delegate (IntPtr hwnd, IntPtr lParam)
+                {
+                    int len = GetWindowTextLength(hwnd);
+                    if (windowTitle.Length > 0 && len != windowTitle.Length)
+                        return true;
+
+                    StringBuilder sb = new StringBuilder(len + 1);
+                    GetWindowText(hwnd, sb, sb.Capacity);
+
+                    if (sb.ToString() == windowTitle)
+                        windows.Add(hwnd);
+
+                    return true;
+                },
+                IntPtr.Zero);
+
+            return windows;
+        }
+
         // Imports //
 
         [DllImport("user32.dll", SetLastError = true)]
@@ -90,7 +114,7 @@ namespace MemTestHelper2
 
         // doesn't block
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        public static extern bool SendNotifyMessage(IntPtr hWnd, int Msg, IntPtr wParam, [MarshalAs(UnmanagedType.LPWStr)] string lParam);
+        public static extern int SendNotifyMessage(IntPtr hWnd, int Msg, IntPtr wParam, [MarshalAs(UnmanagedType.LPWStr)] string lParam);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);

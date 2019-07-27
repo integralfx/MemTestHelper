@@ -653,6 +653,9 @@ namespace MemTestHelper2
                 memtests[i].Start(ram, startMin);
             });
 
+            foreach (var hwnd in WinAPI.FindAllWindows(MemTest.MSG2))
+                WinAPI.ControlClick(hwnd, MemTest.MSGBOX_OK);
+
             if (!chkStartMin.IsChecked.Value)
                 LayOutMemTests();
         }

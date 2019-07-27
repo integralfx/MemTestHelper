@@ -12,7 +12,7 @@ namespace MemTestHelper2
         public static readonly int WIDTH = 217, HEIGHT = 247,
                                    MAX_RAM = 2048; 
 
-        private const string CLASSNAME = "#32770",
+        public const string CLASSNAME = "#32770",
                              BTN_START = "Button1",
                              BTN_STOP = "Button2",
                              EDT_RAM = "Edit1",
@@ -21,7 +21,9 @@ namespace MemTestHelper2
                              STATIC_FREE_VER = "Static2",
                              MSGBOX_OK = "Button1",
                              MSGBOX_YES = "Button1",
-                             MSGBOX_NO = "Button2";
+                             MSGBOX_NO = "Button2",
+                             MSG1 = "Welcome, New MemTest User",
+                             MSG2 = "Message for first-time users";
 
         private Process process = null;
         private bool hasStarted = false, isFinished = false;
@@ -92,7 +94,7 @@ namespace MemTestHelper2
             // Wait for process to start.
             while (string.IsNullOrEmpty(process.MainWindowTitle))
             {
-                ClickNagMessageBox("Welcome, New MemTest User");
+                ClickNagMessageBox(MSG1);
                 Thread.Sleep(100);
                 process.Refresh();
             }
@@ -102,7 +104,7 @@ namespace MemTestHelper2
             WinAPI.ControlSetText(hwnd, STATIC_FREE_VER, "MemTestHelper by ∫ntegral#7834");
             WinAPI.ControlClick(hwnd, BTN_START);
 
-            while (!ClickNagMessageBox("Message for first-time users"))
+            while (!ClickNagMessageBox(MSG2))
                 Thread.Sleep(100);
 
             if (startMinimised)
@@ -200,7 +202,13 @@ namespace MemTestHelper2
                         break;
                 }
 
-                WinAPI.ControlClick(hwnd, strBtn);
+                attempts = 0;
+                while (!WinAPI.ControlClick(hwnd, strBtn) && attempts < maxAttempts)
+                {
+                    Thread.Sleep(100);
+                    attempts++;
+                }
+
                 return true;
             }
         }
