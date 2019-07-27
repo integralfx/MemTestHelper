@@ -180,7 +180,8 @@ namespace MemTestHelper2
                 Thread.Sleep(10);
             } while (hwnd == IntPtr.Zero && attempts < maxAttempts);
 
-            if (hwnd == IntPtr.Zero) return false;
+            if (hwnd == IntPtr.Zero || attempts == maxAttempts)
+                return false;
             else
             {
                 string strBtn = "";

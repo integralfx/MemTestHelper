@@ -38,7 +38,7 @@ namespace MemTestHelper2
             return str.ToString();
         }
 
-        public static IntPtr GetHWNDFromPID(int pid, String window_title = "")
+        public static IntPtr GetHWNDFromPID(int pid, String windowTitle = "")
         {
             IntPtr hwnd = IntPtr.Zero;
 
@@ -46,7 +46,7 @@ namespace MemTestHelper2
                 delegate (IntPtr curr_hwnd, IntPtr lParam)
                 {
                     int len = GetWindowTextLength(curr_hwnd);
-                    if (len != window_title.Length) return true;
+                    if (len != windowTitle.Length) return true;
                     StringBuilder sb = new StringBuilder(len + 1);
                     GetWindowText(curr_hwnd, sb, sb.Capacity);
 
@@ -55,11 +55,11 @@ namespace MemTestHelper2
 
                     if (proc_id == pid)
                     {
-                        if (window_title.Length == 0)
+                        if (windowTitle.Length == 0)
                             hwnd = curr_hwnd;
                         else
                         {
-                            if (sb.ToString() == window_title)
+                            if (sb.ToString() == windowTitle)
                                 hwnd = curr_hwnd;
                             else return true;
                         }
