@@ -42,7 +42,7 @@ namespace MemTestHelper2
         }
 
         // Finds the first window that matches pid, and if non-empty, windowTitle.
-        public static IntPtr GetHWNDFromPID(int pid, String windowTitle = "")
+        public static IntPtr GetHWNDFromPID(int pid, string windowTitle = "")
         {
             IntPtr hwnd = IntPtr.Zero;
 

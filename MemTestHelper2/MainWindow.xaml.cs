@@ -271,7 +271,6 @@ namespace MemTestHelper2
                     if (memtest != null)
                     {
                         memtest.Minimised = false;
-
                         Thread.Sleep(10);
                     }
                 }
@@ -379,7 +378,7 @@ namespace MemTestHelper2
         {
             for (var i = 0; i <= (int)cboThreads.SelectedItem; i++)
             {
-                // first row is total
+                // First row is total.
                 memtestInfo[i] = new MemTestInfo(i == 0 ? "T" : i.ToString(), 0.0, 0);
             }
 
@@ -710,13 +709,10 @@ namespace MemTestHelper2
             });
         }
 
-        /* 
-         * Close all MemTests, regardless of if they were
-         * started by MemTestHelper.
-         */
+        // Close all MemTests, regardless of if they were started by MemTestHelper.
         private void CloseAllMemTests()
         {
-            // remove the .exe
+            // Remove the '.exe'.
             var name = MemTest.EXE_NAME.Substring(0, MemTest.EXE_NAME.Length - 4);
             var processes = Process.GetProcessesByName(name);
             Parallel.ForEach(processes, p => { p.Kill(); });
@@ -751,8 +747,7 @@ namespace MemTestHelper2
                             var stopAt = Convert.ToInt32(txtStopAt.Text);
                             if (coverage > stopAt)
                             {
-                                if (!memtest.Finished)
-                                    memtest.Stop();
+                                if (!memtest.Finished) memtest.Stop();
                             }
                         }
 
@@ -792,16 +787,12 @@ namespace MemTestHelper2
                             ClickBtnStop();
                     }
 
-                    if (IsAllFinished())
-                        ClickBtnStop();
+                    if (IsAllFinished()) ClickBtnStop();
                 }
             });
         }
 
-        /*
-         * MemTest can take a while to stop,
-         * which causes the total to return 0.
-         */
+        // MemTest can take a while to stop, which causes the total to return 0.
         private bool IsAnyMemTestStopping()
         {
             for (var i = 0; i < (int)cboThreads.SelectedItem; i++)
@@ -814,9 +805,8 @@ namespace MemTestHelper2
         }
 
         /* 
-         * PerformClick() only works if the button is visible
-         * switch to main tab and PerformClick() then switch
-         * back to the tab that the user was on.
+         * PerformClick() only works if the button is visible switch to main tab and PerformClick() then switch back to
+         * the tab that the user was on.
          */
         private void ClickBtnStop()
         {
@@ -835,20 +825,14 @@ namespace MemTestHelper2
 
         private void ShowErrorMsgBox(string msg)
         {
-            MessageBox.Show(
-                msg,
-                "Error",
-                MessageBoxButton.OK,
-                MessageBoxImage.Error
-            );
+            MessageBox.Show(msg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
 
         private bool IsAllFinished()
         {
             for (var i = 0; i < (int)cboThreads.SelectedItem; i++)
             {
-                if (!memtests[i].Finished)
-                    return false;
+                if (!memtests[i].Finished) return false;
             }
 
             return true;
