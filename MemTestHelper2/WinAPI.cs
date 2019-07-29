@@ -8,16 +8,19 @@ namespace MemTestHelper2
 {
     class WinAPI
     {
-        public const int WM_SETTEXT = 0xC, WM_LBUTTONDOWN = 0x201, WM_LBUTTONUP = 0x202,
-                         WM_SYSCOMMAND = 0x112, SC_MINIMIZE = 0xF020,
-                         SW_SHOW = 5, SW_RESTORE = 9, SW_MINIMIZE = 6, BM_CLICK = 0xF5;
-
-        // Emulate AutoIT Control functions //
+        public const int WM_SETTEXT = 0xC, WM_LBUTTONDOWN = 0x201, WM_LBUTTONUP = 0x202, WM_SYSCOMMAND = 0x112, 
+                         SC_MINIMIZE = 0xF020, SW_SHOW = 5, SW_RESTORE = 9, SW_MINIMIZE = 6, BM_CLICK = 0xF5;
 
         public static bool ControlClick(IntPtr hwndParent, string className)
         {
             IntPtr hwnd = FindWindow(hwndParent, className);
             if (hwnd == IntPtr.Zero) return false;
+            /*
+             * If the button is in a dialog box and the dialog box is not active, the BM_CLICK message might fail. 
+             * To ensure success in this situation, call the SetActiveWindow function to activate the dialog box 
+             * before sending the BM_CLICK message to the button.
+             */
+            SetActiveWindow(hwndParent);
             return SendNotifyMessage(hwnd, BM_CLICK, IntPtr.Zero, null) != 0;
         }
 
@@ -100,7 +103,10 @@ namespace MemTestHelper2
             return windows;
         }
 
-        // Imports //
+        #region Imports
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern IntPtr SetActiveWindow(IntPtr hWnd);
 
         [DllImport("user32.dll", SetLastError = true)]
         public static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
@@ -108,11 +114,11 @@ namespace MemTestHelper2
         [DllImport("user32.dll", SetLastError = true)]
         public static extern IntPtr FindWindowEx(IntPtr hwndParent, IntPtr hwndChildAfter, string lpszClass, string lpszWindow);
 
-        // blocks
+        // Blocks.
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern IntPtr SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, [MarshalAs(UnmanagedType.LPWStr)] string lParam);
 
-        // doesn't block
+        // Doesn't block.
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         public static extern int SendNotifyMessage(IntPtr hWnd, int Msg, IntPtr wParam, [MarshalAs(UnmanagedType.LPWStr)] string lParam);
 
@@ -129,26 +135,16 @@ namespace MemTestHelper2
         [DllImport("user32.dll", EntryPoint = "ShowWindow", SetLastError = true)]
         public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
-        // is minimised
+        // Is minimised.
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool IsIconic(IntPtr hWnd);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        public static extern int CloseWindow(IntPtr hWnd);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
 
         public delegate bool EnumWindowsProc(IntPtr hwnd, IntPtr lParam);
 
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool EnumWindows(EnumWindowsProc lpEnumFunc, IntPtr lParam);
-
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool EnumChildWindows(IntPtr hwndParent, EnumWindowsProc lpEnumFunc, IntPtr lParam);
 
         [DllImport("user32.dll", SetLastError = true)]
         public static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
@@ -157,11 +153,13 @@ namespace MemTestHelper2
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         public static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
 
+        #endregion
+
         /*
-         * className should be <classname><n>
-         * tries to split className as above
-         * returns (<classname>, <n>) if possible
-         * otherwise, returns null
+         * className should be <classname><n>.
+         * Tries to split className as above.
+         * Returns (<classname>, <n>) if possible.
+         * Otherwise, returns null.
          */
         private static Tuple<string, int> SplitClassName(string className)
         {
@@ -177,12 +175,12 @@ namespace MemTestHelper2
         }
 
         /*
-         * className should be <classname><n>
-         * where <classname> is the name of the class to find
-         *       <n>         is the nth window with that matches <classname> (1 indexed)
+         * className should be <classname><n>.
+         * where <classname> is the name of the class to find.
+         *       <n>         is the nth window with that matches <classname> (1 indexed).
          * e.g. Edit1
-         * returns the handle to the window if found
-         * otherwise, returns IntPtr.Zero
+         * Returns the handle to the window if found.
+         * Otherwise, returns IntPtr.Zero.
          */
         private static IntPtr FindWindow(IntPtr hwndParent, string className)
         {
@@ -192,7 +190,7 @@ namespace MemTestHelper2
             var name = SplitClassName(className);
             if (name == null) return IntPtr.Zero;
 
-            IntPtr hwnd = IntPtr.Zero;
+            var hwnd = IntPtr.Zero;
             for (int i = 0; i < name.Item2; i++)
                 hwnd = FindWindowEx(hwndParent, hwnd, name.Item1, null);
 

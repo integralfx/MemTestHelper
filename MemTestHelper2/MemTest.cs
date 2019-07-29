@@ -13,17 +13,17 @@ namespace MemTestHelper2
                                    MAX_RAM = 2048; 
 
         public const string CLASSNAME = "#32770",
-                             BTN_START = "Button1",
-                             BTN_STOP = "Button2",
-                             EDT_RAM = "Edit1",
-                             STATIC_COVERAGE = "Static1",
-                             // If you find this free version useful...
-                             STATIC_FREE_VER = "Static2",
-                             MSGBOX_OK = "Button1",
-                             MSGBOX_YES = "Button1",
-                             MSGBOX_NO = "Button2",
-                             MSG1 = "Welcome, New MemTest User",
-                             MSG2 = "Message for first-time users";
+                            BTN_START = "Button1",
+                            BTN_STOP = "Button2",
+                            EDT_RAM = "Edit1",
+                            STATIC_COVERAGE = "Static1",
+                            // If you find this free version useful...
+                            STATIC_FREE_VER = "Static2",
+                            MSGBOX_OK = "Button1",
+                            MSGBOX_YES = "Button1",
+                            MSGBOX_NO = "Button2",
+                            MSG1 = "Welcome, New MemTest User",
+                            MSG2 = "Message for first-time users";
 
         private Process process = null;
         private bool hasStarted = false, isFinished = false;
@@ -168,7 +168,8 @@ namespace MemTestHelper2
             return Tuple.Create(coverage, errors);
         }
 
-        public bool ClickNagMessageBox(string messageBoxCaption, MsgBoxButton button = MsgBoxButton.OK, int maxAttempts = 10)
+        public bool ClickNagMessageBox(string messageBoxCaption, MsgBoxButton button = MsgBoxButton.OK, 
+                                       int maxAttempts = 10)
         {
             if (!hasStarted || isFinished || process == null || process.HasExited)
                 return false;
@@ -209,7 +210,7 @@ namespace MemTestHelper2
                     attempts++;
                 }
 
-                return true;
+                return attempts != maxAttempts;
             }
         }
     }

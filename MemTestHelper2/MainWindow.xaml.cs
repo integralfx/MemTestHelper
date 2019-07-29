@@ -25,9 +25,7 @@ namespace MemTestHelper2
     {
         private readonly int NUM_THREADS, MAX_THREADS;
 
-        private const string CFG_FILENAME = "MemTestHelper.cfg";
-
-        // interval (in ms) for coverage info list
+        // Interval (in ms) for coverage info list.
         private const int UPDATE_INTERVAL = 200;
 
         private MemTest[] memtests;
@@ -118,7 +116,7 @@ namespace MemTestHelper2
             
         }
 
-        // Event Handling //
+        #region Event Handling
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -348,7 +346,9 @@ namespace MemTestHelper2
             (sender as TextBox).SelectAll();
         }
 
-        // Helper Functions //
+        #endregion
+
+        #region Helper Functions
 
         private void InitCboThreads()
         {
@@ -543,7 +543,7 @@ namespace MemTestHelper2
                    availableRAM = ci.AvailablePhysicalMemory / (1024 * 1024);
 
             var ramText = txtRAM.Text;
-            // automatically input available ram if empty
+            // Automatically input available RAM if empty.
             if (ramText.Length == 0)
             {
                 ramText = GetFreeRAM().ToString();
@@ -597,7 +597,7 @@ namespace MemTestHelper2
                     return false;
             }
 
-            // validate stop at % and error count
+            // Validate stop at % and error count.
             if (chkStopAt.IsChecked.Value)
             {
                 var stopAtText = txtStopAt.Text;
@@ -653,6 +653,17 @@ namespace MemTestHelper2
                 memtests[i].Start(ram, startMin);
             });
 
+            /* 
+             * Some nag message boxes won't be clicked due to concurrent execution.
+             * memTestA             | memTestB
+             * SetActiveWindow()    | 
+             *                      | SetActiveWindow()
+             * SendNotifyMessage()  | 
+             *                      | SendNotifyMessage()
+             *                      
+             * memTestB's window will be active while calling SendNotifyMessage()
+             * for memTestA.
+             */
             foreach (var hwnd in WinAPI.FindAllWindows(MemTest.MSG2))
                 WinAPI.ControlClick(hwnd, MemTest.MSGBOX_OK);
 
@@ -852,6 +863,8 @@ namespace MemTestHelper2
             });
             bw.RunWorkerAsync();
         }
+
+        #endregion
 
         class MemTestInfo : INotifyPropertyChanged
         {
