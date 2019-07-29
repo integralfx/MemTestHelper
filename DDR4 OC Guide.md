@@ -275,13 +275,19 @@ Meanwhile with 2 DPC SR config there is no issue in reaching 1866MHz FCLK/UCLK.
        | ------ | ---- | ----- | ------- |
        | tRDRDSCL tWRWRSCL | 4 4 | 3 3 | 2 2 |
      
-    * If you're on Intel, tune the tertiaries one group at a time.
-      * For example, drop all of tRDRD_sg/dg/dr/dd by 1 and run a memory test.  
-      Note that dr only affects dual rank sticks, so if you have single rank sticks you can ignore this timing.  
-      Do the same with the next group until you've done all the tertiaries.  
-      [These](https://i.imgur.com/61ZtPpR.jpg) are my timings on B-die, for reference.
+    * If you're on Intel, tune the tertiaries one group at a time.  
+      My suggestions:
+      
+      | Timing | Safe | Tight | Extreme |
+      | ------ | ---- | ----- | ------- |
+      | tRDRD_sg/dg/dr/dd | 8/4/8/8 | 7/4/7/7 | 6/4/6/6 |
+      | tWRWR_sg/dg/dr/dd | 8/4/8/8 | 7/4/7/7 | 6/4/6/6 |
+      * For tWRRD_sg/dg, see step 5.
+      * For tRDWR_sg/dg/dr/dd, drop them all by 1 until you get instability. You can usually run them all the same e.g. 9/9/9/9.
+      * Note that dr only affects dual rank sticks, so if you have single rank sticks you can ignore this timing.  
+        [These](https://i.imgur.com/61ZtPpR.jpg) are my timings on B-die, for reference.
       * tREFI is also a timing that can help with performance. Unlike all the other timings, higher is better for tREFI.  
-      It's typically not a good idea to increase tREFI too much as ambient temperature changes (e.g. winter to summer) can be enough to cause instability.
+        It's typically not a good idea to increase tREFI too much as ambient temperature changes (e.g. winter to summer) can be enough to cause instability.
     
 7. You can also increase DRAM voltage to drop timings even more. Keep in mind the [voltage scaling characteristics of your ICs](#voltage-scaling) and the [maximum recommended daily voltage](#maximum-recommended-daily-voltage).
     
