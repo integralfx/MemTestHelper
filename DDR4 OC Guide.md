@@ -112,7 +112,7 @@ As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage 
 * Intel's IMC is pretty strong, so it shouldn't be the bottleneck when overclocking.  
   What would you expect from 14+++++?
 * There are 2 voltages you need to change if overclocking RAM: system agent (VCCSA) and IO (VCCIO).  
-  **DO NOT** leave these on auto, as they can pump dangerous levels of voltage into your IMC, potentially degrading or even killing it. Most of the time you can keep VCCSA and VCCIO the same, but sometimes too much can harm stability. I wouldn't recommend going above 1.25v on each.  
+  **DO NOT** leave these on auto, as they can pump dangerous levels of voltage into your IMC, potentially degrading or even killing it. Most of the time you can keep VCCSA and VCCIO the same, but [sometimes too much can harm stability](https://i.imgur.com/Bv8617y.png) (credits: Silent_Scone). I wouldn't recommend going above 1.25v on each.  
   Below are my suggested VCCSA and VCCIO for 2 single rank DIMMs:
 
   | Frequency (MHz) | VCCSA/VCCIO (v) |
