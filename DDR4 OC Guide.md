@@ -297,6 +297,7 @@ Meanwhile with 2 DPC SR config there is no issue in reaching 1866MHz FCLK/UCLK.
 * Secondary and tertiary timings (except for tRFC) don't really change much, if at all, across the frequency range. If you have stable secondary and tertiary timings at 3200MHz, you could probably run them at 3600MHz, even 4000MHz, provided your ICs, IMC and motherboard are capable.
 
 ### Intel
+* Loosening tCCDL to 8 may help with stability, especially above 3600MHz.
 * Higher cache (aka uncore, ring) frequency can increase bandwidth and reduce latency.
 * Increase IOL offsets to reduce RTLs and IOLs. Make sure to run a memory test after.  
   More info [here](https://hwbot.org/newsflash/3058_advanced_skylake_overclocking_tune_ddr4_memory_rtlio_on_maximus_viii_with_alexaros_guide).
