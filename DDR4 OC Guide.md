@@ -159,6 +159,8 @@ Meanwhile with 2 DPC SR config there is no issue in reaching 1866MHz FCLK/UCLK.
   | 1000 | 65 - 75 |
   | 2000 | 60 - 70 |
   | 3000 | 65 - 75 (1:1 MCLK:FCLK) <br/> 75+ (2:1 MCLK:FCLK) |
+* On Ryzen 3000, high enough FCLK can overcome the penalties from desynchronising MCLK and FCLK, provided that you can lock your UCLK to MCLK.
+  * [Chart](https://i.imgur.com/F9HpkO2.png) (credits: [buildzoid](https://www.youtube.com/watch?v=10pYf9wqFFY))
   
 # Overclocking
 * Disclaimer: The silicon lottery will affect your overclocking potential so there may be some deviation from my suggestions.
