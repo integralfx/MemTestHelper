@@ -144,7 +144,7 @@ As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage 
     > For 2 CCD SKUs, 2 DPC SR configuration seems to be the way to go.
 Both the 3600 and 3700X did 1800MHz UCLK on 1 DPC DR config, but most likely due to the discrepancy of the two CCDs in 3900X, it barely does 1733MHz on those DIMMs.
 Meanwhile with 2 DPC SR config there is no issue in reaching 1866MHz FCLK/UCLK.  
-[~ The Stilt](https://www.overclock.net/forum/10-amd-cpus/1728758-strictly-technical-matisse-not-really-26.html)
+[~ The Stilt](https://www.overclock.net/forum/10-amd-cpus/1728758-strictly-technical-matisse-not-really-26.html#post28052342)
 * tRCD is split into tRCDRD (read) and tRCDWR (write). Usually, tRCDWR can go lower than tRCDRD, but I haven't noticed any performance improvements from lowering tRCDWR. It's best to keep them the same.
 * Geardown mode (GDM) is automatically enabled above 2666MHz, which forces even tCL, even tCWL and CR 1T. If you want to run odd tCL, disable GDM. If you're unstable try running CR 2T, but that may negate the performance gain from dropping tCL.
   * For example, if you try to run 3000 CL15 with GDM enabled, CL will be rounded up to 16.
