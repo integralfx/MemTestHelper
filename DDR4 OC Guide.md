@@ -136,14 +136,22 @@ As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage 
 
   | Ryzen | Expected Frequency (MHz) |
   | :---: | :----------------------: |
-  | 1000 | 3000 - 3466 |
-  | 2000 | 3200 - 3600 |
-  | 3000 | 3466 - 3800 (1:1 MCLK:FCLK) <br/> 3800+ (2:1 MCLK:FCLK) |
+  | 1000 | 3000 - 3600 |
+  | 2000 | 3400 - 3800<sup>1</sup> |
+  | 3000 | 3600 - 3800 (1:1 MCLK:FCLK) <br/> 3800+ (2:1 MCLK:FCLK) |
   * With more DIMMs and/or dual rank DIMMs, the expected frequency can be lower.
+  * <sup>1</sup>3600+ is typically achieved on a 1 DIMM per channel (DPC)/2 DIMM slot motherboard and with a very good IMC.
+    * See [here](https://docs.google.com/spreadsheets/d/1dsu9K1Nt_7apHBdiy0MWVPcYjf6nOlr9CtkkfN78tSo/edit#gid=1814864213).
+  * <sup>1</sup>3400MHz - 3533MHz is what most, if not all, Ryzen 2000 IMCs should be able to hit.
+    > On the tested samples, the distribution of the maximum achievable memory frequency was following:  
+    > 3400MHz – 12.5% of the samples   
+    > 3466MHz – 25.0% of the samples  
+    > 3533MHz – 62.5% of the samples  
+    [~ The Stilt](https://forums.anandtech.com/threads/ryzen-strictly-technical.2500572/page-72#post-39391302)
   * 2 CCD Ryzen 3000 CPUs (3900X and 3950X) seem to prefer 4 single rank sticks over 2 dual rank sticks.
     > For 2 CCD SKUs, 2 DPC SR configuration seems to be the way to go.
-Both the 3600 and 3700X did 1800MHz UCLK on 1 DPC DR config, but most likely due to the discrepancy of the two CCDs in 3900X, it barely does 1733MHz on those DIMMs.
-Meanwhile with 2 DPC SR config there is no issue in reaching 1866MHz FCLK/UCLK.  
+    > Both the 3600 and 3700X did 1800MHz UCLK on 1 DPC DR config, but most likely due to the discrepancy of the two CCDs in 3900X, it barely does 1733MHz on those DIMMs.
+    > Meanwhile with 2 DPC SR config there is no issue in reaching 1866MHz FCLK/UCLK.  
 [~ The Stilt](https://www.overclock.net/forum/10-amd-cpus/1728758-strictly-technical-matisse-not-really-26.html#post28052342)
 * tRCD is split into tRCDRD (read) and tRCDWR (write). Usually, tRCDWR can go lower than tRCDRD, but I haven't noticed any performance improvements from lowering tRCDWR. It's best to keep them the same.
 * Geardown mode (GDM) is automatically enabled above 2666MHz, which forces even tCL, even tCWL and CR 1T. If you want to run odd tCL, disable GDM. If you're unstable try running CR 2T, but that may negate the performance gain from dropping tCL.
