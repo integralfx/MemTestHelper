@@ -39,6 +39,8 @@
   * [HWBOT x265 Benchmark](https://hwbot.org/benchmark/hwbot_x265_benchmark_-_1080p/) - I've heard that this benchmark is also sensitive to memory, but I haven't really tested it myself.
 
 # Expectations/Limitations
+* This section goes through 3 components that may influence your overclocking experience: motherboard, IMC and ICs.
+
 ## Motherboard
 * Motherboards with 2 DIMM slots will be able to achieve the highest frequencies.
 * For motherboards with 4 DIMM slots, the number of sticks installed will affect your maximum memory frequency. 
@@ -172,11 +174,16 @@ As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage 
   
 # Overclocking
 * Disclaimer: The silicon lottery will affect your overclocking potential so there may be some deviation from my suggestions.
+* The overclocking process is pretty simple and boils down to 3 steps:
+  * Set very loose (high) timings.
+  * Increase DRAM frequency until unstable.
+  * Tighten (lower) timings.
 
 ## Finding the Maximum Frequency
 1. On Intel, start off with 1.15v VCCSA and VCCIO. On AMD, start off with 1.10v SOC.
 2. Set DRAM voltage to 1.40v. If you're using Micron/SpecTek ICs, exluding Rev. E, set 1.35v.
 3. Set primary timings to 16-20-20-40 (tCL-tRCD-tRP-tRAS).
+   * See [this post](https://redd.it/ahs5a2) for more information on these timings.
 4. Increase the DRAM frequency until it doesn't boot into Windows any more. Keep in mind the expectations detailed above.
    * If you're on Intel, a quick way of knowing if you're unstable is to examine the RTLs and IOLs. Each group of RTLs and IOLs correspond to a channel. Within each group, there are 2 values which correspond to each DIMM.  
    [Asrock Timing Configurator](https://i.imgur.com/EQBl2wd.jpg)  
