@@ -226,7 +226,7 @@ As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage 
    * Set tCCDL to 8. Asus UEFIs don't expose this timing.
    
    Ryzen 3000:
-   * Desynchronising MCLK and FCLK can incur a massive latency penalty, so you're better off tightening timings to keep your MCLK:FCLK 1:1.
+   * Desynchronising MCLK and FCLK can incur a massive latency penalty, so you're better off tightening timings to keep your MCLK:FCLK 1:1. See [AMD - AM4](#amd---am4) for more information.
    * Otherwise, set FCLK to whatever is stable (1600MHz if you're unsure).
 2. Loosen primary timings to 18-22-22-42.
 3. Increase DRAM voltage to 1.45v.
