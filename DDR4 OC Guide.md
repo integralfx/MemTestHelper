@@ -9,6 +9,7 @@
       4. [Expected Max Frequency](#expected-max-frequency)
       5. [Binning](#binning)
       6. [Maximum Recommended Daily Voltage](#maximum-recommended-daily-voltage)
+      7. [Ranking](#ranking)
    3. [Integrated Memory Controller (IMC)](#integrated-memory-controller-imc)
       1. [Intel - LGA1151](#intel---lga1151)
       2. [AMD - AM4](#amd---am4)
@@ -39,7 +40,7 @@
   * [HWBOT x265 Benchmark](https://hwbot.org/benchmark/hwbot_x265_benchmark_-_1080p/) - I've heard that this benchmark is also sensitive to memory, but I haven't really tested it myself.
 
 # Expectations/Limitations
-* This section goes through 3 components that may influence your overclocking experience: motherboard, IMC and ICs.
+* This section goes through 3 components that may influence your overclocking experience: ICs, motherboard and IMC.
 
 ## Motherboard
 * Motherboards with 2 DIMM slots will be able to achieve the highest frequencies.
@@ -108,6 +109,11 @@ As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage 
 * [JEDEC (p.174)](http://www.softnology.biz/pdf/JESD79-4B.pdf) specifies that the absolute maximum is 1.50v.
   > Stresses greater than those listed under “Absolute Maximum Ratings” may cause permanent damage to the device. This is a stress rating only and functional operation of the device at these or any other conditions above those indicated in the operational sections of this specification is not implied. Exposure to absolute maximum rating conditions for extended periods may affect reliability.
 * That being said, I'd only recommend running 1.50v on B-die as it's known to have high voltage tolerance. At least for the common ICs (4/8Gb AFR, 8Gb CJR, 8Gb Rev. E, 4/8Gb MFR), the max recommended voltage is 1.45v. Some of the lesser known ICs like [8Gb C-die](https://www.hardwareluxx.de/community/f13/samsung-8gbit-ddr4-c-die-k4a8g045wc-overclocking-ergebnisse-im-startbeitrag-1198323.html) have been reported to scale negatively or even die above 1.20v, though YMMV.
+  
+### Ranking
+* Below is how most of the common ICs rank in terms of frequency and timings.
+* 8Gb B-die > 8Gb Micron Rev. E > 8Gb CJR > 4Gb E-die > 8Gb AFR > 4Gb D-die > 8Gb MFR > 4Gb S-die
+  * Based off [buildzoid's ranking](https://www.reddit.com/r/overclocking/comments/8cjla5/the_best_manufacturerdie_of_ddr_ram_in_order/dxfgd4x/).
   
 ## Integrated Memory Controller (IMC)
 ### Intel - LGA1151
