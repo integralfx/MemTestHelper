@@ -195,7 +195,7 @@ As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage 
      * Gigabyte: Dynamic Vcore SOC.
        * Note that this is an offset voltage. The base voltage can change automatically when increasing DRAM frequency. +0.100v at 3000MHz might result in 1.10v actual, but +0.100v at 3400MHz might result in 1.20v actual.
      * MSI: CPU NB/SOC.
-2. Set DRAM voltage to 1.40v. If you're using Micron/SpecTek ICs, exluding Rev. E, set 1.35v.
+2. Set DRAM voltage to 1.40v. If you're using Micron/SpecTek ICs, excluding Rev. E, set 1.35v.
 3. Set primary timings to 16-20-20-40 (tCL-tRCD-tRP-tRAS).
    * See [this post](https://redd.it/ahs5a2) for more information on these timings.
 4. Increase the DRAM frequency until it doesn't boot into Windows any more. Keep in mind the expectations detailed above.
