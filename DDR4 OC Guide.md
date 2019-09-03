@@ -185,7 +185,8 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
   | 2000 | 60 - 70 |
   | 3000 | 65 - 75 (1:1 MCLK:FCLK) <br/> 75+ (2:1 MCLK:FCLK) |
 * On Ryzen 3000, high enough FCLK can overcome the penalties from desynchronising MCLK and FCLK, provided that you can lock your UCLK to MCLK.
-  * [Chart](https://i.imgur.com/F9HpkO2.png) (credits: [buildzoid](https://www.youtube.com/watch?v=10pYf9wqFFY))
+  ![Chart](https://i.imgur.com/F9HpkO2.png) 
+  * (Credits: [buildzoid](https://www.youtube.com/watch?v=10pYf9wqFFY))
   
 # Overclocking
 * Disclaimer: The silicon lottery will affect your overclocking potential so there may be some deviation from my suggestions.
