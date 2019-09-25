@@ -68,8 +68,9 @@
 * On many ICs, tCL scales with voltage, meaning giving it more voltage can allow you to drop tCL. Conversely, tRCD and tRP typically do not scale with voltage on many ICs, meaning no matter how much voltage you pump into it, it will not budge.  
 As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage scaling.
 * Similarly, if a timing scales with voltage that means you can increase the voltage to run the same timing at a higher frequency.
-![8Gbit CJR CL11 Voltage Scaling](https://i.imgur.com/TSiwR7H.png)
-  * You can see that tCL scales linearly with voltage on 8Gb CJR.
+![CL11 Voltage Scaling](https://i.imgur.com/wgazx4r.png)
+  * You can see that tCL scales almost linearly up to 2533 with voltage on 8Gb CJR.
+  * tCL on B-die has perfect linear scaling with voltage.
 * Some older Micron ICs (before Rev. E), are known to scale negatively with voltage. That is, they become unstable at the same frequency and timings just by increasing the voltage (usually above 1.35v).
 * Here are a table of common ICs and if the timing scales with voltage:
 
