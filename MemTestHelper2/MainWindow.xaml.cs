@@ -25,7 +25,7 @@ namespace MemTestHelper2
     {
         private readonly int NUM_THREADS, MAX_THREADS;
 
-        // Interval (in ms) for coverage info list.
+        // Update interval (in ms) for coverage info list.
         private const int UPDATE_INTERVAL = 200;
 
         private MemTest[] memtests;
@@ -42,7 +42,7 @@ namespace MemTestHelper2
             NUM_THREADS = Convert.ToInt32(Environment.GetEnvironmentVariable("NUMBER_OF_PROCESSORS"));
             MAX_THREADS = NUM_THREADS * 4;
             memtests = new MemTest[MAX_THREADS];
-            // index 0 stores the total
+            // Index 0 stores the total.
             memtestInfo = new MemTestInfo[MAX_THREADS + 1];
 
             InitCboThreads();
@@ -71,8 +71,7 @@ namespace MemTestHelper2
                 while (IsAnyMemTestStopping())
                     Thread.Sleep(100);
 
-                // TODO: figure out why total coverage is sometimes
-                // reporting 0.0 after stopping
+                // TODO: Figure out why total coverage is sometimes reporting 0.0 after stopping.
                 UpdateCoverageInfo(false);
             });
 
@@ -378,8 +377,8 @@ namespace MemTestHelper2
         {
             for (var i = 0; i <= (int)cboThreads.SelectedItem; i++)
             {
-                // First row is total.
-                memtestInfo[i] = new MemTestInfo(i == 0 ? "T" : i.ToString(), 0.0, 0);
+                // First row is average coverage.
+                memtestInfo[i] = new MemTestInfo(i == 0 ? "A" : i.ToString(), 0.0, 0);
             }
 
             lstCoverage.ItemsSource = memtestInfo;
@@ -773,7 +772,7 @@ namespace MemTestHelper2
                 lock (memtestInfo)
                 {
                     // Update the total coverage and errors.
-                    memtestInfo[0].Coverage = totalCoverage;
+                    memtestInfo[0].Coverage = totalCoverage / threads;
                     memtestInfo[0].Errors = totalErrors;
                 }
 
