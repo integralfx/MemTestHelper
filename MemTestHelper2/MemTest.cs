@@ -103,6 +103,12 @@ namespace MemTestHelper2
             {
                 if (DateTime.Now > end)
                 {
+                    MessageBox.Show(
+                        "Failed to close message box 1", 
+                        "Error", 
+                        MessageBoxButton.OK, 
+                        MessageBoxImage.Error
+                    );
                     hasStarted = false;
                     return;
                 }
@@ -125,6 +131,12 @@ namespace MemTestHelper2
             {
                 if (DateTime.Now > end)
                 {
+                    MessageBox.Show(
+                        "Failed to close message box 2",
+                        "Error", 
+                        MessageBoxButton.OK, 
+                        MessageBoxImage.Error
+                    );
                     hasStarted = false;
                     return;
                 }
