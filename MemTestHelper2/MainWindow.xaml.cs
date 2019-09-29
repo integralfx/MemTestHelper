@@ -466,19 +466,10 @@ namespace MemTestHelper2
                         case "startMin":
                             chkStartMin.IsChecked = Boolean.Parse(appSettings[key]);
                             break;
-
-                        default:
-                            MessageBox.Show($"Unknown key: {key}");
-                            break;
                     }
                 }
             }
-            catch (ConfigurationErrorsException e)
-            {
-                MessageBox.Show(e.BareMessage);
-                return false;
-            }
-            catch (FormatException e)
+            catch (Exception e)
             {
                 MessageBox.Show(e.Message);
                 return false;
