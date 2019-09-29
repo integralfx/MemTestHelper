@@ -172,7 +172,7 @@ namespace MemTestHelper2
                             }
 
                             // User may have changed offsets while minimised.
-                            LayOutMemTests();
+                            LayoutMemTests();
 
                             // Hack to bring form to top.
                             Topmost = true;
@@ -275,7 +275,7 @@ namespace MemTestHelper2
                 isMinimised = false;
 
                 // User may have changed offsets while minimised.
-                LayOutMemTests();
+                LayoutMemTests();
 
                 Activate();
             });
@@ -311,7 +311,7 @@ namespace MemTestHelper2
 
         private void Offset_Changed(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
-            RunInBackground(() => { LayOutMemTests(); });
+            RunInBackground(() => { LayoutMemTests(); });
         }
 
         private void btnCentre_Click(object sender, RoutedEventArgs e)
@@ -649,10 +649,10 @@ namespace MemTestHelper2
                 WinAPI.ControlClick(hwnd, MemTest.MSGBOX_OK);
 
             if (!chkStartMin.IsChecked.Value)
-                LayOutMemTests();
+                LayoutMemTests();
         }
 
-        private void LayOutMemTests()
+        private void LayoutMemTests()
         {
             int xOffset = (int)udXOffset.Value,
                 yOffset = (int)udYOffset.Value,
