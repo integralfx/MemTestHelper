@@ -9,7 +9,8 @@ namespace MemTestHelper2
     class WinAPI
     {
         public const int WM_SETTEXT = 0xC, WM_LBUTTONDOWN = 0x201, WM_LBUTTONUP = 0x202, WM_SYSCOMMAND = 0x112, 
-                         SC_MINIMIZE = 0xF020, SW_SHOW = 5, SW_RESTORE = 9, SW_MINIMIZE = 6, BM_CLICK = 0xF5;
+                         WM_CLOSE=0x10, SC_MINIMIZE = 0xF020, SW_SHOW = 5, SW_RESTORE = 9, SW_MINIMIZE = 6, 
+                         BM_CLICK = 0xF5;
 
         public static bool ControlClick(IntPtr hwndParent, string className)
         {

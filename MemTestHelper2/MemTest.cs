@@ -91,16 +91,26 @@ namespace MemTestHelper2
             }
         }
 
-        public void Start(double ram, bool startMinimised)
+        public void Start(double ram, bool startMinimised, int timeoutms = 3000)
         {
             process = Process.Start(EXE_NAME);
             hasStarted = true;
             isFinished = false;
+            var end = DateTime.Now + TimeSpan.FromMilliseconds(timeoutms);
 
             // Wait for process to start.
-            while (string.IsNullOrEmpty(process.MainWindowTitle))
+            while (true)
             {
-                ClickNagMessageBox(MSG1);
+                if (DateTime.Now > end)
+                {
+                    hasStarted = false;
+                    return;
+                }
+
+                if (!string.IsNullOrEmpty(process.MainWindowTitle))
+                    break;
+
+                CloseNagMessageBox(MSG1);
                 Thread.Sleep(100);
                 process.Refresh();
             }
@@ -110,15 +120,23 @@ namespace MemTestHelper2
             WinAPI.ControlSetText(hwnd, STATIC_FREE_VER, "MemTestHelper by ∫ntegral#7834");
             WinAPI.ControlClick(hwnd, BTN_START);
 
-            while (!ClickNagMessageBox(MSG2))
+            end = DateTime.Now + TimeSpan.FromMilliseconds(timeoutms);
+            while (true)
+            {
+                if (DateTime.Now > end)
+                {
+                    hasStarted = false;
+                    return;
+                }
+
+                if (CloseNagMessageBox(MSG2))
+                    break;
+
                 Thread.Sleep(100);
+            }
 
             if (startMinimised)
-            {
-                WinAPI.PostMessage(hwnd, WinAPI.WM_SYSCOMMAND,
-                                   new IntPtr(WinAPI.SC_MINIMIZE), 
-                                   IntPtr.Zero);
-            }
+                WinAPI.PostMessage(hwnd, WinAPI.WM_SYSCOMMAND, new IntPtr(WinAPI.SC_MINIMIZE), IntPtr.Zero);
         }
 
         public void Stop()
@@ -173,49 +191,32 @@ namespace MemTestHelper2
             return Tuple.Create(coverage, errors);
         }
 
-        public bool ClickNagMessageBox(string messageBoxCaption, MsgBoxButton button = MsgBoxButton.OK, 
-                                       int maxAttempts = 10)
+        public bool CloseNagMessageBox(string messageBoxCaption, int timeoutms = 3000)
         {
             if (!hasStarted || isFinished || process == null || process.HasExited)
                 return false;
 
+            var end = DateTime.Now + TimeSpan.FromMilliseconds(timeoutms);
             var hwnd = IntPtr.Zero;
-            var attempts = 0;
             do
             {
                 hwnd = WinAPI.GetHWNDFromPID(process.Id, messageBoxCaption);
-                attempts++;
                 Thread.Sleep(10);
-            } while (hwnd == IntPtr.Zero && attempts < maxAttempts);
+            } while (hwnd == IntPtr.Zero && DateTime.Now < end);
 
-            if (hwnd == IntPtr.Zero || attempts == maxAttempts)
+            if (hwnd == IntPtr.Zero)
                 return false;
-            else
+
+            end = DateTime.Now + TimeSpan.FromMilliseconds(timeoutms);
+            while (true)
             {
-                string strBtn = "";
-                switch (button)
-                {
-                    case MsgBoxButton.OK:
-                        strBtn = MSGBOX_OK;
-                        break;
+                if (DateTime.Now > end)
+                    return false;
 
-                    case MsgBoxButton.YES:
-                        strBtn = MSGBOX_YES;
-                        break;
+                if (WinAPI.SendNotifyMessage(hwnd, WinAPI.WM_CLOSE, IntPtr.Zero, null) != 0)
+                    return true;
 
-                    case MsgBoxButton.NO:
-                        strBtn = MSGBOX_NO;
-                        break;
-                }
-
-                attempts = 0;
-                while (!WinAPI.ControlClick(hwnd, strBtn) && attempts < maxAttempts)
-                {
-                    Thread.Sleep(100);
-                    attempts++;
-                }
-
-                return attempts != maxAttempts;
+                Thread.Sleep(100);
             }
         }
     }

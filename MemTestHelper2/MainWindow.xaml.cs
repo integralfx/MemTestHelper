@@ -756,7 +756,7 @@ namespace MemTestHelper2
                             var item = lstCoverage.ItemContainerGenerator.ContainerFromIndex(i) as ListViewItem;
                             if (errors > 0)
                             {
-                                memtest.ClickNagMessageBox("MemTest Error", MemTest.MsgBoxButton.NO);
+                                memtest.CloseNagMessageBox("MemTest Error", MemTest.MsgBoxButton.NO);
                                 item.Foreground = Brushes.Red;
                                 ClickBtnStop();
                             }
