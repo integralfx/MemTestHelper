@@ -64,6 +64,12 @@ namespace MemTestHelper2
 
         public Point Location
         {
+            get
+            {
+                var rect = new WinAPI.Rect();
+                WinAPI.GetWindowRect(process.MainWindowHandle, ref rect);
+                return new Point(rect.Left, rect.Top);
+            }
             set
             {
                 if (process != null && !process.HasExited)
@@ -117,8 +123,7 @@ namespace MemTestHelper2
 
         public void Stop()
         {
-            if (process != null && !process.HasExited && 
-                hasStarted && !isFinished)
+            if (process != null && !process.HasExited && hasStarted && !isFinished)
             {
                 WinAPI.ControlClick(process.MainWindowHandle, BTN_STOP);
                 isFinished = true;
