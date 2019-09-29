@@ -642,8 +642,7 @@ namespace MemTestHelper2
              * SendNotifyMessage()  | 
              *                      | SendNotifyMessage()
              *                      
-             * memTestB's window will be active while calling SendNotifyMessage()
-             * for memTestA.
+             * memTestB's window will be active while calling SendNotifyMessage() for memTestA.
              */
             foreach (var hwnd in WinAPI.FindAllWindows(MemTest.MSG2))
                 WinAPI.ControlClick(hwnd, MemTest.MSGBOX_OK);
