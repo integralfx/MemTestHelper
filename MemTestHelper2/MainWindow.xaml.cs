@@ -200,7 +200,6 @@ namespace MemTestHelper2
             btnStop.IsEnabled = true;
             chkStopAt.IsEnabled = false;
             txtStopAt.IsEnabled = false;
-            chkStopAtTotal.IsEnabled = false;
             chkStopOnError.IsEnabled = false;
             chkStartMin.IsEnabled = false;
 
@@ -238,7 +237,6 @@ namespace MemTestHelper2
             if (chkStopAt.IsEnabled)
             {
                 txtStopAt.IsEnabled = true;
-                chkStopAtTotal.IsEnabled = true;
             }
             chkStopOnError.IsEnabled = true;
             chkStartMin.IsEnabled = true;
@@ -329,13 +327,11 @@ namespace MemTestHelper2
         private void chkStopAt_Checked(object sender, RoutedEventArgs e)
         {
             txtStopAt.IsEnabled = true;
-            chkStopAtTotal.IsEnabled = true;
         }
 
         private void chkStopAt_Unchecked(object sender, RoutedEventArgs e)
         {
             txtStopAt.IsEnabled = false;
-            chkStopAtTotal.IsEnabled = false;
         }
 
         private void txtDiscord_DoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -462,9 +458,6 @@ namespace MemTestHelper2
                         case "stopAtValue":
                             txtStopAt.Text = appSettings[key];
                             break;
-                        case "stopAtTotal":
-                            chkStopAtTotal.IsChecked = Boolean.Parse(appSettings[key]);
-                            break;
 
                         case "stopOnError":
                             chkStopOnError.IsChecked = Boolean.Parse(appSettings[key]);
@@ -508,7 +501,6 @@ namespace MemTestHelper2
                 dict.Add("rows", cboRows.SelectedItem.ToString());
                 dict.Add("stopAt", chkStopAt.IsChecked.ToString());
                 dict.Add("stopAtValue", txtStopAt.Text);
-                dict.Add("stopAtTotal", chkStopAtTotal.IsChecked.ToString());
                 dict.Add("stopOnError", chkStopOnError.IsChecked.ToString());
                 dict.Add("startMin", chkStartMin.IsChecked.ToString());
 
@@ -741,7 +733,7 @@ namespace MemTestHelper2
                     if (shouldCheck)
                     {
                         // Check coverage %.
-                        if (chkStopAt.IsChecked.Value && !chkStopAtTotal.IsChecked.Value)
+                        if (chkStopAt.IsChecked.Value)
                         {
                             var stopAt = Convert.ToInt32(txtStopAt.Text);
                             if (coverage > stopAt)
@@ -756,7 +748,7 @@ namespace MemTestHelper2
                             var item = lstCoverage.ItemContainerGenerator.ContainerFromIndex(i) as ListViewItem;
                             if (errors > 0)
                             {
-                                memtest.CloseNagMessageBox("MemTest Error", MemTest.MsgBoxButton.NO);
+                                memtest.CloseNagMessageBox("MemTest Error");
                                 item.Foreground = Brushes.Red;
                                 ClickBtnStop();
                             }
@@ -778,14 +770,6 @@ namespace MemTestHelper2
 
                 if (shouldCheck)
                 {
-                    // Check total coverage.
-                    if (chkStopAt.IsChecked.Value && chkStopAtTotal.IsChecked.Value)
-                    {
-                        var stopAt = Convert.ToInt32(txtStopAt.Text);
-                        if (totalCoverage > stopAt)
-                            ClickBtnStop();
-                    }
-
                     if (IsAllFinished()) ClickBtnStop();
                 }
             });

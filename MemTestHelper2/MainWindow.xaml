@@ -74,16 +74,15 @@
                     <ComboBox x:Name="cboRows" HorizontalAlignment="Left" Margin="378,31,0,0" VerticalAlignment="Top" Width="60" SelectionChanged="cboRows_SelectionChanged"/>
                     <Label x:Name="___No_Name_" Content="Rows:" HorizontalAlignment="Left" Margin="333,31,0,0" VerticalAlignment="Top"/>
                     <TextBox x:Name="txtStopAt" HorizontalAlignment="Left" Height="25" Margin="85,62,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="40" MaxLength="4" MinHeight="20" IsEnabled="False"/>
-                    <CheckBox x:Name="chkStopAtTotal" Content="Total" HorizontalAlignment="Left" Margin="130,69,0,0" VerticalAlignment="Top" IsEnabled="False"/>
                     <CheckBox x:Name="chkStopAt" Content="Stop at %:" HorizontalAlignment="Left" Margin="3,69,0,0" VerticalAlignment="Top" Checked="chkStopAt_Checked" Unchecked="chkStopAt_Unchecked"/>
-                    <CheckBox x:Name="chkStopOnError" Content="Stop on error" HorizontalAlignment="Left" Margin="219,69,0,0" VerticalAlignment="Top" IsChecked="True"/>
+                    <CheckBox x:Name="chkStopOnError" Content="Stop on error" HorizontalAlignment="Left" Margin="163,69,0,0" VerticalAlignment="Top" IsChecked="True"/>
                     <CheckBox x:Name="chkStartMin" Content="Start minimised" HorizontalAlignment="Left" Margin="332,69,0,0" VerticalAlignment="Top" IsChecked="True"/>
                 </Grid>
             </TabItem>
 
             <TabItem Header="About">
                 <Grid Background="#252525" Margin="0">
-                    <Label Content="Version 2.0.2" HorizontalAlignment="Center" Margin="180,70,180,104" VerticalAlignment="Center"/>
+                    <Label Content="Version 2.0.3" HorizontalAlignment="Center" Margin="180,70,180,104" VerticalAlignment="Center"/>
                     <Label Content="Discord:" HorizontalAlignment="Center" Margin="138,98,248,76" VerticalAlignment="Center"/>
                     <TextBox x:Name="txtDiscord" HorizontalAlignment="Left" Margin="190,98,0,0" TextWrapping="Wrap" 
                              Text="∫ntegral#7834" VerticalAlignment="Top" IsReadOnly="True" Width="89" PreviewMouseDoubleClick="txtDiscord_DoubleClick"/>
