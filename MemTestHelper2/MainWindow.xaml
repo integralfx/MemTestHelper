@@ -35,7 +35,7 @@
                                 <GridViewColumn Header="Coverage" Width="80">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding Coverage, StringFormat='f1'}"/>
+                                            <TextBlock Text="{Binding Coverage, StringFormat='f2'}"/>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>

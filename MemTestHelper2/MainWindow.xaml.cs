@@ -235,9 +235,7 @@ namespace MemTestHelper2
             btnStop.IsEnabled = false;
             chkStopAt.IsEnabled = true;
             if (chkStopAt.IsEnabled)
-            {
                 txtStopAt.IsEnabled = true;
-            }
             chkStopOnError.IsEnabled = true;
             chkStartMin.IsEnabled = true;
 
@@ -247,11 +245,17 @@ namespace MemTestHelper2
 
             // Update speed.
             var ram = Convert.ToInt32(txtRAM.Text);
-            var elapsedTime = TimeSpan.ParseExact((string)lblElapsedTime.Content, @"hh\hmm\mss\s", 
-                                                  CultureInfo.InvariantCulture).TotalSeconds;
-            // 0 is the total coverage.
-            var speed = (memtestInfo[0].Coverage / 100) * ram / elapsedTime;
-            lblSpeed.Content = $"{speed:f2}MB/s";
+            var elapsedTime = TimeSpan.ParseExact(
+                (string)lblElapsedTime.Content, 
+                @"hh\hmm\mss\s", 
+                CultureInfo.InvariantCulture
+            ).TotalSeconds;
+            lock (memtestInfo)
+            {
+                // 0 is the total coverage.
+                var speed = (memtestInfo[0].Coverage / 100) * ram / elapsedTime;
+                lblSpeed.Content = $"{speed:f2}MB/s";
+            }
 
             MessageBox.Show("Please check if there are any errors", "MemTest finished");
         }
@@ -373,8 +377,8 @@ namespace MemTestHelper2
         {
             for (var i = 0; i <= (int)cboThreads.SelectedItem; i++)
             {
-                // First row is average coverage.
-                memtestInfo[i] = new MemTestInfo(i == 0 ? "A" : i.ToString(), 0.0, 0);
+                // First row is the total coverage.
+                memtestInfo[i] = new MemTestInfo(i == 0 ? "T" : i.ToString(), 0.0, 0);
             }
 
             lstCoverage.ItemsSource = memtestInfo;
