@@ -62,21 +62,21 @@
 
             <TabItem Header="Settings">
                 <Grid Background="#252525" Margin="0">
-                    <Label Content="X Offset:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                    <mah:NumericUpDown x:Name="udXOffset" Margin="65,0,288,174" HasDecimals="False" NumericInputMode="Numbers" Maximum="9999" Minimum="-9999" Value="0" ValueChanged="Offset_Changed"/>
-                    <Label Content="Y Offset:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="163,0,0,0"/>
-                    <mah:NumericUpDown x:Name="udYOffset" Margin="228,0,125,174" HasDecimals="False" NumericInputMode="Numbers" Maximum="9999" Minimum="-9999" Value="0" ValueChanged="Offset_Changed"/>
-                    <Button x:Name="btnCentre" Content="Centre" HorizontalAlignment="Left" Margin="333,0,0,0" VerticalAlignment="Top" Width="105" Height="26" Click="btnCentre_Click"/>
-                    <Label Content="X Spacing:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,31,0,0"/>
-                    <mah:NumericUpDown x:Name="udXSpacing" Margin="65,31,288,143" HasDecimals="False" NumericInputMode="Numbers" Maximum="9999" Minimum="-9999" Value="0" ValueChanged="Offset_Changed"/>
-                    <Label Content="Y Spacing:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="163,31,0,0"/>
-                    <mah:NumericUpDown x:Name="udYSpacing" Margin="228,31,125,143" HasDecimals="False" NumericInputMode="Numbers" Maximum="9999" Minimum="-9999" Value="0" ValueChanged="Offset_Changed"/>
-                    <ComboBox x:Name="cboRows" HorizontalAlignment="Left" Margin="378,31,0,0" VerticalAlignment="Top" Width="60" SelectionChanged="cboRows_SelectionChanged"/>
-                    <Label x:Name="___No_Name_" Content="Rows:" HorizontalAlignment="Left" Margin="333,31,0,0" VerticalAlignment="Top"/>
-                    <TextBox x:Name="txtStopAt" HorizontalAlignment="Left" Height="25" Margin="85,62,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="40" MaxLength="4" MinHeight="20" IsEnabled="False"/>
-                    <CheckBox x:Name="chkStopAt" Content="Stop at %:" HorizontalAlignment="Left" Margin="3,69,0,0" VerticalAlignment="Top" Checked="chkStopAt_Checked" Unchecked="chkStopAt_Unchecked"/>
-                    <CheckBox x:Name="chkStopOnError" Content="Stop on error" HorizontalAlignment="Left" Margin="163,69,0,0" VerticalAlignment="Top" IsChecked="True"/>
-                    <CheckBox x:Name="chkStartMin" Content="Start minimised" HorizontalAlignment="Left" Margin="332,69,0,0" VerticalAlignment="Top" IsChecked="True"/>
+                    <Label Content="X Offset:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="2,5,0,0"/>
+                    <mah:NumericUpDown x:Name="udXOffset" Margin="67,5,286,169" HasDecimals="False" NumericInputMode="Numbers" Maximum="9999" Minimum="-9999" Value="0" ValueChanged="Offset_Changed"/>
+                    <Label Content="Y Offset:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="161,5,0,0"/>
+                    <mah:NumericUpDown x:Name="udYOffset" Margin="226,5,127,169" HasDecimals="False" NumericInputMode="Numbers" Maximum="9999" Minimum="-9999" Value="0" ValueChanged="Offset_Changed"/>
+                    <Button x:Name="btnCentre" Content="Centre" HorizontalAlignment="Left" Margin="328,5,0,0" VerticalAlignment="Top" Width="105" Height="26" Click="btnCentre_Click"/>
+                    <Label Content="X Spacing:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="2,36,0,0"/>
+                    <mah:NumericUpDown x:Name="udXSpacing" Margin="67,36,286,138" HasDecimals="False" NumericInputMode="Numbers" Maximum="9999" Minimum="-9999" Value="0" ValueChanged="Offset_Changed"/>
+                    <Label Content="Y Spacing:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="161,36,0,0"/>
+                    <mah:NumericUpDown x:Name="udYSpacing" Margin="226,36,127,138" HasDecimals="False" NumericInputMode="Numbers" Maximum="9999" Minimum="-9999" Value="0" ValueChanged="Offset_Changed"/>
+                    <ComboBox x:Name="cboRows" HorizontalAlignment="Left" Margin="373,36,0,0" VerticalAlignment="Top" Width="60" SelectionChanged="cboRows_SelectionChanged"/>
+                    <Label x:Name="___No_Name_" Content="Rows:" HorizontalAlignment="Left" Margin="322,36,0,0" VerticalAlignment="Top"/>
+                    <TextBox x:Name="txtStopAt" HorizontalAlignment="Left" Height="25" Margin="87,67,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="40" MaxLength="4" MinHeight="20" IsEnabled="False"/>
+                    <CheckBox x:Name="chkStopAt" Content="Stop at %:" HorizontalAlignment="Left" Margin="7,74,0,0" VerticalAlignment="Top" Checked="chkStopAt_Checked" Unchecked="chkStopAt_Unchecked"/>
+                    <CheckBox x:Name="chkStopOnError" Content="Stop on error" HorizontalAlignment="Left" Margin="166,74,0,0" VerticalAlignment="Top" IsChecked="True"/>
+                    <CheckBox x:Name="chkStartMin" Content="Start minimised" HorizontalAlignment="Left" Margin="328,74,0,0" VerticalAlignment="Top" IsChecked="True"/>
                 </Grid>
             </TabItem>
 
