@@ -74,13 +74,14 @@ As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage 
 * Some older Micron ICs (before Rev. E), are known to scale negatively with voltage. That is, they become unstable at the same frequency and timings just by increasing the voltage (usually above 1.35v).
 * Here are a table of common ICs and if the timing scales with voltage:
 
-  | IC | tCL | tRCD | tRP |
-  | :-: | :-: | :--: | :-: |
-  | 8Gb AFR | Y | N | N | 
-  | 8Gb CJR | Y | Y (?) | N |
-  | 8Gb Rev. E | Y | N | Y |
-  | 8Gb B-die | Y | Y | Y |
+  | IC         | tCL | tRCD | tRP | tRFC |
+  | :-:        | :-: | :--: | :-: | :--: |
+  | 8Gb AFR    | Y   | N    | N   | ?    | 
+  | 8Gb CJR    | Y   | N    | N   | Y    |
+  | 8Gb Rev. E | Y   | N    | Y   | ?    |
+  | 8Gb B-die  | Y   | Y    | Y   | Y    |
   * The timings that don't scale with voltage usually need to be increased as you increase frequency.
+  ![B-die tRFC Voltage Scaling](https://i.imgur.com/0IZAy8P.png)
   
 ### Expected Max Frequency
 * Below are the expected max frequency for some of the common ICs:
