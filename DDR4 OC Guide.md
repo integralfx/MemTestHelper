@@ -82,6 +82,7 @@ As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage 
   | 8Gb B-die  | Y   | Y    | Y   | Y    |
   * The timings that don't scale with voltage usually need to be increased as you increase frequency.
   ![B-die tRFC Voltage Scaling](https://i.imgur.com/0IZAy8P.png)
+  Note: tRFC is in clock cycles (ticks) not time (ns).
   
 ### Expected Max Frequency
 * Below are the expected max frequency for some of the common ICs:
