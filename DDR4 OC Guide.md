@@ -106,7 +106,7 @@ As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage 
   No.  
   tRCD doesn't scale with voltage, which means it needs to be increased as you increase frequency.  
   `3000 / 16 = 187.5` but `3200 / 18 = 177.78`.  
-  As you can see, 3000 15-16-16 is a tighter bin than 3200 16-18-18. This means that a kit rated for 3000 15-16-16 will probably be able to do 3200 16-18-18 but a kit rated for 3200 16-18-18 might not be able to do 3000 15-16-16.
+  As you can see, 3000 15-16-16 is a tighter bin than 3200 16-18-18. This means that a kit rated for 3000 15-16-16 will probably be able to do 3200 16-18-18 but a kit rated for 3200 16-18-18 might not be able to do 3000 15-16-16. The frequency and timings difference is pretty small, so they'll probably overclock very similarly.
   
 ### Maximum Recommended Daily Voltage
 * [JEDEC (p.174)](http://www.softnology.biz/pdf/JESD79-4B.pdf) specifies that the absolute maximum is 1.50v.
