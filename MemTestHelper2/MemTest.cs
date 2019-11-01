@@ -149,7 +149,7 @@ namespace MemTestHelper2
             }
 
             if (startMinimised)
-                WinAPI.PostMessage(hwnd, WinAPI.WM_SYSCOMMAND, new IntPtr(WinAPI.SC_MINIMIZE), IntPtr.Zero);
+                WinAPI.ShowWindow(process.MainWindowHandle, WinAPI.SW_MINIMIZE);
         }
 
         public void Stop()
