@@ -137,6 +137,7 @@ namespace MemTestHelper2
         {
             CloseMemTests();
             SaveConfig();
+            log.Info("Closing MemTestHelper");
         }
 
         private void Window_StateChanged(object sender, EventArgs e)
@@ -213,7 +214,7 @@ namespace MemTestHelper2
             // Run in background as StartMemTests() can block.
             RunInBackground(() =>
             {
-                StartMemTests();
+                if (!StartMemTests()) return;
 
                 if (!coverageWorker.IsBusy)
                     coverageWorker.RunWorkerAsync();
@@ -482,7 +483,8 @@ namespace MemTestHelper2
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message);
+                MessageBox.Show("Failed to load config", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                log.Error(e.Message);
                 return false;
             }
 
@@ -521,7 +523,8 @@ namespace MemTestHelper2
             }
             catch (ConfigurationErrorsException e)
             {
-                MessageBox.Show(e.BareMessage);
+                MessageBox.Show("Failed to save config", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                log.Error(e.Message);
                 return false;
             }
 
