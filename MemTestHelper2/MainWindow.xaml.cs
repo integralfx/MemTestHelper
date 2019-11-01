@@ -23,10 +23,13 @@ namespace MemTestHelper2
 {
     public partial class MainWindow : MetroWindow
     {
+        private const string VERSION = "2.0.3";
         private readonly int NUM_THREADS, MAX_THREADS;
 
         // Update interval (in ms) for coverage info list.
         private const int UPDATE_INTERVAL = 200;
+
+        private static readonly NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
 
         private MemTest[] memtests;
         private MemTestInfo[] memtestInfo;
@@ -38,8 +41,12 @@ namespace MemTestHelper2
         public MainWindow()
         {
             InitializeComponent();
+            lblVersion.Content = $"Version {VERSION}";
+
+            log.Info($"Starting MemTestHelper v{VERSION}");
 
             NUM_THREADS = Convert.ToInt32(Environment.GetEnvironmentVariable("NUMBER_OF_PROCESSORS"));
+            log.Info($"CPU Threads: {NUM_THREADS}");
             MAX_THREADS = NUM_THREADS * 4;
             memtests = new MemTest[MAX_THREADS];
             // Index 0 stores the total.
@@ -527,12 +534,16 @@ namespace MemTestHelper2
             UInt64 totalRAM = ci.TotalPhysicalMemory / (1024 * 1024),
                    availableRAM = ci.AvailablePhysicalMemory / (1024 * 1024);
 
+            log.Info($"Total RAM: ${totalRAM}\nAvailable RAM: ${availableRAM}");
+
             var ramText = txtRAM.Text;
+            log.Info($"Input RAM: ${ramText}");
             // Automatically input available RAM if empty.
             if (ramText.Length == 0)
             {
                 ramText = GetFreeRAM().ToString();
                 txtRAM.Text = ramText;
+                log.Info($"No RAM input. Free RAM: ${ramText}");
             }
             else
             {
@@ -545,6 +556,7 @@ namespace MemTestHelper2
 
             int threads = (int)cboThreads.SelectedItem,
                 ram = Convert.ToInt32(ramText);
+            log.Info($"Selected threads: ${threads}");
             if (ram < threads)
             {
                 ShowErrorMsgBox($"Amount of RAM must be greater than {threads}");

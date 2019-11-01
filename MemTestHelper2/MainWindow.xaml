@@ -82,7 +82,7 @@
 
             <TabItem Header="About">
                 <Grid Background="#252525" Margin="0">
-                    <Label Content="Version 2.0.3" HorizontalAlignment="Center" Margin="180,70,180,104" VerticalAlignment="Center"/>
+                    <Label x:Name="lblVersion" HorizontalAlignment="Center" Margin="180,70,180,104" VerticalAlignment="Center"/>
                     <Label Content="Discord:" HorizontalAlignment="Center" Margin="138,98,248,76" VerticalAlignment="Center"/>
                     <TextBox x:Name="txtDiscord" HorizontalAlignment="Left" Margin="190,98,0,0" TextWrapping="Wrap" 
                              Text="∫ntegral#7834" VerticalAlignment="Top" IsReadOnly="True" Width="89" PreviewMouseDoubleClick="txtDiscord_DoubleClick"/>
