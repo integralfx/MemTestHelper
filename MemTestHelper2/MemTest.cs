@@ -10,7 +10,9 @@ namespace MemTestHelper2
     {
         public static readonly string EXE_NAME = "memtest.exe";
         public static readonly int WIDTH = 217, HEIGHT = 247,
-                                   MAX_RAM = 2048; 
+                                   MAX_RAM = 2048;
+
+        private static readonly NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
 
         public const string CLASSNAME = "#32770",
                             BTN_START = "Button1",
@@ -91,24 +93,28 @@ namespace MemTestHelper2
             }
         }
 
+        public int PID
+        {
+            get { return process != null ? process.Id : 0; }
+        }
+
         public void Start(double ram, bool startMinimised, int timeoutms = 3000)
         {
+            log.Info($"Starting MemTest instance with ${ram} MB, " +
+                     $"start minimised: {startMinimised}, " +
+                     $"timeout: {timeoutms}");
             process = Process.Start(EXE_NAME);
             hasStarted = true;
             isFinished = false;
             var end = DateTime.Now + TimeSpan.FromMilliseconds(timeoutms);
+            log.Info($"MemTest PID: {process.Id}");
 
             // Wait for process to start.
             while (true)
             {
                 if (DateTime.Now > end)
                 {
-                    MessageBox.Show(
-                        "Failed to close message box 1", 
-                        "Error", 
-                        MessageBoxButton.OK, 
-                        MessageBoxImage.Error
-                    );
+                    log.Error($"Process {process.Id}: Failed to close message box 1");
                     hasStarted = false;
                     return;
                 }
@@ -131,12 +137,7 @@ namespace MemTestHelper2
             {
                 if (DateTime.Now > end)
                 {
-                    MessageBox.Show(
-                        "Failed to close message box 2",
-                        "Error", 
-                        MessageBoxButton.OK, 
-                        MessageBoxImage.Error
-                    );
+                    log.Error($"Process {process.Id}: Failed to close message box 2");
                     hasStarted = false;
                     return;
                 }
