@@ -178,28 +178,46 @@ namespace MemTestHelper2
                 return null;
 
             var str = WinAPI.ControlGetText(process.MainWindowHandle, STATIC_COVERAGE);
+            log.Info($"MemTest {PID} coverage string: '{str}'");
             if (str == "" || !str.Contains("Coverage")) return null;
 
             // Test over. 47.3% Coverage, 0 Errors
             //            ^^^^^^^^^^^^^^^^^^^^^^^^
             var start = str.IndexOfAny("0123456789".ToCharArray());
-            if (start == -1) return null;
+            if (start == -1)
+            {
+                log.Error("Failed to find start of coverage number");
+                return null;
+            }
             str = str.Substring(start);
 
             // 47.3% Coverage, 0 Errors
             // ^^^^
             // some countries use a comma as the decimal point
             var coverageStr = str.Split("%".ToCharArray())[0].Replace(',', '.');
+            log.Info($"Coverage string: '{coverageStr}'");
             double coverage;
-            Double.TryParse(coverageStr, NumberStyles.Any, CultureInfo.InvariantCulture, out coverage);
+            var result = Double.TryParse(coverageStr, NumberStyles.Float, CultureInfo.InvariantCulture, out coverage);
+            if (!result)
+            {
+                log.Error($"Failed to parse coverage % from coverage string");
+                return null;
+            }
 
             // 47.3% Coverage, 0 Errors
             //                 ^^^^^^^^
             start = str.IndexOf("Coverage, ") + "Coverage, ".Length;
             str = str.Substring(start);
+            log.Info($"Error string: '{str}");
             // 0 Errors
             // ^
-            var errors = Convert.ToInt32(str.Substring(0, str.IndexOf(" Errors")));
+            int errors;
+            result = Int32.TryParse(str.Substring(0, str.IndexOf(" Errors")), out errors);
+            if (!result)
+            {
+                log.Error($"Failed to parse error count from error string");
+                return null;
+            }
 
             return Tuple.Create(coverage, errors);
         }
