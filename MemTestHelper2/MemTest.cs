@@ -28,26 +28,19 @@ namespace MemTestHelper2
                             MSG2 = "Message for first-time users";
 
         private Process process = null;
-        private bool hasStarted = false, isFinished = false;
 
         public enum MsgBoxButton { OK, YES, NO }
 
-        public bool Started
-        {
-            get { return hasStarted; }
-        }
+        public bool Started { get; private set; } = false;
 
-        public bool Finished
-        {
-            get { return isFinished; }
-        }
+        public bool Finished { get; private set; } = false;
 
         public bool Minimised
         {
-            get { return hasStarted ? WinAPI.IsIconic(process.MainWindowHandle) : false; }
+            get { return Started ? WinAPI.IsIconic(process.MainWindowHandle) : false; }
             set
             {
-                if (hasStarted)
+                if (Started)
                 {
                     var hwnd = process.MainWindowHandle;
 
@@ -83,7 +76,7 @@ namespace MemTestHelper2
         {
             get
             {
-                if (!hasStarted || isFinished || process == null || process.HasExited)
+                if (!Started || Finished || process == null || process.HasExited)
                     return false;
 
                 string str = WinAPI.ControlGetText(process.MainWindowHandle, STATIC_COVERAGE);
@@ -101,8 +94,8 @@ namespace MemTestHelper2
         public void Start(double ram, bool startMinimised, int timeoutms = 3000)
         {
             process = Process.Start(EXE_NAME);
-            hasStarted = true;
-            isFinished = false;
+            Started = true;
+            Finished = false;
             
             log.Info($"Started MemTest {PID} with {ram} MB, " +
                      $"start minimised: {startMinimised}, " +
@@ -115,7 +108,7 @@ namespace MemTestHelper2
                 if (DateTime.Now > end)
                 {
                     log.Error($"Process {process.Id}: Failed to close message box 1");
-                    hasStarted = false;
+                    Started = false;
                     return;
                 }
 
@@ -138,7 +131,7 @@ namespace MemTestHelper2
                 if (DateTime.Now > end)
                 {
                     log.Error($"Process {process.Id}: Failed to close message box 2");
-                    hasStarted = false;
+                    Started = false;
                     return;
                 }
 
@@ -153,22 +146,22 @@ namespace MemTestHelper2
 
         public void Stop()
         {
-            if (process != null && !process.HasExited && hasStarted && !isFinished)
+            if (process != null && !process.HasExited && Started && !Finished)
             {
                 log.Info($"Stopping MemTest {PID}");
                 WinAPI.ControlClick(process.MainWindowHandle, BTN_STOP);
-                isFinished = true;
+                Finished = true;
             }
         }
 
         public void Close()
         {
-            if (hasStarted && !process.HasExited)
+            if (Started && !process.HasExited)
                 process.Kill();
 
             process = null;
-            hasStarted = false;
-            isFinished = false;
+            Started = false;
+            Finished = false;
         }
 
         // Returns (coverage, errors).
@@ -226,7 +219,7 @@ namespace MemTestHelper2
 
         public bool CloseNagMessageBox(string messageBoxCaption, int timeoutms = 3000)
         {
-            if (!hasStarted || isFinished || process == null || process.HasExited)
+            if (!Started || Finished || process == null || process.HasExited)
                 return false;
 
             var end = DateTime.Now + TimeSpan.FromMilliseconds(timeoutms);
