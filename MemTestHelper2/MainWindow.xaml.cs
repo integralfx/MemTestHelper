@@ -657,12 +657,7 @@ namespace MemTestHelper2
             {
                 if (!mt.Started)
                 {
-                    MessageBox.Show(
-                        $"Failed to start MemTest instance with PID {mt.PID}",
-                        "Error",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Error
-                    );
+                    ShowErrorMsgBox($"Failed to start MemTest instance with PID {mt.PID}");
 
                     txtRAM.IsEnabled = true;
                     cboThreads.IsEnabled = true;
