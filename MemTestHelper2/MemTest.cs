@@ -227,6 +227,8 @@ namespace MemTestHelper2
             if (!hasStarted || isFinished || process == null || process.HasExited)
                 return false;
 
+            log.Info($"MemTest {PID} nag message box caption: '{messageBoxCaption}'");
+
             var end = DateTime.Now + TimeSpan.FromMilliseconds(timeoutms);
             var hwnd = IntPtr.Zero;
             do
@@ -236,14 +238,20 @@ namespace MemTestHelper2
             } while (hwnd == IntPtr.Zero && DateTime.Now < end);
 
             if (hwnd == IntPtr.Zero)
+            {
+                log.Error($"Failed to find nag message box");
                 return false;
+            }
 
             end = DateTime.Now + TimeSpan.FromMilliseconds(timeoutms);
             while (true)
             {
                 if (DateTime.Now > end)
+                {
+                    log.Error($"Failed to close nag message box");
                     return false;
-
+                }
+                   
                 if (WinAPI.SendNotifyMessage(hwnd, WinAPI.WM_CLOSE, IntPtr.Zero, null) != 0)
                     return true;
 
