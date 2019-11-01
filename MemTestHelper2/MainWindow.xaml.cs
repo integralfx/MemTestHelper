@@ -637,7 +637,7 @@ namespace MemTestHelper2
             udYOffset.Value = yOffset;
         }
 
-        private void StartMemTests()
+        private bool StartMemTests()
         {
             CloseAllMemTests();
 
@@ -649,6 +649,31 @@ namespace MemTestHelper2
                 memtests[i] = new MemTest();
                 memtests[i].Start(ram, startMin);
             });
+
+            foreach (var mt in memtests)
+            {
+                if (!mt.Started)
+                {
+                    MessageBox.Show(
+                        $"Failed to start MemTest instance with PID {mt.PID}",
+                        "Error",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error
+                    );
+
+                    txtRAM.IsEnabled = true;
+                    cboThreads.IsEnabled = true;
+                    btnStart.IsEnabled = true;
+                    btnStop.IsEnabled = false;
+                    chkStopAt.IsEnabled = true;
+                    if (chkStopAt.IsEnabled)
+                        txtStopAt.IsEnabled = true;
+                    chkStopOnError.IsEnabled = true;
+                    chkStartMin.IsEnabled = true;
+
+                    return false;
+                }
+            }
 
             /* 
              * Some nag message boxes won't be clicked due to concurrent execution.
@@ -665,6 +690,8 @@ namespace MemTestHelper2
 
             if (!chkStartMin.IsChecked.Value)
                 LayoutMemTests();
+
+            return true;
         }
 
         private void LayoutMemTests()
