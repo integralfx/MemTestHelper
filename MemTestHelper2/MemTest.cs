@@ -148,8 +148,7 @@ namespace MemTestHelper2
                 Thread.Sleep(100);
             }
 
-            if (startMinimised)
-                WinAPI.ShowWindow(process.MainWindowHandle, WinAPI.SW_MINIMIZE);
+            if (startMinimised) Minimised = true;
         }
 
         public void Stop()
