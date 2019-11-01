@@ -100,15 +100,15 @@ namespace MemTestHelper2
 
         public void Start(double ram, bool startMinimised, int timeoutms = 3000)
         {
-            log.Info($"Starting MemTest instance with ${ram} MB, " +
-                     $"start minimised: {startMinimised}, " +
-                     $"timeout: {timeoutms}");
             process = Process.Start(EXE_NAME);
             hasStarted = true;
             isFinished = false;
-            var end = DateTime.Now + TimeSpan.FromMilliseconds(timeoutms);
-            log.Info($"MemTest PID: {process.Id}");
+            
+            log.Info($"Started MemTest {PID} with ${ram} MB, " +
+                     $"start minimised: {startMinimised}, " +
+                     $"timeout: {timeoutms}");
 
+            var end = DateTime.Now + TimeSpan.FromMilliseconds(timeoutms);
             // Wait for process to start.
             while (true)
             {
@@ -156,6 +156,7 @@ namespace MemTestHelper2
         {
             if (process != null && !process.HasExited && hasStarted && !isFinished)
             {
+                log.Info($"Stopping MemTest {PID}");
                 WinAPI.ControlClick(process.MainWindowHandle, BTN_STOP);
                 isFinished = true;
             }
