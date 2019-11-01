@@ -178,8 +178,12 @@ namespace MemTestHelper2
                 return null;
 
             var str = WinAPI.ControlGetText(process.MainWindowHandle, STATIC_COVERAGE);
-            log.Info($"MemTest {PID} coverage string: '{str}'");
-            if (str == "" || !str.Contains("Coverage")) return null;
+            if (str.Contains("Memory allocated") || str.Contains("Ending Test")) return null;
+            if (str == "" || !str.Contains("Coverage"))
+            {
+                log.Error($"Invalid static coverage string: '{str}'");
+                return null;
+            }
 
             // Test over. 47.3% Coverage, 0 Errors
             //            ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -195,12 +199,11 @@ namespace MemTestHelper2
             // ^^^^
             // some countries use a comma as the decimal point
             var coverageStr = str.Split("%".ToCharArray())[0].Replace(',', '.');
-            log.Info($"Coverage string: '{coverageStr}'");
             double coverage;
             var result = Double.TryParse(coverageStr, NumberStyles.Float, CultureInfo.InvariantCulture, out coverage);
             if (!result)
             {
-                log.Error($"Failed to parse coverage % from coverage string");
+                log.Error($"Failed to parse coverage % from coverage string: '{coverageStr}'");
                 return null;
             }
 
@@ -208,14 +211,13 @@ namespace MemTestHelper2
             //                 ^^^^^^^^
             start = str.IndexOf("Coverage, ") + "Coverage, ".Length;
             str = str.Substring(start);
-            log.Info($"Error string: '{str}");
             // 0 Errors
             // ^
             int errors;
             result = Int32.TryParse(str.Substring(0, str.IndexOf(" Errors")), out errors);
             if (!result)
             {
-                log.Error($"Failed to parse error count from error string");
+                log.Error($"Failed to parse error count from error string: '{str}'");
                 return null;
             }
 
@@ -227,8 +229,6 @@ namespace MemTestHelper2
             if (!hasStarted || isFinished || process == null || process.HasExited)
                 return false;
 
-            log.Info($"MemTest {PID} nag message box caption: '{messageBoxCaption}'");
-
             var end = DateTime.Now + TimeSpan.FromMilliseconds(timeoutms);
             var hwnd = IntPtr.Zero;
             do
@@ -239,7 +239,7 @@ namespace MemTestHelper2
 
             if (hwnd == IntPtr.Zero)
             {
-                log.Error($"Failed to find nag message box");
+                log.Error($"Failed to find nag message box caption: '{messageBoxCaption}'");
                 return false;
             }
 
@@ -248,7 +248,7 @@ namespace MemTestHelper2
             {
                 if (DateTime.Now > end)
                 {
-                    log.Error($"Failed to close nag message box");
+                    log.Error($"Failed to close nag message box caption: '{messageBoxCaption}'");
                     return false;
                 }
                    
