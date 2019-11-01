@@ -537,16 +537,16 @@ namespace MemTestHelper2
             UInt64 totalRAM = ci.TotalPhysicalMemory / (1024 * 1024),
                    availableRAM = ci.AvailablePhysicalMemory / (1024 * 1024);
 
-            log.Info($"Total RAM: ${totalRAM}\nAvailable RAM: ${availableRAM}");
+            log.Info($"Total RAM: {totalRAM} Available RAM: {availableRAM}");
 
             var ramText = txtRAM.Text;
-            log.Info($"Input RAM: ${ramText}");
+            log.Info($"Input RAM: {ramText}");
             // Automatically input available RAM if empty.
             if (ramText.Length == 0)
             {
                 ramText = GetFreeRAM().ToString();
                 txtRAM.Text = ramText;
-                log.Info($"No RAM input. Free RAM: ${ramText}");
+                log.Info($"No RAM input. Free RAM: {ramText}");
             }
             else
             {
@@ -559,7 +559,7 @@ namespace MemTestHelper2
 
             int threads = (int)cboThreads.SelectedItem,
                 ram = Convert.ToInt32(ramText);
-            log.Info($"Selected threads: ${threads}");
+            log.Info($"Selected threads: {threads}");
             if (ram < threads)
             {
                 ShowErrorMsgBox($"Amount of RAM must be greater than {threads}");
@@ -653,8 +653,9 @@ namespace MemTestHelper2
                 memtests[i].Start(ram, startMin);
             });
 
-            foreach (var mt in memtests)
+            for (int i = 0; i < threads; i++)
             {
+                var mt = memtests[i];
                 if (!mt.Started)
                 {
                     ShowErrorMsgBox($"Failed to start MemTest instance with PID {mt.PID}");
