@@ -104,7 +104,7 @@ namespace MemTestHelper2
             hasStarted = true;
             isFinished = false;
             
-            log.Info($"Started MemTest {PID} with ${ram} MB, " +
+            log.Info($"Started MemTest {PID} with {ram} MB, " +
                      $"start minimised: {startMinimised}, " +
                      $"timeout: {timeoutms}");
 
