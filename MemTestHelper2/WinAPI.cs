@@ -12,6 +12,8 @@ namespace MemTestHelper2
                          WM_CLOSE=0x10, SC_MINIMIZE = 0xF020, SW_SHOW = 5, SW_RESTORE = 9, SW_MINIMIZE = 6, 
                          BM_CLICK = 0xF5;
 
+        private static readonly NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
+
         public static bool ControlClick(IntPtr hwndParent, string className)
         {
             IntPtr hwnd = FindWindow(hwndParent, className);
@@ -62,13 +64,20 @@ namespace MemTestHelper2
 
                     if (currPid == pid)
                     {
-                        if (windowTitle.Length == 0)
+                         if (windowTitle.Length == 0)
                             hwnd = currHwnd;
                         else
                         {
                             if (sb.ToString() == windowTitle)
                                 hwnd = currHwnd;
-                            else return true;
+                            else
+                            {
+                                log.Info(
+                                    $"Found window with PID: {pid}, but target window title: '{windowTitle}' didn't " +
+                                    $"match window title: '{sb.ToString()}'"
+                                );
+                                return true;
+                            }
                         }
                         
                         return false;

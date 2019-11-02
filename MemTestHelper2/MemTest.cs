@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Globalization;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
 
@@ -232,7 +233,7 @@ namespace MemTestHelper2
 
             if (hwnd == IntPtr.Zero)
             {
-                log.Error($"Failed to find nag message box caption: '{messageBoxCaption}'");
+                log.Error($"Failed to find nag message box with caption: '{messageBoxCaption}'");
                 return false;
             }
 
@@ -241,12 +242,19 @@ namespace MemTestHelper2
             {
                 if (DateTime.Now > end)
                 {
-                    log.Error($"Failed to close nag message box caption: '{messageBoxCaption}'");
+                    log.Error($"Failed to close nag message box with caption: '{messageBoxCaption}'");
                     return false;
                 }
                    
                 if (WinAPI.SendNotifyMessage(hwnd, WinAPI.WM_CLOSE, IntPtr.Zero, null) != 0)
                     return true;
+                else
+                {
+                    log.Error(
+                        $"Failed to send notify message to nag message box with caption: '{messageBoxCaption}'. " +
+                        $"Error code: {Marshal.GetLastWin32Error()}"
+                    );
+                }
 
                 Thread.Sleep(100);
             }
