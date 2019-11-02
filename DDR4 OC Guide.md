@@ -287,9 +287,10 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
 3. Next are the primary timings (tCL, tRCD, tRP).
    * Start with tCL and drop that by 1 until you get instability.
    * Do the same with tRCD and tRP.
-   * After the above timings are as tight as they can go, set `tRAS = tCL + tRCD(RD) + 2` and `tRC = tRP + tRAS`.
+   * After the above timings are as tight as they can go, set `tRAS = tCL + tRCD(RD) + 2`<sup>1</sup> and `tRC = tRP + tRAS`.
      * Setting tRAS lower than this can incur a [performance penalty](https://www.overclock.net/forum/25801780-post3757.html).
      * tRC is only available on AMD and some Intel UEFIs.
+     * <sup>1</sup>Micron Rev. E seems to need tRAS = tCL + tRCD(RD) + 4 (or at least my kit does).
      
 4. Next is tRFC. Default for 8Gb ICs is 350**ns** (note the units).
    * To convert to ns: `2000 * timing / ddr_freq`.  
