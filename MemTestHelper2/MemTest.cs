@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Globalization;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
 
@@ -10,7 +11,9 @@ namespace MemTestHelper2
     {
         public static readonly string EXE_NAME = "memtest.exe";
         public static readonly int WIDTH = 217, HEIGHT = 247,
-                                   MAX_RAM = 2048; 
+                                   MAX_RAM = 2048;
+
+        private static readonly NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
 
         public const string CLASSNAME = "#32770",
                             BTN_START = "Button1",
@@ -26,26 +29,19 @@ namespace MemTestHelper2
                             MSG2 = "Message for first-time users";
 
         private Process process = null;
-        private bool hasStarted = false, isFinished = false;
 
         public enum MsgBoxButton { OK, YES, NO }
 
-        public bool Started
-        {
-            get { return hasStarted; }
-        }
+        public bool Started { get; private set; } = false;
 
-        public bool Finished
-        {
-            get { return isFinished; }
-        }
+        public bool Finished { get; private set; } = false;
 
         public bool Minimised
         {
-            get { return hasStarted ? WinAPI.IsIconic(process.MainWindowHandle) : false; }
+            get { return Started ? WinAPI.IsIconic(process.MainWindowHandle) : false; }
             set
             {
-                if (hasStarted)
+                if (Started)
                 {
                     var hwnd = process.MainWindowHandle;
 
@@ -64,6 +60,12 @@ namespace MemTestHelper2
 
         public Point Location
         {
+            get
+            {
+                var rect = new WinAPI.Rect();
+                WinAPI.GetWindowRect(process.MainWindowHandle, ref rect);
+                return new Point(rect.Left, rect.Top);
+            }
             set
             {
                 if (process != null && !process.HasExited)
@@ -75,7 +77,7 @@ namespace MemTestHelper2
         {
             get
             {
-                if (!hasStarted || isFinished || process == null || process.HasExited)
+                if (!Started || Finished || process == null || process.HasExited)
                     return false;
 
                 string str = WinAPI.ControlGetText(process.MainWindowHandle, STATIC_COVERAGE);
@@ -85,16 +87,36 @@ namespace MemTestHelper2
             }
         }
 
-        public void Start(double ram, bool startMinimised)
+        public int PID
+        {
+            get { return process != null ? process.Id : 0; }
+        }
+
+        public void Start(double ram, bool startMinimised, int timeoutms = 3000)
         {
             process = Process.Start(EXE_NAME);
-            hasStarted = true;
-            isFinished = false;
+            Started = true;
+            Finished = false;
+            
+            log.Info($"Started MemTest {PID} with {ram} MB, " +
+                     $"start minimised: {startMinimised}, " +
+                     $"timeout: {timeoutms}");
 
+            var end = DateTime.Now + TimeSpan.FromMilliseconds(timeoutms);
             // Wait for process to start.
-            while (string.IsNullOrEmpty(process.MainWindowTitle))
+            while (true)
             {
-                ClickNagMessageBox(MSG1);
+                if (DateTime.Now > end)
+                {
+                    log.Error($"Process {process.Id}: Failed to close message box 1");
+                    Started = false;
+                    return;
+                }
+
+                if (!string.IsNullOrEmpty(process.MainWindowTitle))
+                    break;
+
+                CloseNagMessageBox(MSG1);
                 Thread.Sleep(100);
                 process.Refresh();
             }
@@ -104,35 +126,43 @@ namespace MemTestHelper2
             WinAPI.ControlSetText(hwnd, STATIC_FREE_VER, "MemTestHelper by ∫ntegral#7834");
             WinAPI.ControlClick(hwnd, BTN_START);
 
-            while (!ClickNagMessageBox(MSG2))
-                Thread.Sleep(100);
-
-            if (startMinimised)
+            end = DateTime.Now + TimeSpan.FromMilliseconds(timeoutms);
+            while (true)
             {
-                WinAPI.PostMessage(hwnd, WinAPI.WM_SYSCOMMAND,
-                                   new IntPtr(WinAPI.SC_MINIMIZE), 
-                                   IntPtr.Zero);
+                if (DateTime.Now > end)
+                {
+                    log.Error($"Process {process.Id}: Failed to close message box 2");
+                    Started = false;
+                    return;
+                }
+
+                if (CloseNagMessageBox(MSG2))
+                    break;
+
+                Thread.Sleep(100);
             }
+
+            if (startMinimised) Minimised = true;
         }
 
         public void Stop()
         {
-            if (process != null && !process.HasExited && 
-                hasStarted && !isFinished)
+            if (process != null && !process.HasExited && Started && !Finished)
             {
+                log.Info($"Stopping MemTest {PID}");
                 WinAPI.ControlClick(process.MainWindowHandle, BTN_STOP);
-                isFinished = true;
+                Finished = true;
             }
         }
 
         public void Close()
         {
-            if (hasStarted && !process.HasExited)
+            if (Started && !process.HasExited)
                 process.Kill();
 
             process = null;
-            hasStarted = false;
-            isFinished = false;
+            Started = false;
+            Finished = false;
         }
 
         // Returns (coverage, errors).
@@ -142,12 +172,21 @@ namespace MemTestHelper2
                 return null;
 
             var str = WinAPI.ControlGetText(process.MainWindowHandle, STATIC_COVERAGE);
-            if (str == "" || !str.Contains("Coverage")) return null;
+            if (str.Contains("Memory allocated") || str.Contains("Ending Test")) return null;
+            if (str == "" || !str.Contains("Coverage"))
+            {
+                log.Error($"Invalid static coverage string: '{str}'");
+                return null;
+            }
 
             // Test over. 47.3% Coverage, 0 Errors
             //            ^^^^^^^^^^^^^^^^^^^^^^^^
             var start = str.IndexOfAny("0123456789".ToCharArray());
-            if (start == -1) return null;
+            if (start == -1)
+            {
+                log.Error("Failed to find start of coverage number");
+                return null;
+            }
             str = str.Substring(start);
 
             // 47.3% Coverage, 0 Errors
@@ -155,7 +194,12 @@ namespace MemTestHelper2
             // some countries use a comma as the decimal point
             var coverageStr = str.Split("%".ToCharArray())[0].Replace(',', '.');
             double coverage;
-            Double.TryParse(coverageStr, NumberStyles.Any, CultureInfo.InvariantCulture, out coverage);
+            var result = Double.TryParse(coverageStr, NumberStyles.Float, CultureInfo.InvariantCulture, out coverage);
+            if (!result)
+            {
+                log.Error($"Failed to parse coverage % from coverage string: '{coverageStr}'");
+                return null;
+            }
 
             // 47.3% Coverage, 0 Errors
             //                 ^^^^^^^^
@@ -163,54 +207,56 @@ namespace MemTestHelper2
             str = str.Substring(start);
             // 0 Errors
             // ^
-            var errors = Convert.ToInt32(str.Substring(0, str.IndexOf(" Errors")));
+            int errors;
+            result = Int32.TryParse(str.Substring(0, str.IndexOf(" Errors")), out errors);
+            if (!result)
+            {
+                log.Error($"Failed to parse error count from error string: '{str}'");
+                return null;
+            }
 
             return Tuple.Create(coverage, errors);
         }
 
-        public bool ClickNagMessageBox(string messageBoxCaption, MsgBoxButton button = MsgBoxButton.OK, 
-                                       int maxAttempts = 10)
+        public bool CloseNagMessageBox(string messageBoxCaption, int timeoutms = 3000)
         {
-            if (!hasStarted || isFinished || process == null || process.HasExited)
+            if (!Started || Finished || process == null || process.HasExited)
                 return false;
 
+            var end = DateTime.Now + TimeSpan.FromMilliseconds(timeoutms);
             var hwnd = IntPtr.Zero;
-            var attempts = 0;
             do
             {
                 hwnd = WinAPI.GetHWNDFromPID(process.Id, messageBoxCaption);
-                attempts++;
                 Thread.Sleep(10);
-            } while (hwnd == IntPtr.Zero && attempts < maxAttempts);
+            } while (hwnd == IntPtr.Zero && DateTime.Now < end);
 
-            if (hwnd == IntPtr.Zero || attempts == maxAttempts)
-                return false;
-            else
+            if (hwnd == IntPtr.Zero)
             {
-                string strBtn = "";
-                switch (button)
+                log.Error($"Failed to find nag message box with caption: '{messageBoxCaption}'");
+                return false;
+            }
+
+            end = DateTime.Now + TimeSpan.FromMilliseconds(timeoutms);
+            while (true)
+            {
+                if (DateTime.Now > end)
                 {
-                    case MsgBoxButton.OK:
-                        strBtn = MSGBOX_OK;
-                        break;
-
-                    case MsgBoxButton.YES:
-                        strBtn = MSGBOX_YES;
-                        break;
-
-                    case MsgBoxButton.NO:
-                        strBtn = MSGBOX_NO;
-                        break;
+                    log.Error($"Failed to close nag message box with caption: '{messageBoxCaption}'");
+                    return false;
+                }
+                   
+                if (WinAPI.SendNotifyMessage(hwnd, WinAPI.WM_CLOSE, IntPtr.Zero, null) != 0)
+                    return true;
+                else
+                {
+                    log.Error(
+                        $"Failed to send notify message to nag message box with caption: '{messageBoxCaption}'. " +
+                        $"Error code: {Marshal.GetLastWin32Error()}"
+                    );
                 }
 
-                attempts = 0;
-                while (!WinAPI.ControlClick(hwnd, strBtn) && attempts < maxAttempts)
-                {
-                    Thread.Sleep(100);
-                    attempts++;
-                }
-
-                return attempts != maxAttempts;
+                Thread.Sleep(100);
             }
         }
     }

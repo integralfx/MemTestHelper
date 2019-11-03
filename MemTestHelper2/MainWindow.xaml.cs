@@ -23,10 +23,13 @@ namespace MemTestHelper2
 {
     public partial class MainWindow : MetroWindow
     {
+        private const string VERSION = "2.1.0";
         private readonly int NUM_THREADS, MAX_THREADS;
 
         // Update interval (in ms) for coverage info list.
         private const int UPDATE_INTERVAL = 200;
+
+        private static readonly NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
 
         private MemTest[] memtests;
         private MemTestInfo[] memtestInfo;
@@ -38,8 +41,12 @@ namespace MemTestHelper2
         public MainWindow()
         {
             InitializeComponent();
+            lblVersion.Content = $"Version {VERSION}";
+
+            log.Info($"Starting MemTestHelper v{VERSION}");
 
             NUM_THREADS = Convert.ToInt32(Environment.GetEnvironmentVariable("NUMBER_OF_PROCESSORS"));
+            log.Info($"CPU Threads: {NUM_THREADS}");
             MAX_THREADS = NUM_THREADS * 4;
             memtests = new MemTest[MAX_THREADS];
             // Index 0 stores the total.
@@ -130,6 +137,7 @@ namespace MemTestHelper2
         {
             CloseMemTests();
             SaveConfig();
+            log.Info("Closing MemTestHelper");
         }
 
         private void Window_StateChanged(object sender, EventArgs e)
@@ -172,7 +180,7 @@ namespace MemTestHelper2
                             }
 
                             // User may have changed offsets while minimised.
-                            LayOutMemTests();
+                            LayoutMemTests();
 
                             // Hack to bring form to top.
                             Topmost = true;
@@ -200,14 +208,13 @@ namespace MemTestHelper2
             btnStop.IsEnabled = true;
             chkStopAt.IsEnabled = false;
             txtStopAt.IsEnabled = false;
-            chkStopAtTotal.IsEnabled = false;
             chkStopOnError.IsEnabled = false;
             chkStartMin.IsEnabled = false;
 
             // Run in background as StartMemTests() can block.
             RunInBackground(() =>
             {
-                StartMemTests();
+                if (!StartMemTests()) return;
 
                 if (!coverageWorker.IsBusy)
                     coverageWorker.RunWorkerAsync();
@@ -236,10 +243,7 @@ namespace MemTestHelper2
             btnStop.IsEnabled = false;
             chkStopAt.IsEnabled = true;
             if (chkStopAt.IsEnabled)
-            {
                 txtStopAt.IsEnabled = true;
-                chkStopAtTotal.IsEnabled = true;
-            }
             chkStopOnError.IsEnabled = true;
             chkStartMin.IsEnabled = true;
 
@@ -249,11 +253,17 @@ namespace MemTestHelper2
 
             // Update speed.
             var ram = Convert.ToInt32(txtRAM.Text);
-            var elapsedTime = TimeSpan.ParseExact((string)lblElapsedTime.Content, @"hh\hmm\mss\s", 
-                                                  CultureInfo.InvariantCulture).TotalSeconds;
-            // 0 is the total coverage.
-            var speed = (memtestInfo[0].Coverage / 100) * ram / elapsedTime;
-            lblSpeed.Content = $"{speed:f2}MB/s";
+            var elapsedTime = TimeSpan.ParseExact(
+                (string)lblElapsedTime.Content, 
+                @"hh\hmm\mss\s", 
+                CultureInfo.InvariantCulture
+            ).TotalSeconds;
+            lock (memtestInfo)
+            {
+                // 0 is the total coverage.
+                var speed = (memtestInfo[0].Coverage / 100) * ram / elapsedTime;
+                lblSpeed.Content = $"{speed:f2}MB/s";
+            }
 
             MessageBox.Show("Please check if there are any errors", "MemTest finished");
         }
@@ -277,7 +287,7 @@ namespace MemTestHelper2
                 isMinimised = false;
 
                 // User may have changed offsets while minimised.
-                LayOutMemTests();
+                LayoutMemTests();
 
                 Activate();
             });
@@ -313,7 +323,7 @@ namespace MemTestHelper2
 
         private void Offset_Changed(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
-            RunInBackground(() => { LayOutMemTests(); });
+            RunInBackground(() => { LayoutMemTests(); });
         }
 
         private void btnCentre_Click(object sender, RoutedEventArgs e)
@@ -329,13 +339,11 @@ namespace MemTestHelper2
         private void chkStopAt_Checked(object sender, RoutedEventArgs e)
         {
             txtStopAt.IsEnabled = true;
-            chkStopAtTotal.IsEnabled = true;
         }
 
         private void chkStopAt_Unchecked(object sender, RoutedEventArgs e)
         {
             txtStopAt.IsEnabled = false;
-            chkStopAtTotal.IsEnabled = false;
         }
 
         private void txtDiscord_DoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -377,8 +385,8 @@ namespace MemTestHelper2
         {
             for (var i = 0; i <= (int)cboThreads.SelectedItem; i++)
             {
-                // First row is average coverage.
-                memtestInfo[i] = new MemTestInfo(i == 0 ? "A" : i.ToString(), 0.0, 0);
+                // First row is the total coverage.
+                memtestInfo[i] = new MemTestInfo(i == 0 ? "T" : i.ToString(), 0.0, 0);
             }
 
             lstCoverage.ItemsSource = memtestInfo;
@@ -462,9 +470,6 @@ namespace MemTestHelper2
                         case "stopAtValue":
                             txtStopAt.Text = appSettings[key];
                             break;
-                        case "stopAtTotal":
-                            chkStopAtTotal.IsChecked = Boolean.Parse(appSettings[key]);
-                            break;
 
                         case "stopOnError":
                             chkStopOnError.IsChecked = Boolean.Parse(appSettings[key]);
@@ -473,21 +478,13 @@ namespace MemTestHelper2
                         case "startMin":
                             chkStartMin.IsChecked = Boolean.Parse(appSettings[key]);
                             break;
-
-                        default:
-                            MessageBox.Show($"Unknown key: {key}");
-                            break;
                     }
                 }
             }
-            catch (ConfigurationErrorsException e)
+            catch (Exception e)
             {
-                MessageBox.Show(e.BareMessage);
-                return false;
-            }
-            catch (FormatException e)
-            {
-                MessageBox.Show(e.Message);
+                MessageBox.Show("Failed to load config", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                log.Error(e.Message);
                 return false;
             }
 
@@ -508,7 +505,6 @@ namespace MemTestHelper2
                 dict.Add("rows", cboRows.SelectedItem.ToString());
                 dict.Add("stopAt", chkStopAt.IsChecked.ToString());
                 dict.Add("stopAtValue", txtStopAt.Text);
-                dict.Add("stopAtTotal", chkStopAtTotal.IsChecked.ToString());
                 dict.Add("stopOnError", chkStopOnError.IsChecked.ToString());
                 dict.Add("startMin", chkStartMin.IsChecked.ToString());
 
@@ -527,7 +523,8 @@ namespace MemTestHelper2
             }
             catch (ConfigurationErrorsException e)
             {
-                MessageBox.Show(e.BareMessage);
+                MessageBox.Show("Failed to save config", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                log.Error(e.Message);
                 return false;
             }
 
@@ -540,12 +537,16 @@ namespace MemTestHelper2
             UInt64 totalRAM = ci.TotalPhysicalMemory / (1024 * 1024),
                    availableRAM = ci.AvailablePhysicalMemory / (1024 * 1024);
 
+            log.Info($"Total RAM: {totalRAM} Available RAM: {availableRAM}");
+
             var ramText = txtRAM.Text;
+            log.Info($"Input RAM: {ramText}");
             // Automatically input available RAM if empty.
             if (ramText.Length == 0)
             {
                 ramText = GetFreeRAM().ToString();
                 txtRAM.Text = ramText;
+                log.Info($"No RAM input. Free RAM: {ramText}");
             }
             else
             {
@@ -558,6 +559,7 @@ namespace MemTestHelper2
 
             int threads = (int)cboThreads.SelectedItem,
                 ram = Convert.ToInt32(ramText);
+            log.Info($"Selected threads: {threads}");
             if (ram < threads)
             {
                 ShowErrorMsgBox($"Amount of RAM must be greater than {threads}");
@@ -638,7 +640,7 @@ namespace MemTestHelper2
             udYOffset.Value = yOffset;
         }
 
-        private void StartMemTests()
+        private bool StartMemTests()
         {
             CloseAllMemTests();
 
@@ -651,6 +653,27 @@ namespace MemTestHelper2
                 memtests[i].Start(ram, startMin);
             });
 
+            for (int i = 0; i < threads; i++)
+            {
+                var mt = memtests[i];
+                if (!mt.Started)
+                {
+                    ShowErrorMsgBox($"Failed to start MemTest instance with PID {mt.PID}");
+
+                    txtRAM.IsEnabled = true;
+                    cboThreads.IsEnabled = true;
+                    btnStart.IsEnabled = true;
+                    btnStop.IsEnabled = false;
+                    chkStopAt.IsEnabled = true;
+                    if (chkStopAt.IsEnabled)
+                        txtStopAt.IsEnabled = true;
+                    chkStopOnError.IsEnabled = true;
+                    chkStartMin.IsEnabled = true;
+
+                    return false;
+                }
+            }
+
             /* 
              * Some nag message boxes won't be clicked due to concurrent execution.
              * memTestA             | memTestB
@@ -659,17 +682,18 @@ namespace MemTestHelper2
              * SendNotifyMessage()  | 
              *                      | SendNotifyMessage()
              *                      
-             * memTestB's window will be active while calling SendNotifyMessage()
-             * for memTestA.
+             * memTestB's window will be active while calling SendNotifyMessage() for memTestA.
              */
             foreach (var hwnd in WinAPI.FindAllWindows(MemTest.MSG2))
                 WinAPI.ControlClick(hwnd, MemTest.MSGBOX_OK);
 
             if (!chkStartMin.IsChecked.Value)
-                LayOutMemTests();
+                LayoutMemTests();
+
+            return true;
         }
 
-        private void LayOutMemTests()
+        private void LayoutMemTests()
         {
             int xOffset = (int)udXOffset.Value,
                 yOffset = (int)udYOffset.Value,
@@ -741,7 +765,7 @@ namespace MemTestHelper2
                     if (shouldCheck)
                     {
                         // Check coverage %.
-                        if (chkStopAt.IsChecked.Value && !chkStopAtTotal.IsChecked.Value)
+                        if (chkStopAt.IsChecked.Value)
                         {
                             var stopAt = Convert.ToInt32(txtStopAt.Text);
                             if (coverage > stopAt)
@@ -756,7 +780,7 @@ namespace MemTestHelper2
                             var item = lstCoverage.ItemContainerGenerator.ContainerFromIndex(i) as ListViewItem;
                             if (errors > 0)
                             {
-                                memtest.ClickNagMessageBox("MemTest Error", MemTest.MsgBoxButton.NO);
+                                memtest.CloseNagMessageBox("MemTest Error");
                                 item.Foreground = Brushes.Red;
                                 ClickBtnStop();
                             }
@@ -778,14 +802,6 @@ namespace MemTestHelper2
 
                 if (shouldCheck)
                 {
-                    // Check total coverage.
-                    if (chkStopAt.IsChecked.Value && chkStopAtTotal.IsChecked.Value)
-                    {
-                        var stopAt = Convert.ToInt32(txtStopAt.Text);
-                        if (totalCoverage > stopAt)
-                            ClickBtnStop();
-                    }
-
                     if (IsAllFinished()) ClickBtnStop();
                 }
             });

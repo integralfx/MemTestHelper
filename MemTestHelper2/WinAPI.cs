@@ -9,7 +9,10 @@ namespace MemTestHelper2
     class WinAPI
     {
         public const int WM_SETTEXT = 0xC, WM_LBUTTONDOWN = 0x201, WM_LBUTTONUP = 0x202, WM_SYSCOMMAND = 0x112, 
-                         SC_MINIMIZE = 0xF020, SW_SHOW = 5, SW_RESTORE = 9, SW_MINIMIZE = 6, BM_CLICK = 0xF5;
+                         WM_CLOSE = 0x10, SC_MINIMIZE = 0xF020, SW_SHOW = 5, SW_RESTORE = 9, SW_MINIMIZE = 6, 
+                         BM_CLICK = 0xF5;
+
+        private static readonly NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
 
         public static bool ControlClick(IntPtr hwndParent, string className)
         {
@@ -61,13 +64,20 @@ namespace MemTestHelper2
 
                     if (currPid == pid)
                     {
-                        if (windowTitle.Length == 0)
+                         if (windowTitle.Length == 0)
                             hwnd = currHwnd;
                         else
                         {
                             if (sb.ToString() == windowTitle)
                                 hwnd = currHwnd;
-                            else return true;
+                            else
+                            {
+                                log.Info(
+                                    $"Found window with PID: {pid}, but target window title: '{windowTitle}' didn't " +
+                                    $"match window title: '{sb.ToString()}'"
+                                );
+                                return true;
+                            }
                         }
                         
                         return false;
@@ -152,6 +162,17 @@ namespace MemTestHelper2
         [return: MarshalAs(UnmanagedType.Bool)]
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         public static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("user32.dll")]
+        public static extern bool GetWindowRect(IntPtr hwnd, ref Rect rectangle);
+
+        public struct Rect
+        {
+            public int Left { get; set; }
+            public int Top { get; set; }
+            public int Right { get; set; }
+            public int Bottom { get; set; }
+        }
 
         #endregion
 
