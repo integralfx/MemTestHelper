@@ -214,7 +214,22 @@ namespace MemTestHelper2
             // Run in background as StartMemTests() can block.
             RunInBackground(() =>
             {
-                if (!StartMemTests()) return;
+                if (!StartMemTests())
+                {
+                    ShowErrorMsgBox($"Failed to start MemTest instances");
+
+                    txtRAM.IsEnabled = true;
+                    cboThreads.IsEnabled = true;
+                    btnStart.IsEnabled = true;
+                    btnStop.IsEnabled = false;
+                    chkStopAt.IsEnabled = true;
+                    if (chkStopAt.IsEnabled)
+                        txtStopAt.IsEnabled = true;
+                    chkStopOnError.IsEnabled = true;
+                    chkStartMin.IsEnabled = true;
+
+                    return;
+                }
 
                 if (!coverageWorker.IsBusy)
                     coverageWorker.RunWorkerAsync();
@@ -656,22 +671,7 @@ namespace MemTestHelper2
             for (int i = 0; i < threads; i++)
             {
                 var mt = memtests[i];
-                if (!mt.Started)
-                {
-                    ShowErrorMsgBox($"Failed to start MemTest instance with PID {mt.PID}");
-
-                    txtRAM.IsEnabled = true;
-                    cboThreads.IsEnabled = true;
-                    btnStart.IsEnabled = true;
-                    btnStop.IsEnabled = false;
-                    chkStopAt.IsEnabled = true;
-                    if (chkStopAt.IsEnabled)
-                        txtStopAt.IsEnabled = true;
-                    chkStopOnError.IsEnabled = true;
-                    chkStartMin.IsEnabled = true;
-
-                    return false;
-                }
+                if (!mt.Started) return false;
             }
 
             /* 
