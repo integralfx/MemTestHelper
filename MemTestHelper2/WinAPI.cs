@@ -10,7 +10,7 @@ namespace MemTestHelper2
     {
         public const int WM_SETTEXT = 0xC, WM_LBUTTONDOWN = 0x201, WM_LBUTTONUP = 0x202, WM_SYSCOMMAND = 0x112, 
                          WM_CLOSE = 0x10, SC_MINIMIZE = 0xF020, SW_SHOW = 5, SW_RESTORE = 9, SW_MINIMIZE = 6, 
-                         BM_CLICK = 0xF5;
+                         BM_CLICK = 0xF5, GWL_EXSTYLE = -20, WS_EX_APPWINDOW = 0x40000;
 
         private static readonly NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
 
@@ -126,6 +126,23 @@ namespace MemTestHelper2
             return windows;
         }
 
+        public static List<IntPtr> FindAllWindows(int pid)
+        {
+            var windows = new List<IntPtr>();
+
+            EnumWindows(
+                delegate (IntPtr hwnd, IntPtr lParam)
+                {
+                    uint currPid;
+                    GetWindowThreadProcessId(hwnd, out currPid);
+                    if (pid == currPid) windows.Add(hwnd);
+                    return true;
+                },
+                IntPtr.Zero);
+
+            return windows;
+        }
+
         #region Imports
 
         [DllImport("user32.dll", SetLastError = true)]
@@ -175,6 +192,9 @@ namespace MemTestHelper2
         [return: MarshalAs(UnmanagedType.Bool)]
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         public static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("user32.dll", EntryPoint = "GetWindowLong")]
+        public static extern IntPtr GetWindowLongPtr(IntPtr hWnd, int nIndex);
 
         [DllImport("user32.dll")]
         public static extern bool GetWindowRect(IntPtr hwnd, ref Rect rectangle);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
@@ -12,6 +13,7 @@ namespace MemTestHelper2
         public static readonly string EXE_NAME = "memtest.exe";
         public static readonly int WIDTH = 217, HEIGHT = 247,
                                    MAX_RAM = 2048;
+        public const int TIMEOUT_MS = 3000;
 
         private static readonly NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
 
@@ -94,7 +96,15 @@ namespace MemTestHelper2
             get { return process != null ? process.Id : 0; }
         }
 
-        public void Start(double ram, bool startMinimised, int timeoutms = 3000)
+        public static bool IsNagMessageBox(IntPtr hwnd)
+        {
+            if (hwnd == IntPtr.Zero) return false;
+
+            var styles = WinAPI.GetWindowLongPtr(hwnd, WinAPI.GWL_EXSTYLE);
+            return (styles.ToInt32() & WinAPI.WS_EX_APPWINDOW) == 0;
+        }
+
+        public void Start(double ram, bool startMinimised, int timeoutms = TIMEOUT_MS)
         {
             process = Process.Start(EXE_NAME);
             Started = true;
@@ -110,7 +120,7 @@ namespace MemTestHelper2
             {
                 if (DateTime.Now > end)
                 {
-                    log.Error($"Process {process.Id}: Failed to close message box 1");
+                    log.Error($"Process {process.Id}: Failed to close nag message box 1");
                     Started = false;
                     return;
                 }
@@ -118,7 +128,7 @@ namespace MemTestHelper2
                 if (!string.IsNullOrEmpty(process.MainWindowTitle))
                     break;
 
-                CloseNagMessageBox(MSG1);
+                CloseNagMessageBox(/*MSG1*/);
                 Thread.Sleep(100);
                 process.Refresh();
             }
@@ -133,12 +143,12 @@ namespace MemTestHelper2
             {
                 if (DateTime.Now > end)
                 {
-                    log.Error($"Process {process.Id}: Failed to close message box 2");
+                    log.Error($"Process {process.Id}: Failed to close nag message box 2");
                     Started = false;
                     return;
                 }
 
-                if (CloseNagMessageBox(MSG2))
+                if (CloseNagMessageBox())
                     break;
 
                 Thread.Sleep(100);
@@ -220,7 +230,33 @@ namespace MemTestHelper2
             return Tuple.Create(coverage, errors);
         }
 
-        public bool CloseNagMessageBox(string messageBoxCaption, int timeoutms = 3000)
+        public bool CloseNagMessageBox()
+        {
+            var windows = WinAPI.FindAllWindows(PID).Where(e => IsNagMessageBox(e)).ToList();
+            if (windows.Count == 0)
+            {
+                log.Error($"Failed to find nag message boxes with PID {PID}");
+                return false;
+            }
+
+            foreach (var hwnd in windows)
+            {
+                if (WinAPI.SendNotifyMessage(hwnd, WinAPI.WM_CLOSE, IntPtr.Zero, null) != 0)
+                    return true;
+                else
+                {
+                    log.Error(
+                        $"Failed to send notify message to nag message box with PID {PID}'. " +
+                        $"Error code: {Marshal.GetLastWin32Error()}"
+                    );
+                    return false;
+                }
+            }
+
+            return false;
+        }
+
+        public bool CloseNagMessageBox(string messageBoxCaption, int timeoutms = TIMEOUT_MS)
         {
             if (!Started || Finished || process == null || process.HasExited)
                 return false;
