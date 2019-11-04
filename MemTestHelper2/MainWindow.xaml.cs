@@ -18,6 +18,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Interop;
 using System.Windows.Media;
+using System.Runtime.InteropServices;
 
 namespace MemTestHelper2
 {
@@ -685,7 +686,17 @@ namespace MemTestHelper2
              * memTestB's window will be active while calling SendNotifyMessage() for memTestA.
              */
             foreach (var hwnd in WinAPI.FindAllWindows(MemTest.MSG2))
-                WinAPI.ControlClick(hwnd, MemTest.MSGBOX_OK);
+            {
+                if (WinAPI.SendNotifyMessage(hwnd, WinAPI.WM_CLOSE, IntPtr.Zero, null) == 0)
+                {
+                    log.Error(
+                        $"Failed to send notify message to nag message box with caption: '{MemTest.MSG2}'. " +
+                        $"Error code: {Marshal.GetLastWin32Error()}"
+                    );
+
+                    return false;
+                }
+            }
 
             if (!chkStartMin.IsChecked.Value)
                 LayoutMemTests();

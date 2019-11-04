@@ -25,8 +25,10 @@ namespace MemTestHelper2
                             MSGBOX_OK = "Button1",
                             MSGBOX_YES = "Button1",
                             MSGBOX_NO = "Button2",
-                            MSG1 = "Welcome, New MemTest User",
-                            MSG2 = "Message for first-time users";
+                            // Welcome, New MemTest User
+                            MSG1 = "Welcome",
+                            // Message for first-time users
+                            MSG2 = "Message";
 
         private Process process = null;
 

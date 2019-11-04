@@ -45,7 +45,7 @@ namespace MemTestHelper2
         }
 
         // Finds the first window that matches pid, and if non-empty, windowTitle.
-        public static IntPtr GetHWNDFromPID(int pid, string windowTitle = "")
+        public static IntPtr GetHWNDFromPID(int pid, string windowTitle = "", bool matchSubStr = true)
         {
             IntPtr hwnd = IntPtr.Zero;
 
@@ -53,9 +53,6 @@ namespace MemTestHelper2
                 delegate (IntPtr currHwnd, IntPtr lParam)
                 {
                     int len = GetWindowTextLength(currHwnd);
-                    if (windowTitle.Length > 0 && len != windowTitle.Length)
-                        return true;
-
                     StringBuilder sb = new StringBuilder(len + 1);
                     GetWindowText(currHwnd, sb, sb.Capacity);
 
@@ -64,32 +61,43 @@ namespace MemTestHelper2
 
                     if (currPid == pid)
                     {
-                         if (windowTitle.Length == 0)
+                        if (windowTitle.Length == 0)
+                        {
                             hwnd = currHwnd;
+                            return false;
+                        }
+
+                        if (matchSubStr)
+                        {
+                            if (sb.ToString().Contains(windowTitle))
+                            {
+                                hwnd = currHwnd;
+                                return false;
+                            }
+                        }
                         else
                         {
                             if (sb.ToString() == windowTitle)
-                                hwnd = currHwnd;
-                            else
                             {
-                                log.Info(
-                                    $"Found window with PID: {pid}, but target window title: '{windowTitle}' didn't " +
-                                    $"match window title: '{sb.ToString()}'"
-                                );
-                                return true;
+                                hwnd = currHwnd;
+                                return false;
                             }
+
+                            log.Info(
+                                $"Found window with PID: {pid}, but target window title: '{windowTitle}' didn't " +
+                                $"match window title: '{sb.ToString()}'"
+                            );
                         }
-                        
-                        return false;
                     }
-                    else return true;
+
+                    return true;
                 },
                 IntPtr.Zero);
 
             return hwnd;
         }
 
-        public static List<IntPtr> FindAllWindows(string windowTitle)
+        public static List<IntPtr> FindAllWindows(string windowTitle, bool matchSubStr = true)
         {
             var windows = new List<IntPtr>();
 
@@ -97,14 +105,19 @@ namespace MemTestHelper2
                 delegate (IntPtr hwnd, IntPtr lParam)
                 {
                     int len = GetWindowTextLength(hwnd);
-                    if (windowTitle.Length > 0 && len != windowTitle.Length)
-                        return true;
-
                     StringBuilder sb = new StringBuilder(len + 1);
                     GetWindowText(hwnd, sb, sb.Capacity);
 
-                    if (sb.ToString() == windowTitle)
-                        windows.Add(hwnd);
+                    if (matchSubStr)
+                    {
+                        if (sb.ToString().Contains(windowTitle))
+                            windows.Add(hwnd);
+                    }
+                    else
+                    {
+                        if (sb.ToString() == windowTitle)
+                            windows.Add(hwnd);
+                    }
 
                     return true;
                 },
