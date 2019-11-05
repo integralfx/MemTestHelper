@@ -131,6 +131,8 @@ namespace MemTestHelper2
             InitCboRows();
             UpdateLstCoverage();
             CentreXYOffsets();
+
+            MemTest.UpdateDimensions();
         }
 
         private void Window_Closing(object sender, CancelEventArgs e)

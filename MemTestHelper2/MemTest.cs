@@ -13,8 +13,7 @@ namespace MemTestHelper2
     class MemTest
     {
         public static readonly string EXE_NAME = "memtest.exe";
-        public static readonly int WIDTH = 221, HEIGHT = 253,
-                                   MAX_RAM = 2048;
+        public static int WIDTH = 221, HEIGHT = 253, MAX_RAM = 2048;
         public const int TIMEOUT_MS = 3000;
 
         private static readonly NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
@@ -112,6 +111,40 @@ namespace MemTestHelper2
             var expectedStyles = WinAPI.WS_CAPTION | WinAPI.WS_POPUP | WinAPI.WS_VISIBLE;
             return (styles.ToInt64() & expectedStyles) == expectedStyles && 
                    (exStyles.ToInt64() & WinAPI.WS_EX_APPWINDOW) == 0;
+        }
+
+        public static void UpdateDimensions()
+        {
+            bool verbose = VerboseLogging;
+
+            VerboseLogging = false;
+            var memtest = new MemTest();
+            memtest.process = Process.Start(EXE_NAME);
+
+            var end = DateTime.Now + TimeSpan.FromMilliseconds(TIMEOUT_MS);
+            while (true)
+            {
+                if (DateTime.Now > end)
+                {
+                    log.Error("Failed to update dimensions");
+                    return;
+                }
+
+                if (!string.IsNullOrEmpty(memtest.process.MainWindowTitle))
+                    break;
+
+                memtest.CloseNagMessageBox();
+                Thread.Sleep(100);
+                memtest.process.Refresh();
+            }
+
+            var rect = new WinAPI.Rect();
+            WinAPI.GetWindowRect(memtest.process.MainWindowHandle, ref rect);
+            WIDTH = rect.Right - rect.Left;
+            HEIGHT = rect.Bottom - rect.Top;
+
+            memtest.Close();
+            VerboseLogging = verbose;
         }
 
         public void Start(double ram, bool startMinimised)
