@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -115,6 +116,14 @@ namespace MemTestHelper2
 
         public static void UpdateDimensions()
         {
+            if (!File.Exists(EXE_NAME))
+            {
+                var msg = $"{EXE_NAME} not found. Falling back to default dimensions ({WIDTH} x {HEIGHT}).";
+                MessageBox.Show(msg);
+                log.Error(msg);
+                return;
+            }
+
             bool verbose = VerboseLogging;
 
             VerboseLogging = false;
