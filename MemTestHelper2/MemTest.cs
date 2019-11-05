@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -34,6 +33,7 @@ namespace MemTestHelper2
                             // Message for first-time users
                             MSG2 = "Message";
 
+        private static readonly object updateLock = new object();
         private static bool hasUpdatedDims = false;
 
         private Process process = null;
@@ -72,28 +72,21 @@ namespace MemTestHelper2
         {
             get
             {
-                var rect = new WinAPI.Rect();
-                WinAPI.GetWindowRect(process.MainWindowHandle, ref rect);
-                return new Point(rect.Left, rect.Top);
+                double x = 0.0, y = 0.0;
+                if (process != null && !process.HasExited)
+                {
+                    var rect = new WinAPI.Rect();
+                    WinAPI.GetWindowRect(process.MainWindowHandle, ref rect);
+                    x = rect.Left;
+                    y = rect.Top;
+                }
+
+                return new Point(x, y);
             }
             set
             {
                 if (process != null && !process.HasExited)
                 {
-                    lock (this)
-                    {
-                        if (!hasUpdatedDims)
-                        {
-                            var rect = new WinAPI.Rect();
-                            WinAPI.GetWindowRect(process.MainWindowHandle, ref rect);
-                            WIDTH = rect.Right - rect.Left;
-                            HEIGHT = rect.Bottom - rect.Top;
-                            hasUpdatedDims = true;
-                            if (VerboseLogging)
-                                log.Info($"Updated MemTest dimensions to {WIDTH} x {HEIGHT}");
-                        }
-                    }
-                    
                     WinAPI.MoveWindow(process.MainWindowHandle, (int)value.X, (int)value.Y, WIDTH, HEIGHT, true);
                 }
             }
@@ -186,6 +179,20 @@ namespace MemTestHelper2
 
             Started = true;
             Finished = false;
+
+            lock (updateLock)
+            {
+                if (!hasUpdatedDims)
+                {
+                    var rect = new WinAPI.Rect();
+                    WinAPI.GetWindowRect(process.MainWindowHandle, ref rect);
+                    WIDTH = rect.Right - rect.Left;
+                    HEIGHT = rect.Bottom - rect.Top;
+                    hasUpdatedDims = true;
+                    if (VerboseLogging)
+                        log.Info($"Updated MemTest dimensions to {WIDTH} x {HEIGHT}");
+                }
+            }
 
             if (startMinimised)
             {
