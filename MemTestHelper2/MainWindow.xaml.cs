@@ -91,10 +91,8 @@ namespace MemTestHelper2
                     var threads = (int)cboThreads.SelectedItem;
                     var elapsed = e.SignalTime - startTime;
 
-                    lblElapsedTime.Content = String.Format("{0:00}h{1:00}m{2:00}s",
-                                                           (int)(elapsed.TotalHours),
-                                                           elapsed.Minutes,
-                                                           elapsed.Seconds);
+                    lblElapsedTime.Content = $"{(int)(elapsed.TotalHours):00}h{elapsed.Minutes:00}m" +
+                                             $"{elapsed.Seconds:00}s";
 
                     // This thread only accesses element 0.
                     lock (memtestInfo)
@@ -108,11 +106,8 @@ namespace MemTestHelper2
                         var est = (elapsedms / totalCoverage * nextCoverage) - elapsedms;
 
                         TimeSpan estimatedTime = TimeSpan.FromMilliseconds(est);
-                        lblEstimatedTime.Content = String.Format("{0:00}h{1:00}m{2:00}s to {3}%",
-                                                                 (int)(estimatedTime.TotalHours),
-                                                                 estimatedTime.Minutes,
-                                                                 estimatedTime.Seconds,
-                                                                 nextCoverage);
+                        lblEstimatedTime.Content = $"{(int)(estimatedTime.TotalHours):00}h{estimatedTime.Minutes:00}m"+
+                                                   $"{estimatedTime.Seconds:00}s to {nextCoverage}%";
 
                         var ram = Convert.ToInt32(txtRAM.Text);
                         var speed = (totalCoverage / 100) * ram / (elapsedms / 1000);
@@ -138,7 +133,7 @@ namespace MemTestHelper2
         {
             CloseMemTests();
             SaveConfig();
-            log.Info("Closing MemTestHelper");
+            log.Info("Closing MemTestHelper\n");
         }
 
         private void Window_StateChanged(object sender, EventArgs e)
