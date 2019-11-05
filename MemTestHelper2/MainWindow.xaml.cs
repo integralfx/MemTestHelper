@@ -60,7 +60,6 @@ namespace MemTestHelper2
             InitCboThreads();
             InitLstCoverage();
             InitCboRows();
-            CentreXYOffsets();
             UpdateLstCoverage();
 
             coverageWorker = new BackgroundWorker();
@@ -130,7 +129,6 @@ namespace MemTestHelper2
 
             InitCboRows();
             UpdateLstCoverage();
-            CentreXYOffsets();
         }
 
         private void Window_Closing(object sender, CancelEventArgs e)
@@ -316,7 +314,6 @@ namespace MemTestHelper2
 
             cboRows.Items.Clear();
             InitCboRows();
-            CentreXYOffsets();
         }
 
         private void Offset_Changed(object sender, RoutedPropertyChangedEventArgs<double?> e)
@@ -325,11 +322,6 @@ namespace MemTestHelper2
         }
 
         private void btnCentre_Click(object sender, RoutedEventArgs e)
-        {
-            CentreXYOffsets();
-        }
-
-        private void cboRows_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             CentreXYOffsets();
         }
