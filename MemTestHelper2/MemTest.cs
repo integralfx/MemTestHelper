@@ -46,15 +46,18 @@ namespace MemTestHelper2
 
         public bool Minimised
         {
-            get { return Started ? WinAPI.IsIconic(process.MainWindowHandle) : false; }
+            get { return process != null ? WinAPI.IsIconic(process.MainWindowHandle) : false; }
             set
             {
-                if (Started)
+                if (process != null)
                 {
                     var hwnd = process.MainWindowHandle;
 
                     if (value)
-                        WinAPI.ShowWindow(hwnd, WinAPI.SW_MINIMIZE);
+                    {
+                        //WinAPI.ShowWindow(hwnd, WinAPI.SW_MINIMIZE);
+                        WinAPI.PostMessage(hwnd, WinAPI.WM_SYSCOMMAND, new IntPtr(WinAPI.SC_MINIMIZE), IntPtr.Zero);
+                    }
                     else
                     {
                         if (WinAPI.IsIconic(hwnd))
@@ -169,7 +172,23 @@ namespace MemTestHelper2
             Started = true;
             Finished = false;
 
-            if (startMinimised) Minimised = true;
+            if (startMinimised)
+            {
+                end = DateTime.Now + TimeSpan.FromMilliseconds(TIMEOUT_MS);
+                while (true)
+                {
+                    if (DateTime.Now > end)
+                    {
+                        if (VerboseLogging) log.Error($"Failed to minimise MemTest {PID}");
+                        break;
+                    }
+
+                    Minimised = true;
+                    if (Minimised) break;
+
+                    Thread.Sleep(100);
+                }
+            }
         }
 
         public void Stop()
