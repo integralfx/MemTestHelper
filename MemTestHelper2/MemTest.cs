@@ -155,10 +155,10 @@ namespace MemTestHelper2
                 Thread.Sleep(100);
             }
 
-            if (startMinimised) Minimised = true;
-
             Started = true;
             Finished = false;
+
+            if (startMinimised) Minimised = true;
         }
 
         public void Stop()
@@ -174,7 +174,7 @@ namespace MemTestHelper2
 
         public void Close()
         {
-            if (Started && !process.HasExited)
+            if (process != null && !process.HasExited)
                 process.Kill();
 
             process = null;
@@ -243,21 +243,18 @@ namespace MemTestHelper2
             {
                 windows = WinAPI.FindAllWindows(PID);
 
-                if (windows.Count > 0)
+                for (int i = 0; i < windows.Count; i++)
                 {
-                    for (int i = 0; i < windows.Count; i++)
-                    {
-                        var hwnd = windows[i];
-                        var len = WinAPI.GetWindowTextLength(hwnd);
-                        var sb = new StringBuilder(len + 1);
-                        WinAPI.GetWindowText(hwnd, sb, sb.Capacity);
-                        var exStyles = WinAPI.GetWindowLongPtr(hwnd, WinAPI.GWL_EXSTYLE);
+                    var hwnd = windows[i];
+                    var len = WinAPI.GetWindowTextLength(hwnd);
+                    var sb = new StringBuilder(len + 1);
+                    WinAPI.GetWindowText(hwnd, sb, sb.Capacity);
+                    var exStyles = WinAPI.GetWindowLongPtr(hwnd, WinAPI.GWL_EXSTYLE);
 
-                        log.Info(
-                            $"PID {PID,5}, window {i + 1}, exstyles: 0x{exStyles.ToInt32():X8}, "+
-                            $"text: '{sb.ToString()}'"
-                        );
-                    }
+                    log.Info(
+                        $"PID {PID,5}, window {i + 1}, exstyles: 0x{exStyles.ToInt64():X16}, " +
+                        $"text: '{sb.ToString()}'"
+                    );
                 }
 
                 windows = windows.Where(IsNagMessageBox).ToList();
