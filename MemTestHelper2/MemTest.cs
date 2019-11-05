@@ -34,6 +34,8 @@ namespace MemTestHelper2
                             // Message for first-time users
                             MSG2 = "Message";
 
+        private static bool hasUpdatedDims = false;
+
         private Process process = null;
 
         public enum MsgBoxButton { OK, YES, NO }
@@ -80,7 +82,23 @@ namespace MemTestHelper2
             set
             {
                 if (process != null && !process.HasExited)
+                {
+                    lock (this)
+                    {
+                        if (!hasUpdatedDims)
+                        {
+                            var rect = new WinAPI.Rect();
+                            WinAPI.GetWindowRect(process.MainWindowHandle, ref rect);
+                            WIDTH = rect.Right - rect.Left;
+                            HEIGHT = rect.Bottom - rect.Top;
+                            hasUpdatedDims = true;
+                            if (VerboseLogging)
+                                log.Info($"Updated MemTest dimensions to {WIDTH} x {HEIGHT}");
+                        }
+                    }
+                    
                     WinAPI.MoveWindow(process.MainWindowHandle, (int)value.X, (int)value.Y, WIDTH, HEIGHT, true);
+                }
             }
         }
 
@@ -112,49 +130,6 @@ namespace MemTestHelper2
             var expectedStyles = WinAPI.WS_CAPTION | WinAPI.WS_POPUP | WinAPI.WS_VISIBLE;
             return (styles.ToInt64() & expectedStyles) == expectedStyles && 
                    (exStyles.ToInt64() & WinAPI.WS_EX_APPWINDOW) == 0;
-        }
-
-        public static void UpdateDimensions()
-        {
-            if (!File.Exists(EXE_NAME))
-            {
-                var logMsg = $"{EXE_NAME} not found. Falling back to default dimensions ({WIDTH} x {HEIGHT}).";
-                var msg = $"{EXE_NAME} not found.\nFalling back to default dimensions ({WIDTH} x {HEIGHT})";
-                MessageBox.Show(msg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                log.Error(logMsg);
-                return;
-            }
-
-            bool verbose = VerboseLogging;
-
-            VerboseLogging = false;
-            var memtest = new MemTest();
-            memtest.process = Process.Start(EXE_NAME);
-
-            var end = DateTime.Now + TimeSpan.FromMilliseconds(TIMEOUT_MS);
-            while (true)
-            {
-                if (DateTime.Now > end)
-                {
-                    log.Error("Failed to update dimensions");
-                    return;
-                }
-
-                if (!string.IsNullOrEmpty(memtest.process.MainWindowTitle))
-                    break;
-
-                memtest.CloseNagMessageBox();
-                Thread.Sleep(100);
-                memtest.process.Refresh();
-            }
-
-            var rect = new WinAPI.Rect();
-            WinAPI.GetWindowRect(memtest.process.MainWindowHandle, ref rect);
-            WIDTH = rect.Right - rect.Left;
-            HEIGHT = rect.Bottom - rect.Top;
-
-            memtest.Close();
-            VerboseLogging = verbose;
         }
 
         public void Start(double ram, bool startMinimised)
