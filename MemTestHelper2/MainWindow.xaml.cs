@@ -494,12 +494,16 @@ namespace MemTestHelper2
                         case "startMin":
                             chkStartMin.IsChecked = Boolean.Parse(appSettings[key]);
                             break;
+
+                        case "verbose":
+                            chkVerbose.IsChecked = Boolean.Parse(appSettings[key]);
+                            break;
                     }
                 }
             }
             catch (Exception e)
             {
-                MessageBox.Show("Failed to load config", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                ShowErrorMsgBox("Failed to load config");
                 log.Error(e.Message);
                 return false;
             }
@@ -523,6 +527,7 @@ namespace MemTestHelper2
                 dict.Add("stopAtValue", txtStopAt.Text);
                 dict.Add("stopOnError", chkStopOnError.IsChecked.ToString());
                 dict.Add("startMin", chkStartMin.IsChecked.ToString());
+                dict.Add("verbose", chkVerbose.IsChecked.ToString());
 
                 var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
                 var settings = configFile.AppSettings.Settings;
@@ -539,7 +544,7 @@ namespace MemTestHelper2
             }
             catch (ConfigurationErrorsException e)
             {
-                MessageBox.Show("Failed to save config", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                ShowErrorMsgBox("Failed to save config");
                 log.Error(e.Message);
                 return false;
             }
@@ -673,29 +678,6 @@ namespace MemTestHelper2
             {
                 var mt = memtests[i];
                 if (!mt.Started) return false;
-            }
-
-            /* 
-             * Some nag message boxes won't be clicked due to concurrent execution.
-             * memTestA             | memTestB
-             * SetActiveWindow()    | 
-             *                      | SetActiveWindow()
-             * SendNotifyMessage()  | 
-             *                      | SendNotifyMessage()
-             *                      
-             * memTestB's window will be active while calling SendNotifyMessage() for memTestA.
-             */
-            foreach (var hwnd in WinAPI.FindAllWindows(MemTest.MSG2))
-            {
-                if (WinAPI.SendNotifyMessage(hwnd, WinAPI.WM_CLOSE, IntPtr.Zero, null) == 0)
-                {
-                    log.Error(
-                        $"Failed to send notify message to nag message box with caption: '{MemTest.MSG2}'. " +
-                        $"Error code: {Marshal.GetLastWin32Error()}"
-                    );
-
-                    return false;
-                }
             }
 
             if (!chkStartMin.IsChecked.Value)

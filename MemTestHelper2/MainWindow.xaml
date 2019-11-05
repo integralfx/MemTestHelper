@@ -77,6 +77,7 @@
                     <CheckBox x:Name="chkStopAt" Content="Stop at %:" HorizontalAlignment="Left" Margin="7,74,0,0" VerticalAlignment="Top" Checked="chkStopAt_Checked" Unchecked="chkStopAt_Unchecked"/>
                     <CheckBox x:Name="chkStopOnError" Content="Stop on error" HorizontalAlignment="Left" Margin="166,74,0,0" VerticalAlignment="Top" IsChecked="True"/>
                     <CheckBox x:Name="chkStartMin" Content="Start minimised" HorizontalAlignment="Left" Margin="328,74,0,0" VerticalAlignment="Top" IsChecked="True"/>
+                    <CheckBox x:Name="chkVerbose" Content="Verbose logging" HorizontalAlignment="Left" Margin="7,100,0,0" VerticalAlignment="Top" />
                 </Grid>
             </TabItem>
 
