@@ -12,7 +12,7 @@
     WindowStartupLocation="CenterScreen" MaxWidth="525" MaxHeight="270" 
     ResizeMode="CanMinimize" Loaded="Window_Loaded" Closing="Window_Closing" StateChanged="Window_StateChanged">
     <Grid>
-        <mah:MetroAnimatedTabControl x:Name="tabControl" HorizontalAlignment="Left" Height="239" VerticalAlignment="Top" Width="438">
+        <mah:MetroAnimatedTabControl x:Name="tabControl" HorizontalAlignment="Left" Height="241" VerticalAlignment="Top" Width="438">
             <TabItem x:Name="tabMain" Header="Main">
                 <Grid Background="#252525" Margin="0">
                     <ListView Name="lstCoverage"
