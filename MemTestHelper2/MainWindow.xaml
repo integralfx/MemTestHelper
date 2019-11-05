@@ -71,7 +71,7 @@
                     <mah:NumericUpDown x:Name="udXSpacing" Margin="67,36,286,138" HasDecimals="False" NumericInputMode="Numbers" Maximum="9999" Minimum="-9999" Value="0" ValueChanged="Offset_Changed"/>
                     <Label Content="Y Spacing:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="161,36,0,0"/>
                     <mah:NumericUpDown x:Name="udYSpacing" Margin="226,36,127,138" HasDecimals="False" NumericInputMode="Numbers" Maximum="9999" Minimum="-9999" Value="0" ValueChanged="Offset_Changed"/>
-                    <ComboBox x:Name="cboRows" HorizontalAlignment="Left" Margin="373,36,0,0" VerticalAlignment="Top" Width="60" SelectionChanged="cboRows_SelectionChanged"/>
+                    <ComboBox x:Name="cboRows" HorizontalAlignment="Left" Margin="373,36,0,0" VerticalAlignment="Top" Width="60"/>
                     <Label x:Name="___No_Name_" Content="Rows:" HorizontalAlignment="Left" Margin="322,36,0,0" VerticalAlignment="Top"/>
                     <TextBox x:Name="txtStopAt" HorizontalAlignment="Left" Height="25" Margin="87,67,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="40" MaxLength="4" MinHeight="20" IsEnabled="False"/>
                     <CheckBox x:Name="chkStopAt" Content="Stop at %:" HorizontalAlignment="Left" Margin="7,74,0,0" VerticalAlignment="Top" Checked="chkStopAt_Checked" Unchecked="chkStopAt_Unchecked"/>
