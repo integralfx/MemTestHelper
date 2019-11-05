@@ -53,6 +53,10 @@ namespace MemTestHelper2
             // Index 0 stores the total.
             memtestInfo = new MemTestInfo[MAX_THREADS + 1];
 
+            var ci = new ComputerInfo();
+            UInt64 totalRAM = ci.TotalPhysicalMemory / (1024 * 1024);
+            log.Info($"Total RAM: {totalRAM}MB");
+
             InitCboThreads();
             InitLstCoverage();
             InitCboRows();
@@ -196,7 +200,15 @@ namespace MemTestHelper2
                 return;
             }
 
-            if (!ValidateInput()) return;
+            log.Info("Starting...");
+            log.Info($"Selected threads: {(int)cboThreads.SelectedItem}");
+            log.Info($"Input RAM: {txtRAM.Text}");
+
+            if (!ValidateInput())
+            {
+                log.Error("Invalid input");
+                return;
+            }
 
             txtRAM.IsEnabled = false;
             cboThreads.IsEnabled = false;
@@ -239,6 +251,8 @@ namespace MemTestHelper2
 
         private void btnStop_Click(object sender, RoutedEventArgs e)
         {
+            log.Info("Stopping...");
+
             Parallel.For(0, (int)cboThreads.SelectedItem, i =>
             {
                 if (!memtests[i].Finished)
@@ -554,10 +568,10 @@ namespace MemTestHelper2
                    availableRAM = ci.AvailablePhysicalMemory / (1024 * 1024);
             var verboseLogging = chkVerbose.IsChecked.Value;
 
-            log.Info($"Total RAM: {totalRAM} Available RAM: {availableRAM}");
+            log.Info($"Available RAM: {availableRAM}MB");
 
             var ramText = txtRAM.Text;
-            log.Info($"Input RAM: {ramText}");
+            
             // Automatically input available RAM if empty.
             if (ramText.Length == 0)
             {
@@ -576,7 +590,7 @@ namespace MemTestHelper2
 
             int threads = (int)cboThreads.SelectedItem,
                 ram = Convert.ToInt32(ramText);
-            log.Info($"Selected threads: {threads}");
+
             if (ram < threads)
             {
                 ShowErrorMsgBox($"Amount of RAM must be greater than {threads}");
