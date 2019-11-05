@@ -38,7 +38,7 @@ namespace MemTestHelper2
 
         public enum MsgBoxButton { OK, YES, NO }
 
-        public bool VerboseLogging { get; set; } = false;
+        public static bool VerboseLogging { get; set; } = false;
 
         public bool Started { get; private set; } = false;
 

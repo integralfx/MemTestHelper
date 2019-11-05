@@ -210,14 +210,7 @@ namespace MemTestHelper2
                 return;
             }
 
-            txtRAM.IsEnabled = false;
-            cboThreads.IsEnabled = false;
-            btnStart.IsEnabled = false;
-            btnStop.IsEnabled = true;
-            chkStopAt.IsEnabled = false;
-            txtStopAt.IsEnabled = false;
-            chkStopOnError.IsEnabled = false;
-            chkStartMin.IsEnabled = false;
+            UpdateControls(true);
 
             // Run in background as StartMemTests() can block.
             RunInBackground(() =>
@@ -226,15 +219,7 @@ namespace MemTestHelper2
                 {
                     ShowErrorMsgBox($"Failed to start MemTest instances");
 
-                    txtRAM.IsEnabled = true;
-                    cboThreads.IsEnabled = true;
-                    btnStart.IsEnabled = true;
-                    btnStop.IsEnabled = false;
-                    chkStopAt.IsEnabled = true;
-                    if (chkStopAt.IsEnabled)
-                        txtStopAt.IsEnabled = true;
-                    chkStopOnError.IsEnabled = true;
-                    chkStartMin.IsEnabled = true;
+                    UpdateControls(true);
 
                     return;
                 }
@@ -262,15 +247,7 @@ namespace MemTestHelper2
             coverageWorker.CancelAsync();
             timer.Stop();
 
-            txtRAM.IsEnabled = true;
-            cboThreads.IsEnabled = true;
-            btnStart.IsEnabled = true;
-            btnStop.IsEnabled = false;
-            chkStopAt.IsEnabled = true;
-            if (chkStopAt.IsEnabled)
-                txtStopAt.IsEnabled = true;
-            chkStopOnError.IsEnabled = true;
-            chkStartMin.IsEnabled = true;
+            UpdateControls(false);
 
             // Wait for all memtests to fully stop.
             while (IsAnyMemTestStopping())
@@ -671,6 +648,27 @@ namespace MemTestHelper2
             udYOffset.Value = yOffset;
         }
 
+        // Enable/disable controls depending on whether we're starting/stopping.
+        private void UpdateControls(bool isStarting)
+        {
+            txtRAM.IsEnabled = !isStarting;
+            cboThreads.IsEnabled = !isStarting;
+            btnStart.IsEnabled = !isStarting;
+            btnStop.IsEnabled = isStarting;
+            chkStopAt.IsEnabled = !isStarting;
+
+            if (isStarting) txtStopAt.IsEnabled = false;
+            else
+            {
+                if (chkStopAt.IsChecked.Value)
+                    txtStopAt.IsEnabled = true;
+            }
+            
+            chkStopOnError.IsEnabled = !isStarting;
+            chkStartMin.IsEnabled = !isStarting;
+            chkVerbose.IsEnabled = !isStarting;
+        }
+
         private bool StartMemTests()
         {
             CloseAllMemTests();
@@ -678,6 +676,7 @@ namespace MemTestHelper2
             var threads = (int)cboThreads.SelectedItem;
             var ram = Convert.ToDouble(txtRAM.Text) / threads;
             var startMin = chkStartMin.IsChecked.Value;
+            MemTest.VerboseLogging = chkVerbose.IsChecked.Value;
             Parallel.For(0, threads, i =>
             {
                 memtests[i] = new MemTest();
