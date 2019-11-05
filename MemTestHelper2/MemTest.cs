@@ -38,6 +38,8 @@ namespace MemTestHelper2
 
         public enum MsgBoxButton { OK, YES, NO }
 
+        public bool VerboseLogging { get; set; } = false;
+
         public bool Started { get; private set; } = false;
 
         public bool Finished { get; private set; } = false;
@@ -113,9 +115,14 @@ namespace MemTestHelper2
         {
             process = Process.Start(EXE_NAME);
             
-            log.Info($"Started MemTest {PID,5} with {ram} MB, " +
-                     $"start minimised: {startMinimised}, " +
-                     $"timeout: {TIMEOUT_MS}");
+            if (VerboseLogging)
+            {
+                log.Info(
+                    $"Started MemTest {PID,5} with {ram} MB, " +
+                    $"start minimised: {startMinimised}, " +
+                    $"timeout: {TIMEOUT_MS}"
+                );
+            }
 
             var end = DateTime.Now + TimeSpan.FromMilliseconds(TIMEOUT_MS);
             // Wait for process to start.
@@ -123,7 +130,9 @@ namespace MemTestHelper2
             {
                 if (DateTime.Now > end)
                 {
-                    log.Error($"Process {process.Id,5}: Failed to close nag message box 1");
+                    if (VerboseLogging)
+                        log.Error($"Process {process.Id,5}: Failed to close nag message box 1");
+
                     return;
                 }
 
@@ -145,7 +154,9 @@ namespace MemTestHelper2
             {
                 if (DateTime.Now > end)
                 {
-                    log.Error($"Process {process.Id,5}: Failed to close nag message box 2");
+                    if (VerboseLogging)
+                        log.Error($"Process {process.Id,5}: Failed to close nag message box 2");
+
                     return;
                 }
 
@@ -165,7 +176,7 @@ namespace MemTestHelper2
         {
             if (process != null && !process.HasExited && Started && !Finished)
             {
-                log.Info($"Stopping MemTest {PID}");
+                if (VerboseLogging) log.Info($"Stopping MemTest {PID}");
                 WinAPI.ControlClick(process.MainWindowHandle, BTN_STOP);
                 Started = false;
                 Finished = true;
@@ -192,7 +203,9 @@ namespace MemTestHelper2
             if (str.Contains("Memory allocated") || str.Contains("Ending Test")) return null;
             if (str == "" || !str.Contains("Coverage"))
             {
-                log.Error($"Invalid static coverage string: '{str}'");
+                if (VerboseLogging)
+                    log.Error($"Invalid static coverage string: '{str}'");
+
                 return null;
             }
 
@@ -201,7 +214,9 @@ namespace MemTestHelper2
             var start = str.IndexOfAny("0123456789".ToCharArray());
             if (start == -1)
             {
-                log.Error("Failed to find start of coverage number");
+                if (VerboseLogging)
+                    log.Error("Failed to find start of coverage number");
+
                 return null;
             }
             str = str.Substring(start);
@@ -214,7 +229,9 @@ namespace MemTestHelper2
             var result = Double.TryParse(coverageStr, NumberStyles.Float, CultureInfo.InvariantCulture, out coverage);
             if (!result)
             {
-                log.Error($"Failed to parse coverage % from coverage string: '{coverageStr}'");
+                if (VerboseLogging)
+                    log.Error($"Failed to parse coverage % from coverage string: '{coverageStr}'");
+
                 return null;
             }
 
@@ -228,7 +245,9 @@ namespace MemTestHelper2
             result = Int32.TryParse(str.Substring(0, str.IndexOf(" Errors")), out errors);
             if (!result)
             {
-                log.Error($"Failed to parse error count from error string: '{str}'");
+                if (VerboseLogging)
+                    log.Error($"Failed to parse error count from error string: '{str}'");
+
                 return null;
             }
 
@@ -243,18 +262,21 @@ namespace MemTestHelper2
             {
                 windows = WinAPI.FindAllWindows(PID);
 
-                for (int i = 0; i < windows.Count; i++)
+                if (VerboseLogging)
                 {
-                    var hwnd = windows[i];
-                    var len = WinAPI.GetWindowTextLength(hwnd);
-                    var sb = new StringBuilder(len + 1);
-                    WinAPI.GetWindowText(hwnd, sb, sb.Capacity);
-                    var exStyles = WinAPI.GetWindowLongPtr(hwnd, WinAPI.GWL_EXSTYLE);
+                    for (int i = 0; i < windows.Count; i++)
+                    {
+                        var hwnd = windows[i];
+                        var len = WinAPI.GetWindowTextLength(hwnd);
+                        var sb = new StringBuilder(len + 1);
+                        WinAPI.GetWindowText(hwnd, sb, sb.Capacity);
+                        var exStyles = WinAPI.GetWindowLongPtr(hwnd, WinAPI.GWL_EXSTYLE);
 
-                    log.Info(
-                        $"PID {PID,5}, window {i + 1}, exstyles: 0x{exStyles.ToInt64():X16}, " +
-                        $"text: '{sb.ToString()}'"
-                    );
+                        log.Info(
+                            $"PID {PID,5}, window {i + 1}, exstyles: 0x{exStyles.ToInt64():X16}, " +
+                            $"text: '{sb.ToString()}'"
+                        );
+                    }
                 }
 
                 windows = windows.Where(IsNagMessageBox).ToList();
@@ -264,7 +286,9 @@ namespace MemTestHelper2
 
             if (windows.Count == 0)
             {
-                log.Error($"Failed to find nag message boxes with PID {PID}");
+                if (VerboseLogging)
+                    log.Error($"Failed to find nag message boxes with PID {PID}");
+
                 return false;
             }
 
@@ -274,10 +298,13 @@ namespace MemTestHelper2
                     return true;
                 else
                 {
-                    log.Error(
-                        $"Failed to send notify message to nag message box with PID {PID,5}'. " +
-                        $"Error code: {Marshal.GetLastWin32Error()}"
-                    );
+                    if (VerboseLogging)
+                    {
+                        log.Error(
+                            $"Failed to send notify message to nag message box with PID {PID,5}. " +
+                            $"Error code: {Marshal.GetLastWin32Error()}"
+                        );
+                    }
                     return false;
                 }
             }
@@ -300,7 +327,9 @@ namespace MemTestHelper2
 
             if (hwnd == IntPtr.Zero)
             {
-                log.Error($"Failed to find nag message box with caption: '{messageBoxCaption}'");
+                if (VerboseLogging)
+                    log.Error($"Failed to find nag message box with caption: '{messageBoxCaption}'");
+
                 return false;
             }
 
@@ -309,18 +338,23 @@ namespace MemTestHelper2
             {
                 if (DateTime.Now > end)
                 {
-                    log.Error($"Failed to close nag message box with caption: '{messageBoxCaption}'");
+                    if (VerboseLogging)
+                        log.Error($"Failed to close nag message box with caption: '{messageBoxCaption}'");
+
                     return false;
                 }
-                   
+
                 if (WinAPI.SendNotifyMessage(hwnd, WinAPI.WM_CLOSE, IntPtr.Zero, null) != 0)
                     return true;
                 else
                 {
-                    log.Error(
-                        $"Failed to send notify message to nag message box with caption: '{messageBoxCaption}'. " +
-                        $"Error code: {Marshal.GetLastWin32Error()}"
-                    );
+                    if (VerboseLogging)
+                    {
+                        log.Error(
+                            $"Failed to send notify message to nag message box with caption: '{messageBoxCaption}'. " +
+                            $"Error code: {Marshal.GetLastWin32Error()}"
+                        );
+                    }
                 }
 
                 Thread.Sleep(100);

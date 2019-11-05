@@ -557,6 +557,7 @@ namespace MemTestHelper2
             var ci = new ComputerInfo();
             UInt64 totalRAM = ci.TotalPhysicalMemory / (1024 * 1024),
                    availableRAM = ci.AvailablePhysicalMemory / (1024 * 1024);
+            var verboseLogging = chkVerbose.IsChecked.Value;
 
             log.Info($"Total RAM: {totalRAM} Available RAM: {availableRAM}");
 
@@ -567,7 +568,7 @@ namespace MemTestHelper2
             {
                 ramText = GetFreeRAM().ToString();
                 txtRAM.Text = ramText;
-                log.Info($"No RAM input. Free RAM: {ramText}");
+                if (verboseLogging) log.Info($"No RAM input. Free RAM: {ramText}");
             }
             else
             {
