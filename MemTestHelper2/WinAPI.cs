@@ -8,9 +8,11 @@ namespace MemTestHelper2
 {
     class WinAPI
     {
-        public const int WM_SETTEXT = 0xC, WM_LBUTTONDOWN = 0x201, WM_LBUTTONUP = 0x202, WM_SYSCOMMAND = 0x112, 
-                         WM_CLOSE = 0x10, SC_MINIMIZE = 0xF020, SW_SHOW = 5, SW_RESTORE = 9, SW_MINIMIZE = 6, 
-                         BM_CLICK = 0xF5, GWL_EXSTYLE = -20, WS_EX_APPWINDOW = 0x40000;
+        public const int WM_SETTEXT = 0xC, WM_LBUTTONDOWN = 0x201, WM_LBUTTONUP = 0x202, WM_SYSCOMMAND = 0x112,
+                         WM_CLOSE = 0x10, SC_MINIMIZE = 0xF020, SW_SHOW = 5, SW_RESTORE = 9, SW_MINIMIZE = 6,
+                         BM_CLICK = 0xF5, GWL_EXSTYLE = -20, GWL_STYLE = -16;
+        public const long WS_EX_APPWINDOW = 0x40000L, WS_CAPTION = 0x00C00000L, WS_POPUP = 0x80000000L, 
+                          WS_VISIBLE = 0x10000000L;
 
         private static readonly NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
 

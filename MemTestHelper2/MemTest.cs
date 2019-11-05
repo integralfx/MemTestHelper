@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
 using System.Windows;
 
@@ -100,35 +102,35 @@ namespace MemTestHelper2
         {
             if (hwnd == IntPtr.Zero) return false;
 
-            var styles = WinAPI.GetWindowLongPtr(hwnd, WinAPI.GWL_EXSTYLE);
-            return (styles.ToInt32() & WinAPI.WS_EX_APPWINDOW) == 0;
+            var exStyles = WinAPI.GetWindowLongPtr(hwnd, WinAPI.GWL_EXSTYLE);
+            var styles = WinAPI.GetWindowLongPtr(hwnd, WinAPI.GWL_STYLE);
+            var expectedStyles = WinAPI.WS_CAPTION | WinAPI.WS_POPUP | WinAPI.WS_VISIBLE;
+            return (styles.ToInt64() & expectedStyles) == expectedStyles && 
+                   (exStyles.ToInt64() & WinAPI.WS_EX_APPWINDOW) == 0;
         }
 
-        public void Start(double ram, bool startMinimised, int timeoutms = TIMEOUT_MS)
+        public void Start(double ram, bool startMinimised)
         {
             process = Process.Start(EXE_NAME);
-            Started = true;
-            Finished = false;
             
-            log.Info($"Started MemTest {PID} with {ram} MB, " +
+            log.Info($"Started MemTest {PID,5} with {ram} MB, " +
                      $"start minimised: {startMinimised}, " +
-                     $"timeout: {timeoutms}");
+                     $"timeout: {TIMEOUT_MS}");
 
-            var end = DateTime.Now + TimeSpan.FromMilliseconds(timeoutms);
+            var end = DateTime.Now + TimeSpan.FromMilliseconds(TIMEOUT_MS);
             // Wait for process to start.
             while (true)
             {
                 if (DateTime.Now > end)
                 {
-                    log.Error($"Process {process.Id}: Failed to close nag message box 1");
-                    Started = false;
+                    log.Error($"Process {process.Id,5}: Failed to close nag message box 1");
                     return;
                 }
 
                 if (!string.IsNullOrEmpty(process.MainWindowTitle))
                     break;
 
-                CloseNagMessageBox(/*MSG1*/);
+                CloseNagMessageBox();
                 Thread.Sleep(100);
                 process.Refresh();
             }
@@ -138,13 +140,12 @@ namespace MemTestHelper2
             WinAPI.ControlSetText(hwnd, STATIC_FREE_VER, "MemTestHelper by ∫ntegral#7834");
             WinAPI.ControlClick(hwnd, BTN_START);
 
-            end = DateTime.Now + TimeSpan.FromMilliseconds(timeoutms);
+            end = DateTime.Now + TimeSpan.FromMilliseconds(TIMEOUT_MS);
             while (true)
             {
                 if (DateTime.Now > end)
                 {
-                    log.Error($"Process {process.Id}: Failed to close nag message box 2");
-                    Started = false;
+                    log.Error($"Process {process.Id,5}: Failed to close nag message box 2");
                     return;
                 }
 
@@ -155,6 +156,9 @@ namespace MemTestHelper2
             }
 
             if (startMinimised) Minimised = true;
+
+            Started = true;
+            Finished = false;
         }
 
         public void Stop()
@@ -163,6 +167,7 @@ namespace MemTestHelper2
             {
                 log.Info($"Stopping MemTest {PID}");
                 WinAPI.ControlClick(process.MainWindowHandle, BTN_STOP);
+                Started = false;
                 Finished = true;
             }
         }
@@ -232,7 +237,34 @@ namespace MemTestHelper2
 
         public bool CloseNagMessageBox()
         {
-            var windows = WinAPI.FindAllWindows(PID).Where(e => IsNagMessageBox(e)).ToList();
+            var end = DateTime.Now + TimeSpan.FromMilliseconds(TIMEOUT_MS);
+            List<IntPtr> windows;
+            do
+            {
+                windows = WinAPI.FindAllWindows(PID);
+
+                if (windows.Count > 0)
+                {
+                    for (int i = 0; i < windows.Count; i++)
+                    {
+                        var hwnd = windows[i];
+                        var len = WinAPI.GetWindowTextLength(hwnd);
+                        var sb = new StringBuilder(len + 1);
+                        WinAPI.GetWindowText(hwnd, sb, sb.Capacity);
+                        var exStyles = WinAPI.GetWindowLongPtr(hwnd, WinAPI.GWL_EXSTYLE);
+
+                        log.Info(
+                            $"PID {PID,5}, window {i + 1}, exstyles: 0x{exStyles.ToInt32():X8}, "+
+                            $"text: '{sb.ToString()}'"
+                        );
+                    }
+                }
+
+                windows = windows.Where(IsNagMessageBox).ToList();
+
+                Thread.Sleep(100);
+            } while (windows.Count == 0 && DateTime.Now < end);
+
             if (windows.Count == 0)
             {
                 log.Error($"Failed to find nag message boxes with PID {PID}");
@@ -246,7 +278,7 @@ namespace MemTestHelper2
                 else
                 {
                     log.Error(
-                        $"Failed to send notify message to nag message box with PID {PID}'. " +
+                        $"Failed to send notify message to nag message box with PID {PID,5}'. " +
                         $"Error code: {Marshal.GetLastWin32Error()}"
                     );
                     return false;
@@ -256,12 +288,12 @@ namespace MemTestHelper2
             return false;
         }
 
-        public bool CloseNagMessageBox(string messageBoxCaption, int timeoutms = TIMEOUT_MS)
+        public bool CloseNagMessageBox(string messageBoxCaption)
         {
             if (!Started || Finished || process == null || process.HasExited)
                 return false;
 
-            var end = DateTime.Now + TimeSpan.FromMilliseconds(timeoutms);
+            var end = DateTime.Now + TimeSpan.FromMilliseconds(TIMEOUT_MS);
             var hwnd = IntPtr.Zero;
             do
             {
@@ -275,7 +307,7 @@ namespace MemTestHelper2
                 return false;
             }
 
-            end = DateTime.Now + TimeSpan.FromMilliseconds(timeoutms);
+            end = DateTime.Now + TimeSpan.FromMilliseconds(TIMEOUT_MS);
             while (true)
             {
                 if (DateTime.Now > end)
