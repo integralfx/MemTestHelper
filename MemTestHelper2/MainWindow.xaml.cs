@@ -279,11 +279,9 @@ namespace MemTestHelper2
                 for (var i = 0; i < threads; i++)
                 {
                     var memtest = memtests[i];
-                    if (memtest != null)
-                    {
-                        memtest.Minimised = false;
-                        Thread.Sleep(10);
-                    }
+                    if (memtest == null) return;
+                    memtest.Minimised = false;
+                    Thread.Sleep(10);
                 }
 
                 isMinimised = false;
@@ -303,11 +301,9 @@ namespace MemTestHelper2
                 for (var i = 0; i < threads; i++)
                 {
                     var memtest = memtests[i];
-                    if (memtest != null)
-                    {
-                        memtest.Minimised = true;
-                        Thread.Sleep(10);
-                    }
+                    if (memtest == null) return;
+                    memtest.Minimised = true;
+                    Thread.Sleep(10);
                 }
 
                 isMinimised = true;
@@ -707,7 +703,7 @@ namespace MemTestHelper2
             Parallel.For(0, (int)cboThreads.SelectedItem, i =>
             {
                 var memtest = memtests[i];
-                if (memtest == null || !memtest.Started) return;
+                if (memtest == null) return;
 
                 int r = i / cols,
                     c = i % cols,

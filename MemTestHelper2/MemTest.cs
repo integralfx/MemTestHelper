@@ -56,10 +56,7 @@ namespace MemTestHelper2
                     var hwnd = process.MainWindowHandle;
 
                     if (value)
-                    {
-                        //WinAPI.ShowWindow(hwnd, WinAPI.SW_MINIMIZE);
                         WinAPI.PostMessage(hwnd, WinAPI.WM_SYSCOMMAND, new IntPtr(WinAPI.SC_MINIMIZE), IntPtr.Zero);
-                    }
                     else
                     {
                         if (WinAPI.IsIconic(hwnd))
@@ -197,13 +194,15 @@ namespace MemTestHelper2
                 {
                     if (DateTime.Now > end)
                     {
-                        if (VerboseLogging) log.Error($"Failed to minimise MemTest {PID}");
-                        break;
+                        if (VerboseLogging)
+                        {
+                            log.Error($"Failed to minimise MemTest {PID}");
+                            break;
+                        }
                     }
 
                     Minimised = true;
                     if (Minimised) break;
-
                     Thread.Sleep(100);
                 }
             }
