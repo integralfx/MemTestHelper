@@ -118,9 +118,10 @@ namespace MemTestHelper2
         {
             if (!File.Exists(EXE_NAME))
             {
-                var msg = $"{EXE_NAME} not found. Falling back to default dimensions ({WIDTH} x {HEIGHT}).";
-                MessageBox.Show(msg);
-                log.Error(msg);
+                var logMsg = $"{EXE_NAME} not found. Falling back to default dimensions ({WIDTH} x {HEIGHT}).";
+                var msg = $"{EXE_NAME} not found.\nFalling back to default dimensions ({WIDTH} x {HEIGHT})";
+                MessageBox.Show(msg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                log.Error(logMsg);
                 return;
             }
 
