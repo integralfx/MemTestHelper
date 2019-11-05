@@ -783,7 +783,7 @@ namespace MemTestHelper2
                 }
 
                 // Element 0 accessed in time.Elapsed event.
-                lock (memtestInfo)
+                lock (memtestInfo[0])
                 {
                     // Update the total coverage and errors.
                     memtestInfo[0].Coverage = totalCoverage / threads;
