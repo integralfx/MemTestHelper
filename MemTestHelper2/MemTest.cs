@@ -13,7 +13,7 @@ namespace MemTestHelper2
     class MemTest
     {
         public static readonly string EXE_NAME = "memtest.exe";
-        public static readonly int WIDTH = 217, HEIGHT = 247,
+        public static readonly int WIDTH = 221, HEIGHT = 253,
                                    MAX_RAM = 2048;
         public const int TIMEOUT_MS = 3000;
 
