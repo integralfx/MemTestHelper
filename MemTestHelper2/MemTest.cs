@@ -14,7 +14,7 @@ namespace MemTestHelper2
     {
         public static readonly string EXE_NAME = "memtest.exe";
         public static int WIDTH = 221, HEIGHT = 253, MAX_RAM = 2048;
-        public static readonly int TIMEOUT_MS = 5000;
+        public static readonly int TIMEOUT_MS = 10000;
 
         private static readonly NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
 
