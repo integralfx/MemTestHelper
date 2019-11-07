@@ -14,7 +14,7 @@ namespace MemTestHelper2
     {
         public static readonly string EXE_NAME = "memtest.exe";
         public static int WIDTH = 221, HEIGHT = 253, MAX_RAM = 2048;
-        public static readonly int TIMEOUT_MS = 10000;
+        public static readonly TimeSpan DEFAULT_TIMEOUT = TimeSpan.FromSeconds(10);
 
         private static readonly NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
 
@@ -41,6 +41,8 @@ namespace MemTestHelper2
         public enum MsgBoxButton { OK, YES, NO }
 
         public static bool VerboseLogging { get; set; } = false;
+
+        public static TimeSpan Timeout { get; set; } = DEFAULT_TIMEOUT;
 
         public bool Started { get; private set; } = false;
 
@@ -131,11 +133,11 @@ namespace MemTestHelper2
                 log.Info(
                     $"Started MemTest {PID,5} with {ram} MB, " +
                     $"start minimised: {startMinimised}, " +
-                    $"timeout: {TIMEOUT_MS}"
+                    $"timeout: {Timeout}"
                 );
             }
 
-            var end = DateTime.Now + TimeSpan.FromMilliseconds(TIMEOUT_MS);
+            var end = DateTime.Now + Timeout;
             // Wait for process to start.
             while (true)
             {
@@ -151,7 +153,7 @@ namespace MemTestHelper2
                     break;
 
                 CloseNagMessageBox();
-                Thread.Sleep(100);
+                Thread.Sleep(500);
                 process.Refresh();
             }
 
@@ -160,7 +162,7 @@ namespace MemTestHelper2
             WinAPI.ControlSetText(hwnd, STATIC_FREE_VER, "MemTestHelper by ∫ntegral#7834");
             WinAPI.ControlClick(hwnd, BTN_START);
 
-            end = DateTime.Now + TimeSpan.FromMilliseconds(TIMEOUT_MS);
+            end = DateTime.Now + Timeout;
             while (true)
             {
                 if (DateTime.Now > end)
@@ -174,7 +176,7 @@ namespace MemTestHelper2
                 if (CloseNagMessageBox())
                     break;
 
-                Thread.Sleep(100);
+                Thread.Sleep(500);
             }
 
             Started = true;
@@ -196,7 +198,7 @@ namespace MemTestHelper2
 
             if (startMinimised)
             {
-                end = DateTime.Now + TimeSpan.FromMilliseconds(TIMEOUT_MS);
+                end = DateTime.Now + Timeout;
                 while (true)
                 {
                     if (DateTime.Now > end)
@@ -210,7 +212,7 @@ namespace MemTestHelper2
 
                     Minimised = true;
                     if (Minimised) break;
-                    Thread.Sleep(100);
+                    Thread.Sleep(500);
                 }
             }
         }
@@ -299,10 +301,18 @@ namespace MemTestHelper2
 
         public bool CloseNagMessageBox()
         {
-            var end = DateTime.Now + TimeSpan.FromMilliseconds(TIMEOUT_MS);
+            var end = DateTime.Now + Timeout;
             List<IntPtr> windows;
-            do
+            while (true)
             {
+                if (DateTime.Now > end)
+                {
+                    if (VerboseLogging)
+                        log.Error($"Failed to find nag message boxes with PID {PID}");
+
+                    return false;
+                }
+
                 windows = WinAPI.FindAllWindows(PID);
 
                 if (VerboseLogging)
@@ -323,16 +333,9 @@ namespace MemTestHelper2
                 }
 
                 windows = windows.Where(IsNagMessageBox).ToList();
+                if (windows.Count > 0) break;
 
-                Thread.Sleep(100);
-            } while (windows.Count == 0 && DateTime.Now < end);
-
-            if (windows.Count == 0)
-            {
-                if (VerboseLogging)
-                    log.Error($"Failed to find nag message boxes with PID {PID}");
-
-                return false;
+                Thread.Sleep(500);
             }
 
             foreach (var hwnd in windows)
@@ -360,23 +363,25 @@ namespace MemTestHelper2
             if (!Started || Finished || process == null || process.HasExited)
                 return false;
 
-            var end = DateTime.Now + TimeSpan.FromMilliseconds(TIMEOUT_MS);
+            var end = DateTime.Now + Timeout;
             var hwnd = IntPtr.Zero;
-            do
+            while (true)
             {
+                if (DateTime.Now > end)
+                {
+                    if (VerboseLogging)
+                        log.Error($"Failed to find nag message box with caption: '{messageBoxCaption}'");
+
+                    return false;
+                }
+
                 hwnd = WinAPI.GetHWNDFromPID(process.Id, messageBoxCaption);
-                Thread.Sleep(10);
-            } while (hwnd == IntPtr.Zero && DateTime.Now < end);
+                if (hwnd != IntPtr.Zero) break;
 
-            if (hwnd == IntPtr.Zero)
-            {
-                if (VerboseLogging)
-                    log.Error($"Failed to find nag message box with caption: '{messageBoxCaption}'");
-
-                return false;
+                Thread.Sleep(500);
             }
 
-            end = DateTime.Now + TimeSpan.FromMilliseconds(TIMEOUT_MS);
+            end = DateTime.Now + Timeout;
             while (true)
             {
                 if (DateTime.Now > end)
@@ -400,7 +405,7 @@ namespace MemTestHelper2
                     }
                 }
 
-                Thread.Sleep(100);
+                Thread.Sleep(500);
             }
         }
     }

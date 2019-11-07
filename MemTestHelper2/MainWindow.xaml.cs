@@ -618,6 +618,15 @@ namespace MemTestHelper2
                 }
             }
 
+            var timeout = udTimeout.Value;
+            if (timeout == null)
+            {
+                var defaultTimeout = MemTest.DEFAULT_TIMEOUT_MS / 1000;
+                if (verboseLogging)
+                    log.Info($"No timeout specified. Falling back to default timeout: ${defaultTimeout} sec");
+                udTimeout.Value = defaultTimeout;
+            }
+
             return true;
         }
 
@@ -665,6 +674,7 @@ namespace MemTestHelper2
             var ram = Convert.ToDouble(txtRAM.Text) / threads;
             var startMin = chkStartMin.IsChecked.Value;
             MemTest.VerboseLogging = chkVerbose.IsChecked.Value;
+            MemTest.Timeout = (int)udTimeout.Value.Value * 1000;
             Parallel.For(0, threads, i =>
             {
                 memtests[i] = new MemTest();
