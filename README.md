@@ -30,16 +30,21 @@ Spacing between each of the MemTest windows.
 
 ### Stop at coverage %
 Automatically stop each instance as they hit the coverage number entered in the textbox.
-Checking "Total" (indicated by the 'T' in the coverage and error info list) will use the total coverage rather than each MemTest instance's coverage.
 
 ### Stop on error (default)
-Automatically stop if any errors are found
+Automatically stop if any errors are found.
 
-Checking both will stop if either of the above conditions are met.
+Checking 'Stop at coverage %' and 'Stop on error' will stop if the coverage is hit or if there are any errors.
 
 ### Start minimised (default)
-Start MemTest instances minimised
+Start MemTest instances minimised.
+
+### Verbose logging
+Used to help me debug if you have any issues. Keep it unchecked for daily usage as the log files can get pretty large.
+
+### Timeout (sec)
+How long to wait for MemTestHelper to find the nag message boxes before giving up. Default is 10 seconds, but you can try increasing it if MemTestHelper is failing to find the nag message box. See [issue 6](https://github.com/integralfx/MemTestHelper/issues/6).
 
 ## Error Messages
 ### Amount of RAM must be at most X
-HCI MemTest only (reliably) allows 2048MB per instance. If you have a CPU with 4 threads, then that means you can only test up to 8192MB using 4 threads. To get around this, you can increase the number of threads and hence the number of HCI MemTest instances.
+HCI MemTest only (reliably) allows 2048MB per instance. If you have a CPU with 4 threads, then that means you can only test up to 8192MB using 4 threads. To get around this, you can increase the number of threads and hence the number of HCI MemTest instances. 
