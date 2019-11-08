@@ -18,12 +18,13 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Interop;
 using System.Windows.Media;
+using System.Runtime.InteropServices;
 
 namespace MemTestHelper2
 {
     public partial class MainWindow : MetroWindow
     {
-        private const string VERSION = "2.1.0";
+        private const string VERSION = "2.2.0";
         private readonly int NUM_THREADS, MAX_THREADS;
 
         // Update interval (in ms) for coverage info list.
@@ -52,10 +53,13 @@ namespace MemTestHelper2
             // Index 0 stores the total.
             memtestInfo = new MemTestInfo[MAX_THREADS + 1];
 
+            var ci = new ComputerInfo();
+            UInt64 totalRAM = ci.TotalPhysicalMemory / (1024 * 1024);
+            log.Info($"Total RAM: {totalRAM}MB");
+
             InitCboThreads();
             InitLstCoverage();
             InitCboRows();
-            CentreXYOffsets();
             UpdateLstCoverage();
 
             coverageWorker = new BackgroundWorker();
@@ -74,12 +78,36 @@ namespace MemTestHelper2
             coverageWorker.RunWorkerCompleted +=
             new RunWorkerCompletedEventHandler((sender, e) =>
             {
-                // Wait for all MemTests to stop completely.
-                while (IsAnyMemTestStopping())
-                    Thread.Sleep(100);
+                // Wait for all MemTests to finish.
+                var end = DateTime.Now + MemTest.Timeout;
+                while (true)
+                {
+                    if (DateTime.Now > end)
+                    {
+                        var msg = "Timed out waiting for all MemTest instances to finish";
+                        ShowErrorMsgBox(msg);
+                        log.Error(msg);
+                        UpdateControls(false);
+                        return;
+                    }
 
-                // TODO: Figure out why total coverage is sometimes reporting 0.0 after stopping.
+                    if (IsAllFinished()) break;
+
+                    Thread.Sleep(500);
+                }
+
                 UpdateCoverageInfo(false);
+
+                var elapsedTime = TimeSpan.ParseExact(
+                    (string)lblElapsedTime.Content,
+                    @"hh\hmm\mss\s",
+                    CultureInfo.InvariantCulture
+                );
+                UpdateSpeedTime(elapsedTime);
+
+                UpdateControls(false);
+
+                MessageBox.Show("Please check if there are any errors", "MemTest finished");
             });
 
             timer = new System.Timers.Timer(1000);
@@ -87,36 +115,7 @@ namespace MemTestHelper2
             {
                 Dispatcher.Invoke(() =>
                 {
-                    var threads = (int)cboThreads.SelectedItem;
-                    var elapsed = e.SignalTime - startTime;
-
-                    lblElapsedTime.Content = String.Format("{0:00}h{1:00}m{2:00}s",
-                                                           (int)(elapsed.TotalHours),
-                                                           elapsed.Minutes,
-                                                           elapsed.Seconds);
-
-                    // This thread only accesses element 0.
-                    lock (memtestInfo)
-                    {
-                        var totalCoverage = memtestInfo[0].Coverage;
-                        if (totalCoverage <= 0.0) return;
-
-                        // Round up to next multiple of 100.
-                        var nextCoverage = ((int)(totalCoverage / 100) + 1) * 100;
-                        var elapsedms = elapsed.TotalMilliseconds;
-                        var est = (elapsedms / totalCoverage * nextCoverage) - elapsedms;
-
-                        TimeSpan estimatedTime = TimeSpan.FromMilliseconds(est);
-                        lblEstimatedTime.Content = String.Format("{0:00}h{1:00}m{2:00}s to {3}%",
-                                                                 (int)(estimatedTime.TotalHours),
-                                                                 estimatedTime.Minutes,
-                                                                 estimatedTime.Seconds,
-                                                                 nextCoverage);
-
-                        var ram = Convert.ToInt32(txtRAM.Text);
-                        var speed = (totalCoverage / 100) * ram / (elapsedms / 1000);
-                        lblSpeed.Content = $"{speed:f2}MB/s";
-                    }
+                    UpdateSpeedTime(e.SignalTime - startTime);
                 });
             });
             
@@ -130,14 +129,13 @@ namespace MemTestHelper2
 
             InitCboRows();
             UpdateLstCoverage();
-            CentreXYOffsets();
         }
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
             CloseMemTests();
             SaveConfig();
-            log.Info("Closing MemTestHelper");
+            log.Info("Closing MemTestHelper\n");
         }
 
         private void Window_StateChanged(object sender, EventArgs e)
@@ -200,21 +198,29 @@ namespace MemTestHelper2
                 return;
             }
 
-            if (!ValidateInput()) return;
+            log.Info("Starting...");
+            log.Info($"Selected threads: {(int)cboThreads.SelectedItem}");
+            log.Info($"Input RAM: {txtRAM.Text}");
 
-            txtRAM.IsEnabled = false;
-            cboThreads.IsEnabled = false;
-            btnStart.IsEnabled = false;
-            btnStop.IsEnabled = true;
-            chkStopAt.IsEnabled = false;
-            txtStopAt.IsEnabled = false;
-            chkStopOnError.IsEnabled = false;
-            chkStartMin.IsEnabled = false;
+            if (!ValidateInput())
+            {
+                log.Error("Invalid input");
+                return;
+            }
+
+            UpdateControls(true);
 
             // Run in background as StartMemTests() can block.
             RunInBackground(() =>
             {
-                if (!StartMemTests()) return;
+                if (!StartMemTests())
+                {
+                    ShowErrorMsgBox($"Failed to start MemTest instances");
+
+                    UpdateControls(true);
+
+                    return;
+                }
 
                 if (!coverageWorker.IsBusy)
                     coverageWorker.RunWorkerAsync();
@@ -228,6 +234,8 @@ namespace MemTestHelper2
 
         private void btnStop_Click(object sender, RoutedEventArgs e)
         {
+            log.Info("Stopping...");
+
             Parallel.For(0, (int)cboThreads.SelectedItem, i =>
             {
                 if (!memtests[i].Finished)
@@ -236,36 +244,6 @@ namespace MemTestHelper2
 
             coverageWorker.CancelAsync();
             timer.Stop();
-
-            txtRAM.IsEnabled = true;
-            cboThreads.IsEnabled = true;
-            btnStart.IsEnabled = true;
-            btnStop.IsEnabled = false;
-            chkStopAt.IsEnabled = true;
-            if (chkStopAt.IsEnabled)
-                txtStopAt.IsEnabled = true;
-            chkStopOnError.IsEnabled = true;
-            chkStartMin.IsEnabled = true;
-
-            // Wait for all memtests to fully stop.
-            while (IsAnyMemTestStopping())
-                Thread.Sleep(100);
-
-            // Update speed.
-            var ram = Convert.ToInt32(txtRAM.Text);
-            var elapsedTime = TimeSpan.ParseExact(
-                (string)lblElapsedTime.Content, 
-                @"hh\hmm\mss\s", 
-                CultureInfo.InvariantCulture
-            ).TotalSeconds;
-            lock (memtestInfo)
-            {
-                // 0 is the total coverage.
-                var speed = (memtestInfo[0].Coverage / 100) * ram / elapsedTime;
-                lblSpeed.Content = $"{speed:f2}MB/s";
-            }
-
-            MessageBox.Show("Please check if there are any errors", "MemTest finished");
         }
 
         private void btnShow_Click(object sender, RoutedEventArgs e)
@@ -277,11 +255,9 @@ namespace MemTestHelper2
                 for (var i = 0; i < threads; i++)
                 {
                     var memtest = memtests[i];
-                    if (memtest != null)
-                    {
-                        memtest.Minimised = false;
-                        Thread.Sleep(10);
-                    }
+                    if (memtest == null) return;
+                    memtest.Minimised = false;
+                    Thread.Sleep(10);
                 }
 
                 isMinimised = false;
@@ -301,11 +277,9 @@ namespace MemTestHelper2
                 for (var i = 0; i < threads; i++)
                 {
                     var memtest = memtests[i];
-                    if (memtest != null)
-                    {
-                        memtest.Minimised = true;
-                        Thread.Sleep(10);
-                    }
+                    if (memtest == null) return;
+                    memtest.Minimised = true;
+                    Thread.Sleep(10);
                 }
 
                 isMinimised = true;
@@ -318,7 +292,6 @@ namespace MemTestHelper2
 
             cboRows.Items.Clear();
             InitCboRows();
-            CentreXYOffsets();
         }
 
         private void Offset_Changed(object sender, RoutedPropertyChangedEventArgs<double?> e)
@@ -327,11 +300,6 @@ namespace MemTestHelper2
         }
 
         private void btnCentre_Click(object sender, RoutedEventArgs e)
-        {
-            CentreXYOffsets();
-        }
-
-        private void cboRows_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             CentreXYOffsets();
         }
@@ -478,12 +446,20 @@ namespace MemTestHelper2
                         case "startMin":
                             chkStartMin.IsChecked = Boolean.Parse(appSettings[key]);
                             break;
+
+                        case "verbose":
+                            chkVerbose.IsChecked = Boolean.Parse(appSettings[key]);
+                            break;
+
+                        case "timeout":
+                            udTimeout.Value = Int32.Parse(appSettings[key]);
+                            break;
                     }
                 }
             }
             catch (Exception e)
             {
-                MessageBox.Show("Failed to load config", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                ShowErrorMsgBox("Failed to load config");
                 log.Error(e.Message);
                 return false;
             }
@@ -507,6 +483,8 @@ namespace MemTestHelper2
                 dict.Add("stopAtValue", txtStopAt.Text);
                 dict.Add("stopOnError", chkStopOnError.IsChecked.ToString());
                 dict.Add("startMin", chkStartMin.IsChecked.ToString());
+                dict.Add("verbose", chkVerbose.IsChecked.ToString());
+                dict.Add("timeout", udTimeout.Value.ToString());
 
                 var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
                 var settings = configFile.AppSettings.Settings;
@@ -523,7 +501,7 @@ namespace MemTestHelper2
             }
             catch (ConfigurationErrorsException e)
             {
-                MessageBox.Show("Failed to save config", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                ShowErrorMsgBox("Failed to save config");
                 log.Error(e.Message);
                 return false;
             }
@@ -536,17 +514,18 @@ namespace MemTestHelper2
             var ci = new ComputerInfo();
             UInt64 totalRAM = ci.TotalPhysicalMemory / (1024 * 1024),
                    availableRAM = ci.AvailablePhysicalMemory / (1024 * 1024);
+            var verboseLogging = chkVerbose.IsChecked.Value;
 
-            log.Info($"Total RAM: {totalRAM} Available RAM: {availableRAM}");
+            log.Info($"Available RAM: {availableRAM}MB");
 
             var ramText = txtRAM.Text;
-            log.Info($"Input RAM: {ramText}");
+            
             // Automatically input available RAM if empty.
             if (ramText.Length == 0)
             {
                 ramText = GetFreeRAM().ToString();
                 txtRAM.Text = ramText;
-                log.Info($"No RAM input. Free RAM: {ramText}");
+                if (verboseLogging) log.Info($"No RAM input. Free RAM: {ramText}");
             }
             else
             {
@@ -559,7 +538,7 @@ namespace MemTestHelper2
 
             int threads = (int)cboThreads.SelectedItem,
                 ram = Convert.ToInt32(ramText);
-            log.Info($"Selected threads: {threads}");
+
             if (ram < threads)
             {
                 ShowErrorMsgBox($"Amount of RAM must be greater than {threads}");
@@ -622,6 +601,15 @@ namespace MemTestHelper2
                 }
             }
 
+            var timeout = udTimeout.Value;
+            if (timeout == null)
+            {
+                var defaultTimeout = MemTest.DEFAULT_TIMEOUT.Seconds;
+                if (verboseLogging)
+                    log.Info($"No timeout specified. Falling back to default timeout: ${defaultTimeout} sec");
+                udTimeout.Value = defaultTimeout;
+            }
+
             return true;
         }
 
@@ -640,6 +628,28 @@ namespace MemTestHelper2
             udYOffset.Value = yOffset;
         }
 
+        // Enable/disable controls depending on whether we're starting/stopping.
+        private void UpdateControls(bool isStarting)
+        {
+            txtRAM.IsEnabled = !isStarting;
+            cboThreads.IsEnabled = !isStarting;
+            btnStart.IsEnabled = !isStarting;
+            btnStop.IsEnabled = isStarting;
+            chkStopAt.IsEnabled = !isStarting;
+
+            if (isStarting) txtStopAt.IsEnabled = false;
+            else
+            {
+                if (chkStopAt.IsChecked.Value)
+                    txtStopAt.IsEnabled = true;
+            }
+            
+            chkStopOnError.IsEnabled = !isStarting;
+            chkStartMin.IsEnabled = !isStarting;
+            chkVerbose.IsEnabled = !isStarting;
+            udTimeout.IsEnabled = !isStarting;
+        }
+
         private bool StartMemTests()
         {
             CloseAllMemTests();
@@ -647,6 +657,8 @@ namespace MemTestHelper2
             var threads = (int)cboThreads.SelectedItem;
             var ram = Convert.ToDouble(txtRAM.Text) / threads;
             var startMin = chkStartMin.IsChecked.Value;
+            MemTest.VerboseLogging = chkVerbose.IsChecked.Value;
+            MemTest.Timeout = TimeSpan.FromSeconds(udTimeout.Value.Value);
             Parallel.For(0, threads, i =>
             {
                 memtests[i] = new MemTest();
@@ -656,36 +668,8 @@ namespace MemTestHelper2
             for (int i = 0; i < threads; i++)
             {
                 var mt = memtests[i];
-                if (!mt.Started)
-                {
-                    ShowErrorMsgBox($"Failed to start MemTest instance with PID {mt.PID}");
-
-                    txtRAM.IsEnabled = true;
-                    cboThreads.IsEnabled = true;
-                    btnStart.IsEnabled = true;
-                    btnStop.IsEnabled = false;
-                    chkStopAt.IsEnabled = true;
-                    if (chkStopAt.IsEnabled)
-                        txtStopAt.IsEnabled = true;
-                    chkStopOnError.IsEnabled = true;
-                    chkStartMin.IsEnabled = true;
-
-                    return false;
-                }
+                if (!mt.Started) return false;
             }
-
-            /* 
-             * Some nag message boxes won't be clicked due to concurrent execution.
-             * memTestA             | memTestB
-             * SetActiveWindow()    | 
-             *                      | SetActiveWindow()
-             * SendNotifyMessage()  | 
-             *                      | SendNotifyMessage()
-             *                      
-             * memTestB's window will be active while calling SendNotifyMessage() for memTestA.
-             */
-            foreach (var hwnd in WinAPI.FindAllWindows(MemTest.MSG2))
-                WinAPI.ControlClick(hwnd, MemTest.MSGBOX_OK);
 
             if (!chkStartMin.IsChecked.Value)
                 LayoutMemTests();
@@ -705,7 +689,7 @@ namespace MemTestHelper2
             Parallel.For(0, (int)cboThreads.SelectedItem, i =>
             {
                 var memtest = memtests[i];
-                if (memtest == null || !memtest.Started) return;
+                if (memtest == null) return;
 
                 int r = i / cols,
                     c = i % cols,
@@ -793,7 +777,7 @@ namespace MemTestHelper2
                 }
 
                 // Element 0 accessed in time.Elapsed event.
-                lock (memtestInfo)
+                lock (memtestInfo[0])
                 {
                     // Update the total coverage and errors.
                     memtestInfo[0].Coverage = totalCoverage / threads;
@@ -807,16 +791,30 @@ namespace MemTestHelper2
             });
         }
 
-        // MemTest can take a while to stop, which causes the total to return 0.
-        private bool IsAnyMemTestStopping()
+        private void UpdateSpeedTime(TimeSpan elapsed)
         {
-            for (var i = 0; i < (int)cboThreads.SelectedItem; i++)
-            {
-                if (memtests[i].Stopping)
-                    return true;
-            }
+            lblElapsedTime.Content = $"{(int)(elapsed.TotalHours):00}h{elapsed.Minutes:00}m" +
+                                     $"{elapsed.Seconds:00}s";
 
-            return false;
+            // This thread only accesses element 0.
+            lock (memtestInfo[0])
+            {
+                var totalCoverage = memtestInfo[0].Coverage;
+                if (totalCoverage <= 0.0) return;
+
+                // Round up to next multiple of 100.
+                var nextCoverage = ((int)(totalCoverage / 100) + 1) * 100;
+                var elapsedSec = elapsed.TotalSeconds;
+                var est = (elapsedSec / totalCoverage * nextCoverage) - elapsedSec;
+
+                TimeSpan estimatedTime = TimeSpan.FromSeconds(est);
+                lblEstimatedTime.Content = $"{(int)(estimatedTime.TotalHours):00}h{estimatedTime.Minutes:00}m" +
+                                           $"{estimatedTime.Seconds:00}s to {nextCoverage}%";
+
+                var ram = Convert.ToInt32(txtRAM.Text);
+                var speed = (totalCoverage / 100) * ram / elapsedSec;
+                lblSpeed.Content = $"{speed:f2}MB/s";
+            }
         }
 
         /* 

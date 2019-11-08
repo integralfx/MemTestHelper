@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
 using System.Windows;
 
@@ -10,8 +13,8 @@ namespace MemTestHelper2
     class MemTest
     {
         public static readonly string EXE_NAME = "memtest.exe";
-        public static readonly int WIDTH = 217, HEIGHT = 247,
-                                   MAX_RAM = 2048;
+        public static int WIDTH = 221, HEIGHT = 253, MAX_RAM = 2048;
+        public static readonly TimeSpan DEFAULT_TIMEOUT = TimeSpan.FromSeconds(10);
 
         private static readonly NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
 
@@ -25,28 +28,47 @@ namespace MemTestHelper2
                             MSGBOX_OK = "Button1",
                             MSGBOX_YES = "Button1",
                             MSGBOX_NO = "Button2",
-                            MSG1 = "Welcome, New MemTest User",
-                            MSG2 = "Message for first-time users";
+                            // Welcome, New MemTest User
+                            MSG1 = "Welcome",
+                            // Message for first-time users
+                            MSG2 = "Message";
+
+        private static readonly object updateLock = new object();
+        private static bool hasUpdatedDims = false;
 
         private Process process = null;
 
         public enum MsgBoxButton { OK, YES, NO }
 
+        public static bool VerboseLogging { get; set; } = false;
+
+        public static TimeSpan Timeout { get; set; } = DEFAULT_TIMEOUT;
+
         public bool Started { get; private set; } = false;
 
-        public bool Finished { get; private set; } = false;
+        public bool Finished
+        {
+            get
+            {
+                if (process == null || process.HasExited)
+                    return false;
+
+                string str = WinAPI.ControlGetText(process.MainWindowHandle, STATIC_COVERAGE);
+                return str.Contains("Test over");
+            }
+        }
 
         public bool Minimised
         {
-            get { return Started ? WinAPI.IsIconic(process.MainWindowHandle) : false; }
+            get { return process != null ? WinAPI.IsIconic(process.MainWindowHandle) : false; }
             set
             {
-                if (Started)
+                if (process != null)
                 {
                     var hwnd = process.MainWindowHandle;
 
                     if (value)
-                        WinAPI.ShowWindow(hwnd, WinAPI.SW_MINIMIZE);
+                        WinAPI.PostMessage(hwnd, WinAPI.WM_SYSCOMMAND, new IntPtr(WinAPI.SC_MINIMIZE), IntPtr.Zero);
                     else
                     {
                         if (WinAPI.IsIconic(hwnd))
@@ -62,28 +84,23 @@ namespace MemTestHelper2
         {
             get
             {
-                var rect = new WinAPI.Rect();
-                WinAPI.GetWindowRect(process.MainWindowHandle, ref rect);
-                return new Point(rect.Left, rect.Top);
+                double x = 0.0, y = 0.0;
+                if (process != null && !process.HasExited)
+                {
+                    var rect = new WinAPI.Rect();
+                    WinAPI.GetWindowRect(process.MainWindowHandle, ref rect);
+                    x = rect.Left;
+                    y = rect.Top;
+                }
+
+                return new Point(x, y);
             }
             set
             {
                 if (process != null && !process.HasExited)
+                {
                     WinAPI.MoveWindow(process.MainWindowHandle, (int)value.X, (int)value.Y, WIDTH, HEIGHT, true);
-            }
-        }
-
-        public bool Stopping
-        {
-            get
-            {
-                if (!Started || Finished || process == null || process.HasExited)
-                    return false;
-
-                string str = WinAPI.ControlGetText(process.MainWindowHandle, STATIC_COVERAGE);
-                if (str != "" && str.Contains("Ending")) return true;
-
-                return false;
+                }
             }
         }
 
@@ -92,31 +109,46 @@ namespace MemTestHelper2
             get { return process != null ? process.Id : 0; }
         }
 
-        public void Start(double ram, bool startMinimised, int timeoutms = 3000)
+        public static bool IsNagMessageBox(IntPtr hwnd)
+        {
+            if (hwnd == IntPtr.Zero) return false;
+
+            var exStyles = WinAPI.GetWindowLongPtr(hwnd, WinAPI.GWL_EXSTYLE);
+            var styles = WinAPI.GetWindowLongPtr(hwnd, WinAPI.GWL_STYLE);
+            var expectedStyles = WinAPI.WS_CAPTION | WinAPI.WS_POPUP | WinAPI.WS_VISIBLE;
+            return (styles.ToInt64() & expectedStyles) == expectedStyles && 
+                   (exStyles.ToInt64() & WinAPI.WS_EX_APPWINDOW) == 0;
+        }
+
+        public void Start(double ram, bool startMinimised)
         {
             process = Process.Start(EXE_NAME);
-            Started = true;
-            Finished = false;
             
-            log.Info($"Started MemTest {PID} with {ram} MB, " +
-                     $"start minimised: {startMinimised}, " +
-                     $"timeout: {timeoutms}");
+            if (VerboseLogging)
+            {
+                log.Info(
+                    $"Started MemTest {PID,5} with {ram} MB, " +
+                    $"start minimised: {startMinimised}, " +
+                    $"timeout: {Timeout}"
+                );
+            }
 
-            var end = DateTime.Now + TimeSpan.FromMilliseconds(timeoutms);
+            var end = DateTime.Now + Timeout;
             // Wait for process to start.
             while (true)
             {
                 if (DateTime.Now > end)
                 {
-                    log.Error($"Process {process.Id}: Failed to close message box 1");
-                    Started = false;
+                    if (VerboseLogging)
+                        log.Error($"Process {process.Id,5}: Failed to close nag message box 1");
+
                     return;
                 }
 
                 if (!string.IsNullOrEmpty(process.MainWindowTitle))
                     break;
 
-                CloseNagMessageBox(MSG1);
+                CloseNagMessageBox();
                 Thread.Sleep(100);
                 process.Refresh();
             }
@@ -126,43 +158,77 @@ namespace MemTestHelper2
             WinAPI.ControlSetText(hwnd, STATIC_FREE_VER, "MemTestHelper by ∫ntegral#7834");
             WinAPI.ControlClick(hwnd, BTN_START);
 
-            end = DateTime.Now + TimeSpan.FromMilliseconds(timeoutms);
+            end = DateTime.Now + Timeout;
             while (true)
             {
                 if (DateTime.Now > end)
                 {
-                    log.Error($"Process {process.Id}: Failed to close message box 2");
-                    Started = false;
+                    if (VerboseLogging)
+                        log.Error($"Process {process.Id,5}: Failed to close nag message box 2");
+
                     return;
                 }
 
-                if (CloseNagMessageBox(MSG2))
+                if (CloseNagMessageBox())
                     break;
 
                 Thread.Sleep(100);
             }
 
-            if (startMinimised) Minimised = true;
+            Started = true;
+
+            lock (updateLock)
+            {
+                if (!hasUpdatedDims)
+                {
+                    var rect = new WinAPI.Rect();
+                    WinAPI.GetWindowRect(process.MainWindowHandle, ref rect);
+                    WIDTH = rect.Right - rect.Left;
+                    HEIGHT = rect.Bottom - rect.Top;
+                    hasUpdatedDims = true;
+                    if (VerboseLogging)
+                        log.Info($"Updated MemTest dimensions to {WIDTH} x {HEIGHT}");
+                }
+            }
+
+            if (startMinimised)
+            {
+                end = DateTime.Now + Timeout;
+                while (true)
+                {
+                    if (DateTime.Now > end)
+                    {
+                        if (VerboseLogging)
+                        {
+                            log.Error($"Failed to minimise MemTest {PID}");
+                            break;
+                        }
+                    }
+
+                    Minimised = true;
+                    if (Minimised) break;
+                    Thread.Sleep(500);
+                }
+            }
         }
 
         public void Stop()
         {
             if (process != null && !process.HasExited && Started && !Finished)
             {
-                log.Info($"Stopping MemTest {PID}");
+                if (VerboseLogging) log.Info($"Stopping MemTest {PID}");
                 WinAPI.ControlClick(process.MainWindowHandle, BTN_STOP);
-                Finished = true;
+                Started = false;
             }
         }
 
         public void Close()
         {
-            if (Started && !process.HasExited)
+            if (process != null && !process.HasExited)
                 process.Kill();
 
             process = null;
             Started = false;
-            Finished = false;
         }
 
         // Returns (coverage, errors).
@@ -175,7 +241,9 @@ namespace MemTestHelper2
             if (str.Contains("Memory allocated") || str.Contains("Ending Test")) return null;
             if (str == "" || !str.Contains("Coverage"))
             {
-                log.Error($"Invalid static coverage string: '{str}'");
+                if (VerboseLogging)
+                    log.Error($"Invalid static coverage string: '{str}'");
+
                 return null;
             }
 
@@ -184,7 +252,9 @@ namespace MemTestHelper2
             var start = str.IndexOfAny("0123456789".ToCharArray());
             if (start == -1)
             {
-                log.Error("Failed to find start of coverage number");
+                if (VerboseLogging)
+                    log.Error("Failed to find start of coverage number");
+
                 return null;
             }
             str = str.Substring(start);
@@ -197,7 +267,9 @@ namespace MemTestHelper2
             var result = Double.TryParse(coverageStr, NumberStyles.Float, CultureInfo.InvariantCulture, out coverage);
             if (!result)
             {
-                log.Error($"Failed to parse coverage % from coverage string: '{coverageStr}'");
+                if (VerboseLogging)
+                    log.Error($"Failed to parse coverage % from coverage string: '{coverageStr}'");
+
                 return null;
             }
 
@@ -211,52 +283,122 @@ namespace MemTestHelper2
             result = Int32.TryParse(str.Substring(0, str.IndexOf(" Errors")), out errors);
             if (!result)
             {
-                log.Error($"Failed to parse error count from error string: '{str}'");
+                if (VerboseLogging)
+                    log.Error($"Failed to parse error count from error string: '{str}'");
+
                 return null;
             }
 
             return Tuple.Create(coverage, errors);
         }
 
-        public bool CloseNagMessageBox(string messageBoxCaption, int timeoutms = 3000)
+        public bool CloseNagMessageBox()
         {
-            if (!Started || Finished || process == null || process.HasExited)
-                return false;
-
-            var end = DateTime.Now + TimeSpan.FromMilliseconds(timeoutms);
-            var hwnd = IntPtr.Zero;
-            do
-            {
-                hwnd = WinAPI.GetHWNDFromPID(process.Id, messageBoxCaption);
-                Thread.Sleep(10);
-            } while (hwnd == IntPtr.Zero && DateTime.Now < end);
-
-            if (hwnd == IntPtr.Zero)
-            {
-                log.Error($"Failed to find nag message box with caption: '{messageBoxCaption}'");
-                return false;
-            }
-
-            end = DateTime.Now + TimeSpan.FromMilliseconds(timeoutms);
+            var end = DateTime.Now + Timeout;
+            List<IntPtr> windows;
             while (true)
             {
                 if (DateTime.Now > end)
                 {
-                    log.Error($"Failed to close nag message box with caption: '{messageBoxCaption}'");
+                    if (VerboseLogging)
+                        log.Error($"Failed to find nag message boxes with PID {PID}");
+
                     return false;
                 }
-                   
+
+                windows = WinAPI.FindAllWindows(PID);
+
+                if (VerboseLogging)
+                {
+                    for (int i = 0; i < windows.Count; i++)
+                    {
+                        var hwnd = windows[i];
+                        var len = WinAPI.GetWindowTextLength(hwnd);
+                        var sb = new StringBuilder(len + 1);
+                        WinAPI.GetWindowText(hwnd, sb, sb.Capacity);
+                        var exStyles = WinAPI.GetWindowLongPtr(hwnd, WinAPI.GWL_EXSTYLE);
+
+                        log.Info(
+                            $"PID {PID,5}, window {i + 1}, exstyles: 0x{exStyles.ToInt64():X16}, " +
+                            $"text: '{sb.ToString()}'"
+                        );
+                    }
+                }
+
+                windows = windows.Where(IsNagMessageBox).ToList();
+                if (windows.Count > 0) break;
+
+                Thread.Sleep(200);
+            }
+
+            foreach (var hwnd in windows)
+            {
                 if (WinAPI.SendNotifyMessage(hwnd, WinAPI.WM_CLOSE, IntPtr.Zero, null) != 0)
                     return true;
                 else
                 {
-                    log.Error(
-                        $"Failed to send notify message to nag message box with caption: '{messageBoxCaption}'. " +
-                        $"Error code: {Marshal.GetLastWin32Error()}"
-                    );
+                    if (VerboseLogging)
+                    {
+                        log.Error(
+                            $"Failed to send notify message to nag message box with PID {PID,5}. " +
+                            $"Error code: {Marshal.GetLastWin32Error()}"
+                        );
+                    }
+                    return false;
+                }
+            }
+
+            return false;
+        }
+
+        public bool CloseNagMessageBox(string messageBoxCaption)
+        {
+            if (!Started || Finished || process == null || process.HasExited)
+                return false;
+
+            var end = DateTime.Now + Timeout;
+            var hwnd = IntPtr.Zero;
+            while (true)
+            {
+                if (DateTime.Now > end)
+                {
+                    if (VerboseLogging)
+                        log.Error($"Failed to find nag message box with caption: '{messageBoxCaption}'");
+
+                    return false;
                 }
 
-                Thread.Sleep(100);
+                hwnd = WinAPI.GetHWNDFromPID(process.Id, messageBoxCaption);
+                if (hwnd != IntPtr.Zero) break;
+
+                Thread.Sleep(200);
+            }
+
+            end = DateTime.Now + Timeout;
+            while (true)
+            {
+                if (DateTime.Now > end)
+                {
+                    if (VerboseLogging)
+                        log.Error($"Failed to close nag message box with caption: '{messageBoxCaption}'");
+
+                    return false;
+                }
+
+                if (WinAPI.SendNotifyMessage(hwnd, WinAPI.WM_CLOSE, IntPtr.Zero, null) != 0)
+                    return true;
+                else
+                {
+                    if (VerboseLogging)
+                    {
+                        log.Error(
+                            $"Failed to send notify message to nag message box with caption: '{messageBoxCaption}'. " +
+                            $"Error code: {Marshal.GetLastWin32Error()}"
+                        );
+                    }
+                }
+
+                Thread.Sleep(200);
             }
         }
     }
