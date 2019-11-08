@@ -24,7 +24,7 @@ namespace MemTestHelper2
 {
     public partial class MainWindow : MetroWindow
     {
-        private const string VERSION = "2.1.1";
+        private const string VERSION = "2.2.0";
         private readonly int NUM_THREADS, MAX_THREADS;
 
         // Update interval (in ms) for coverage info list.
