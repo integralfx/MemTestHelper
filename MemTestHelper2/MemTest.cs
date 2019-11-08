@@ -46,7 +46,17 @@ namespace MemTestHelper2
 
         public bool Started { get; private set; } = false;
 
-        public bool Finished { get; private set; } = false;
+        public bool Finished
+        {
+            get
+            {
+                if (process == null || process.HasExited)
+                    return false;
+
+                string str = WinAPI.ControlGetText(process.MainWindowHandle, STATIC_COVERAGE);
+                return str.Contains("Test over");
+            }
+        }
 
         public bool Minimised
         {
@@ -91,20 +101,6 @@ namespace MemTestHelper2
                 {
                     WinAPI.MoveWindow(process.MainWindowHandle, (int)value.X, (int)value.Y, WIDTH, HEIGHT, true);
                 }
-            }
-        }
-
-        public bool Stopping
-        {
-            get
-            {
-                if (!Started || Finished || process == null || process.HasExited)
-                    return false;
-
-                string str = WinAPI.ControlGetText(process.MainWindowHandle, STATIC_COVERAGE);
-                if (str != "" && str.Contains("Ending")) return true;
-
-                return false;
             }
         }
 
@@ -153,7 +149,7 @@ namespace MemTestHelper2
                     break;
 
                 CloseNagMessageBox();
-                Thread.Sleep(500);
+                Thread.Sleep(100);
                 process.Refresh();
             }
 
@@ -176,11 +172,10 @@ namespace MemTestHelper2
                 if (CloseNagMessageBox())
                     break;
 
-                Thread.Sleep(500);
+                Thread.Sleep(100);
             }
 
             Started = true;
-            Finished = false;
 
             lock (updateLock)
             {
@@ -224,7 +219,6 @@ namespace MemTestHelper2
                 if (VerboseLogging) log.Info($"Stopping MemTest {PID}");
                 WinAPI.ControlClick(process.MainWindowHandle, BTN_STOP);
                 Started = false;
-                Finished = true;
             }
         }
 
@@ -235,7 +229,6 @@ namespace MemTestHelper2
 
             process = null;
             Started = false;
-            Finished = false;
         }
 
         // Returns (coverage, errors).
@@ -335,7 +328,7 @@ namespace MemTestHelper2
                 windows = windows.Where(IsNagMessageBox).ToList();
                 if (windows.Count > 0) break;
 
-                Thread.Sleep(500);
+                Thread.Sleep(200);
             }
 
             foreach (var hwnd in windows)
@@ -378,7 +371,7 @@ namespace MemTestHelper2
                 hwnd = WinAPI.GetHWNDFromPID(process.Id, messageBoxCaption);
                 if (hwnd != IntPtr.Zero) break;
 
-                Thread.Sleep(500);
+                Thread.Sleep(200);
             }
 
             end = DateTime.Now + Timeout;
@@ -405,7 +398,7 @@ namespace MemTestHelper2
                     }
                 }
 
-                Thread.Sleep(500);
+                Thread.Sleep(200);
             }
         }
     }

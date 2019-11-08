@@ -78,12 +78,36 @@ namespace MemTestHelper2
             coverageWorker.RunWorkerCompleted +=
             new RunWorkerCompletedEventHandler((sender, e) =>
             {
-                // Wait for all MemTests to stop completely.
-                while (IsAnyMemTestStopping())
-                    Thread.Sleep(100);
+                // Wait for all MemTests to finish.
+                var end = DateTime.Now + MemTest.Timeout;
+                while (true)
+                {
+                    if (DateTime.Now > end)
+                    {
+                        var msg = "Timed out waiting for all MemTest instances to finish";
+                        ShowErrorMsgBox(msg);
+                        log.Error(msg);
+                        UpdateControls(false);
+                        return;
+                    }
 
-                // TODO: Figure out why total coverage is sometimes reporting 0.0 after stopping.
+                    if (IsAllFinished()) break;
+
+                    Thread.Sleep(500);
+                }
+
                 UpdateCoverageInfo(false);
+
+                var elapsedTime = TimeSpan.ParseExact(
+                    (string)lblElapsedTime.Content,
+                    @"hh\hmm\mss\s",
+                    CultureInfo.InvariantCulture
+                );
+                UpdateSpeedTime(elapsedTime);
+
+                UpdateControls(false);
+
+                MessageBox.Show("Please check if there are any errors", "MemTest finished");
             });
 
             timer = new System.Timers.Timer(1000);
@@ -91,31 +115,7 @@ namespace MemTestHelper2
             {
                 Dispatcher.Invoke(() =>
                 {
-                    var threads = (int)cboThreads.SelectedItem;
-                    var elapsed = e.SignalTime - startTime;
-
-                    lblElapsedTime.Content = $"{(int)(elapsed.TotalHours):00}h{elapsed.Minutes:00}m" +
-                                             $"{elapsed.Seconds:00}s";
-
-                    // This thread only accesses element 0.
-                    lock (memtestInfo)
-                    {
-                        var totalCoverage = memtestInfo[0].Coverage;
-                        if (totalCoverage <= 0.0) return;
-
-                        // Round up to next multiple of 100.
-                        var nextCoverage = ((int)(totalCoverage / 100) + 1) * 100;
-                        var elapsedms = elapsed.TotalMilliseconds;
-                        var est = (elapsedms / totalCoverage * nextCoverage) - elapsedms;
-
-                        TimeSpan estimatedTime = TimeSpan.FromMilliseconds(est);
-                        lblEstimatedTime.Content = $"{(int)(estimatedTime.TotalHours):00}h{estimatedTime.Minutes:00}m"+
-                                                   $"{estimatedTime.Seconds:00}s to {nextCoverage}%";
-
-                        var ram = Convert.ToInt32(txtRAM.Text);
-                        var speed = (totalCoverage / 100) * ram / (elapsedms / 1000);
-                        lblSpeed.Content = $"{speed:f2}MB/s";
-                    }
+                    UpdateSpeedTime(e.SignalTime - startTime);
                 });
             });
             
@@ -244,28 +244,6 @@ namespace MemTestHelper2
 
             coverageWorker.CancelAsync();
             timer.Stop();
-
-            UpdateControls(false);
-
-            // Wait for all memtests to fully stop.
-            while (IsAnyMemTestStopping())
-                Thread.Sleep(100);
-
-            // Update speed.
-            var ram = Convert.ToInt32(txtRAM.Text);
-            var elapsedTime = TimeSpan.ParseExact(
-                (string)lblElapsedTime.Content, 
-                @"hh\hmm\mss\s", 
-                CultureInfo.InvariantCulture
-            ).TotalSeconds;
-            lock (memtestInfo)
-            {
-                // 0 is the total coverage.
-                var speed = (memtestInfo[0].Coverage / 100) * ram / elapsedTime;
-                lblSpeed.Content = $"{speed:f2}MB/s";
-            }
-
-            MessageBox.Show("Please check if there are any errors", "MemTest finished");
         }
 
         private void btnShow_Click(object sender, RoutedEventArgs e)
@@ -472,6 +450,10 @@ namespace MemTestHelper2
                         case "verbose":
                             chkVerbose.IsChecked = Boolean.Parse(appSettings[key]);
                             break;
+
+                        case "timeout":
+                            udTimeout.Value = Int32.Parse(appSettings[key]);
+                            break;
                     }
                 }
             }
@@ -502,6 +484,7 @@ namespace MemTestHelper2
                 dict.Add("stopOnError", chkStopOnError.IsChecked.ToString());
                 dict.Add("startMin", chkStartMin.IsChecked.ToString());
                 dict.Add("verbose", chkVerbose.IsChecked.ToString());
+                dict.Add("timeout", udTimeout.Value.ToString());
 
                 var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
                 var settings = configFile.AppSettings.Settings;
@@ -621,7 +604,7 @@ namespace MemTestHelper2
             var timeout = udTimeout.Value;
             if (timeout == null)
             {
-                var defaultTimeout = MemTest.DEFAULT_TIMEOUT_MS / 1000;
+                var defaultTimeout = MemTest.DEFAULT_TIMEOUT.Seconds;
                 if (verboseLogging)
                     log.Info($"No timeout specified. Falling back to default timeout: ${defaultTimeout} sec");
                 udTimeout.Value = defaultTimeout;
@@ -664,6 +647,7 @@ namespace MemTestHelper2
             chkStopOnError.IsEnabled = !isStarting;
             chkStartMin.IsEnabled = !isStarting;
             chkVerbose.IsEnabled = !isStarting;
+            udTimeout.IsEnabled = !isStarting;
         }
 
         private bool StartMemTests()
@@ -674,7 +658,7 @@ namespace MemTestHelper2
             var ram = Convert.ToDouble(txtRAM.Text) / threads;
             var startMin = chkStartMin.IsChecked.Value;
             MemTest.VerboseLogging = chkVerbose.IsChecked.Value;
-            MemTest.Timeout = (int)udTimeout.Value.Value * 1000;
+            MemTest.Timeout = TimeSpan.FromSeconds(udTimeout.Value.Value);
             Parallel.For(0, threads, i =>
             {
                 memtests[i] = new MemTest();
@@ -807,16 +791,30 @@ namespace MemTestHelper2
             });
         }
 
-        // MemTest can take a while to stop, which causes the total to return 0.
-        private bool IsAnyMemTestStopping()
+        private void UpdateSpeedTime(TimeSpan elapsed)
         {
-            for (var i = 0; i < (int)cboThreads.SelectedItem; i++)
-            {
-                if (memtests[i].Stopping)
-                    return true;
-            }
+            lblElapsedTime.Content = $"{(int)(elapsed.TotalHours):00}h{elapsed.Minutes:00}m" +
+                                     $"{elapsed.Seconds:00}s";
 
-            return false;
+            // This thread only accesses element 0.
+            lock (memtestInfo[0])
+            {
+                var totalCoverage = memtestInfo[0].Coverage;
+                if (totalCoverage <= 0.0) return;
+
+                // Round up to next multiple of 100.
+                var nextCoverage = ((int)(totalCoverage / 100) + 1) * 100;
+                var elapsedSec = elapsed.TotalSeconds;
+                var est = (elapsedSec / totalCoverage * nextCoverage) - elapsedSec;
+
+                TimeSpan estimatedTime = TimeSpan.FromSeconds(est);
+                lblEstimatedTime.Content = $"{(int)(estimatedTime.TotalHours):00}h{estimatedTime.Minutes:00}m" +
+                                           $"{estimatedTime.Seconds:00}s to {nextCoverage}%";
+
+                var ram = Convert.ToInt32(txtRAM.Text);
+                var speed = (totalCoverage / 100) * ram / elapsedSec;
+                lblSpeed.Content = $"{speed:f2}MB/s";
+            }
         }
 
         /* 
