@@ -287,10 +287,15 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
 3. Next are the primary timings (tCL, tRCD, tRP).
    * Start with tCL and drop that by 1 until you get instability.
    * Do the same with tRCD and tRP.
-   * After the above timings are as tight as they can go, set `tRAS = tCL + tRCD(RD) + 2`<sup>1</sup> and `tRC = tRP + tRAS`.
+   * After the above timings are as tight as they can go, set `tRAS = tCL + tRCD(RD) + 2` and `tRC = tRP + tRAS + x`<sup>1</sup>.
      * Setting tRAS lower than this can incur a [performance penalty](https://www.overclock.net/forum/25801780-post3757.html).
+     * <sup>1</sup>Your RAM might not be able to do `tRP + tRAS`, hence the `x`. Setting `x` to 8, i.e. `tRP + tRAS + 8` should be a pretty safe gamble.
      * tRC is only available on AMD and some Intel UEFIs.
-     * <sup>1</sup>Micron Rev. E seems to need tRAS = tCL + tRCD(RD) + 4 (or at least my kit does).
+     * On Intel UEFIs, tRC does seem to follow the `tRP + tRAS + x` rule, even if it is hidden.
+       * (1) [tRP 19 tRAS 42](https://i.imgur.com/gz1YDcO.png) - fully stable.
+       * (2) [tRP 19 tRAS 36](https://i.imgur.com/lHjbLjC.png) - instant error.
+       * (3) [tRP 25 tRAS 36](https://i.imgur.com/7c46Qes.png) - stable up to 500%.
+       * In (1) and (3), tRC is 61 and isn't completely unstable. However, in (2) tRC is 55 and RAMTest finds an error instantly. This indicates that my RAM can do `tRAS = tCL + tRCD(RD) + 2`, but needs `tRC = tRP + tRAS + 6`. Since tRC is hidden, I need higher tRAS to get higher tRC.
      
 4. Next is tRFC. Default for 8Gb ICs is 350**ns** (note the units).
    * To convert to ns: `2000 * timing / ddr_freq`.  
