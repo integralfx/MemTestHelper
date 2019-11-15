@@ -321,8 +321,9 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
    | :----: | :--: | :---: | :-----: |
    | tWTRS tWTRL | 4 12 | 4 8 | - |
    | tRTP | 12 | 10 | 8 |
-   | tCWL | tCL | tCL - 1 | tCL - 2 |
+   | tCWL<sup>1</sup> | tCL | tCL - 1 | tCL - 2 |
    * On Intel, tWTRS/L should be left on auto and controlled with tWRRD_dg/sg respectively. Dropping tWRRD_dg by 1 will drop tWTRS by 1. Likewise with tWRRD_sg. Once they're as low as you can go, manually set tWTRS/L.
+   * <sup>1</sup>Some motherboards don't play nice with odd tCWL. For example, I'm stable at 4000 15-19-19 tCWL 14, yet tCWL 15 doesn't even POST. Another user has had similar experiences.
    
 6. Now for the tertiaries:
     * If you're on AMD, refer to [this post](https://redd.it/ahs5a2).  
@@ -356,7 +357,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
 ### Intel
 * Loosening tCCDL to 8 may help with stability, especially above 3600MHz.
 * Higher cache (aka uncore, ring) frequency can increase bandwidth and reduce latency.
-* Increase IOL offsets to reduce RTLs and IOLs. Make sure to run a memory test after.  
+* After you've finished tightening the timings, you can increase IOL offsets to reduce IOLs. Make sure to run a memory test after.
   More info [here](https://hwbot.org/newsflash/3058_advanced_skylake_overclocking_tune_ddr4_memory_rtlio_on_maximus_viii_with_alexaros_guide).
 * If you have an Asus Maximus motherboard and you can't boot, you can try tweaking the skew control values.  
   More info [here](https://rog.asus.com/forum/showthread.php?47670-Maximus-7-Gene-The-road-to-overclocking-memory-without-increasing-voltage).
