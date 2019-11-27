@@ -39,7 +39,7 @@
 * [Prime95](https://www.mersenne.org/download/) large FFTs is also decent at finding memory errors.
   * I've been using a custom FFT range of 800k - 800k, though I think any FFT value inside the large FFTs range should work.
     * Make sure 'Run FFTs in place' isn't checked.
-    * In `prime.txt`, add `TortureAlternateInPlace=0` under `TortureWeak` to prevent P95 from testing in place (only tests a bit of RAM).
+    * In `prime.txt`, add `TortureAlternateInPlace=0` under `TortureWeak` to prevent P95 from testing in place. Testing in place will only use a bit of RAM, which we don't want.
   * You can create a shortcut to `prime95.exe` and add `-t` to 'Properties > Target' field to immediately start testing using the settings in `prime.txt`. Your target field should look something like: `"path\to\prime95\prime95.exe" -t`.
   * You can also change the working directory of Prime95's config files, so that you can have one config to stress test your CPU and another config to stress test your RAM.
     1. In the folder with `prime95.exe`, create another folder. For this example, it'll be called 'RAM' (without the quotes).
