@@ -1,5 +1,8 @@
 # Table of Contents
 1. [Setup](#setup)
+   1. [Memory Testing Software](#memory-testing-software)
+   2. [Timings Software](#timings-software)
+   3. [Benchmarks](#benchmarks)
 2. [Expectations/Limitations](#expectationslimitations)
    1. [Motherboard](#motherboard)
    2. [ICs](#integrated-circuits-ics)
@@ -27,20 +30,36 @@
 * Make sure your CPU is fully stable before overclocking RAM, as an unstable CPU can lead to memory errors. When pushing high frequency with tight timings, it's possible that your CPU can become unstable.
 * Make sure your UEFI is up to date.
 * [Thaiphoon](http://www.softnology.biz/files.html) to show what ICs (integrated circuits or RAM chips) your sticks use. This will give you an idea of what frequency and timings to expect.
+
+## Memory Testing Software
 * [MemTestHelper](https://github.com/integralfx/MemTestHelper/releases) or your memory tester of choice. [Karhu RAM Test](https://www.karhusoftware.com/ramtest/) (paid) is also a good choice. I wouldn't recommend AIDA64 memory test and [Memtest64](https://forums.anandtech.com/threads/techpowerups-memtest-64-is-it-better-than-hci-memtest-for-determining-stability.2532209/) as they are both not very good at finding memory errors.
 * [TM5](http://testmem.tz.ru/tm5.rar) with the [extreme config by anta777](https://drive.google.com/file/d/1uegPn9ZuUoWxOssCP4PjMjGW9eC_1VJA) seems to be faster than Karhu RAMTest at finding errors. One user has thoroughly tested it and they couldn't seem to fool it. YMMV.
   * Make sure to load the config. It should say 'Customize: Extreme1 @anta777' if loaded.
   * Credits: [u/nucl3arlion](https://www.reddit.com/r/overclocking/comments/dlghvs/micron_reve_high_training_voltage_requirement/f4zcs04/)
+* [Prime95](https://www.mersenne.org/download/) large FFTs is also decent at finding memory errors.
+  * I've been using a custom FFT range of 800k - 800k, though I think any FFT value inside the large FFTs range should work.
+    * Make sure 'Run FFTs in place' isn't checked.
+    * In `prime.txt`, add `TortureAlternateInPlace=0` under `TortureWeak` to prevent P95 from testing in place (only tests a bit of RAM).
+  * You can create a shortcut to `prime95.exe` and add `-t` to 'Properties > Target' field to immediately start testing using the settings in `prime.txt`. Your target field should look something like: `"path\to\prime95\prime95.exe" -t`.
+  * You can also change the working directory of Prime95's config files, so that you can have one config to stress test your CPU and another config to stress test your RAM.
+    1. In the folder with `prime95.exe`, create another folder. For this example, it'll be called 'RAM' (without the quotes).
+    2. Copy `prime.txt` and `local.txt` to the folder you just created.
+    3. Adjust the settings in `prime.txt` as required.
+    4. Create another shortcut to `prime95.exe` and in the target field add `-t -W<folder_name>`. Your target field should look something like: `"path\to\prime95\prime95.exe" -t -WRAM`.
+    5. You can now use the shortcut to instantly start Prime95 with the settings provided.
+    
+## Timings Software
 * To view timings in Windows: 
   * Intel: [Asrock Timing Configurator v4.0.4](https://www.asrock.com/MB/Intel/X299%20OC%20Formula/index.asp#Download) (don't need an Asrock motherboard, though EVGA motherboards don't seem to work with this).
   * AMD: 
     * Ryzen 1000/2000: [Ryzen Timing Checker](https://www.techpowerup.com/download/ryzen-timing-checker/).
     * Ryzen 3000: [Ryzen Master](https://www.amd.com/en/technologies/ryzen-master).
-* Benchmarks:
-  * [AIDA64](https://www.aida64.com/downloads) - free 30 day trial. We'll be using the cache and memory benchmark (found under tools) to see how our memory is performing. You can right click the start benchmark button and run memory tests only to skip the cache tests.
-  * [MaxxMEM2](https://www.softpedia.com/get/System/Benchmarks/MaxxMEM2.shtml) - free alternative to AIDA64, but bandwidth tests seem to be a lot lower so it isn't directly comparable to AIDA64.
-  * [Super Pi Mod v1.5 XS](https://www.techpowerup.com/download/super-pi/) - another memory sensitive benchmark, but I haven't used it as much as AIDA64. 1M - 8M digits should be enough for a quick benchmark. You only need to look at the last (total) time, where lower is better.
-  * [HWBOT x265 Benchmark](https://hwbot.org/benchmark/hwbot_x265_benchmark_-_1080p/) - I've heard that this benchmark is also sensitive to memory, but I haven't really tested it myself.
+    
+## Benchmarks
+* [AIDA64](https://www.aida64.com/downloads) - free 30 day trial. We'll be using the cache and memory benchmark (found under tools) to see how our memory is performing. You can right click the start benchmark button and run memory tests only to skip the cache tests.
+* [MaxxMEM2](https://www.softpedia.com/get/System/Benchmarks/MaxxMEM2.shtml) - free alternative to AIDA64, but bandwidth tests seem to be a lot lower so it isn't directly comparable to AIDA64.
+* [Super Pi Mod v1.5 XS](https://www.techpowerup.com/download/super-pi/) - another memory sensitive benchmark, but I haven't used it as much as AIDA64. 1M - 8M digits should be enough for a quick benchmark. You only need to look at the last (total) time, where lower is better.
+* [HWBOT x265 Benchmark](https://hwbot.org/benchmark/hwbot_x265_benchmark_-_1080p/) - I've heard that this benchmark is also sensitive to memory, but I haven't really tested it myself.
 
 # Expectations/Limitations
 * This section goes through 3 components that may influence your overclocking experience: ICs, motherboard and IMC.
