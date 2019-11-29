@@ -179,6 +179,8 @@ Adjusting the SoC voltage alone, unlike on previous gen. parts doesn't do much i
 The default value is fixed 1.100V and AMD recommends keeping it at that level. Increasing the VDDG helps with the fabric overclocking in certain scenarios, but not always.
 1800MHz FCLK should be doable at the default 0.9500V value and for pushing the limits it might be beneficial to increase it to =< 1.05V (1.100 - 1.125V SoC, depending on the load-line).  
   [~ The Stilt](https://www.overclock.net/forum/28031966-post35.html)
+  
+    When pushing FCLK around 1800 MHz intermittent RAM training errors may be alleviated or completely eliminated by increasing VDDG. On AGESA 1.0.0.4 or newer VDDG is separated into VDDG IOD and VDDG CCD for the I/O die and the chiplets parts, respectively. In this case the voltage to increase for more successful RAM training is VDDG CCD.
 
 * Below are the expected frequency ranges for 2 single rank DIMMs, provided your motherboard and ICs are capable:
 
