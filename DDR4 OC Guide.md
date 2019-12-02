@@ -77,7 +77,7 @@
   * Similarly, CL16 at 3200MHz is `2000 * 16 / 3200 = 10ns`.
 
 ## Primary, Secondary and Tertiary Timings
-* [Intel](https://i.imgur.com/zOdGLgT.png)
+* [Intel](https://i.imgur.com/hcKDkCc.png)
 * [AMD](https://i.imgur.com/Ie4LVtI.png)
 * RAM timings are split into 3 categories: primary, secondary and tertiary. These are indicated by 'P', 'S', and 'T' respectively.
   * Primary and secondary timings affect latency and bandwidth.
