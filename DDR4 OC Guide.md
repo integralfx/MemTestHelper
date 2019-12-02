@@ -78,7 +78,7 @@
 
 ## Primary, Secondary and Tertiary Timings
 * [Intel](https://i.imgur.com/zOdGLgT.png)
-* [AMD](https://i.imgur.com/QyRagqP.png)
+* [AMD](https://i.imgur.com/9pWo5EI.png)
 * RAM timings are split into 3 categories: primary, secondary and tertiary. These are indicated by 'P', 'S', and 'T' respectively.
   * Primary and secondary timings affect latency and bandwidth.
   * Tertiary timings affect bandwidth.
