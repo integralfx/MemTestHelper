@@ -3,7 +3,10 @@
    1. [Memory Testing Software](#memory-testing-software)
    2. [Timings Software](#timings-software)
    3. [Benchmarks](#benchmarks)
-2. [Expectations/Limitations](#expectationslimitations)
+2. [General RAM Info](#general-ram-info)
+   1. [Frequency and Timings Relation](#frequency-and-timings-relation)
+   2. [Primary, Secondary and Tertiary Timings](#primary-secondary-and-tertiary-timings)
+3. [Expectations/Limitations](#expectationslimitations)
    1. [Motherboard](#motherboard)
    2. [ICs](#integrated-circuits-ics)
       1. [Thaiphoon Report](#thaiphoon-report)
@@ -16,14 +19,14 @@
    3. [Integrated Memory Controller (IMC)](#integrated-memory-controller-imc)
       1. [Intel - LGA1151](#intel---lga1151)
       2. [AMD - AM4](#amd---am4)
-3. [Overclocking](#overclocking)
+4. [Overclocking](#overclocking)
    1. [Finding the Maximum Frequency](#finding-the-maximum-frequency)
    2. [Trying Higher Frequencies](#trying-higher-frequencies)
    3. [Tightening Timings](#tightening-timings)
    4. [Miscellaneous Tips](#miscellaneous-tips)
       1. [Intel](#intel)
       2. [AMD](#amd)
-4. [Useful Information](#useful-information)
+5. [Useful Information](#useful-information)
 
 # Setup
 * Ensure your sticks are in the recommended DIMM slots (usually 2 and 4).
@@ -62,6 +65,23 @@
 * [MaxxMEM2](https://www.softpedia.com/get/System/Benchmarks/MaxxMEM2.shtml) - free alternative to AIDA64, but bandwidth tests seem to be a lot lower so it isn't directly comparable to AIDA64.
 * [Super Pi Mod v1.5 XS](https://www.techpowerup.com/download/super-pi/) - another memory sensitive benchmark, but I haven't used it as much as AIDA64. 1M - 8M digits should be enough for a quick benchmark. You only need to look at the last (total) time, where lower is better.
 * [HWBOT x265 Benchmark](https://hwbot.org/benchmark/hwbot_x265_benchmark_-_1080p/) - I've heard that this benchmark is also sensitive to memory, but I haven't really tested it myself.
+
+# General RAM Info
+## Frequency and Timings Relation
+* RAM frequency is measured in megahertz (MHz) or million cycles per second. Higher frequency means more cycles per second, which means better performance.
+* RAM timings are measured in clock cycles or ticks. Lower timings mean less cycles to perform an operation, which means better performance.
+  * The exception to this is tREFI, which is the refresh interval. As its name suggests, tREFI is the time between refreshes. While the RAM is refreshing it can't do anything, so you'd want to refresh as infrequently as possible. To do that, you'd want the time between refreshes to be as long as possible. This means you'd want tREFI as high as possible.
+* While lower timings may be better, this also depends on the frequency the RAM is running at. For example, 3000MHz CL15 and 3200MHz CL16 have the same latency, despite 3000MHz running at a lower absolute CL. This is because the higher frequency offsets the increase in CL.
+* To calculate the actual time in nanoseconds (ns) of a given timing: `2000 * timing / ddr_freq`.
+  * For example, CL15 at 3000MHz is `2000 * 15 / 3000 = 10ns`.
+  * Similarly, CL16 at 3200MHz is `2000 * 16 / 3200 = 10ns`.
+
+## Primary, Secondary and Tertiary Timings
+* [Intel](https://i.imgur.com/hcKDkCc.png)
+* [AMD](https://i.imgur.com/Ie4LVtI.png)
+* RAM timings are split into 3 categories: primary, secondary and tertiary. These are indicated by 'P', 'S', and 'T' respectively.
+  * Primary and secondary timings affect latency and bandwidth.
+  * Tertiary timings affect bandwidth.
 
 # Expectations/Limitations
 * This section goes through 3 components that may influence your overclocking experience: ICs, motherboard and IMC.
