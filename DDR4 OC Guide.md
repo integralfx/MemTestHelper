@@ -4,6 +4,8 @@
    2. [Timings Software](#timings-software)
    3. [Benchmarks](#benchmarks)
 2. [General RAM Info](#general-ram-info)
+   1. [Frequency and Timings Relation](#frequency-and-timings-relation)
+   2. [Primary, Secondary and Tertiary Timings](#primary-secondary-and-tertiary-timings)
 3. [Expectations/Limitations](#expectationslimitations)
    1. [Motherboard](#motherboard)
    2. [ICs](#integrated-circuits-ics)
