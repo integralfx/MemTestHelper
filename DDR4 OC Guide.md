@@ -275,6 +275,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
      * MemTestHelper (HCI MemTest): 200% per thread.
      * Karhu RAMTest: 5000%.
        * In the advanced tab, make sure CPU cache is set to enabled. This will speed up testing by ~20%.
+       * Testing for 6400% coverage and a 1 hour duration has an error cover rate of 99,41% and 98,43%, respectively ([Source - FAQ section](https://www.karhusoftware.com/ramtest/)).
 6. If you crash/freeze/BSOD or get an error, drop the DRAM frequency by a notch and test again.
 7. Save your overclock profile in your UEFI.
 8. From this point on you can either: try to go for a higher frequency or work on tightening the timings.
@@ -283,6 +284,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
 ## Trying Higher Frequencies
 * This section is applicable if you're not at the limit of your motherboard, ICs and IMC.  
   This section is not for those who are having trouble stabilising frequencies within the expected range.
+     * Note that some boards have auto rules that can stifle your progress, an example being tCWL = tCL - 1 which can lead to uneven values of tCWL. Reading the [Miscellaneous Tips](#miscellaneous-tips) might give you insight into your particular platform and your motherboards functionality.
 1. Intel:
    * Increase VCCSA and VCCIO to 1.25v.
    * Set command rate (CR) to 2T if it isn't already.
@@ -330,6 +332,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
    | tWR | 16 | 12 | 10 |
    * Minimum tFAW can be is tRRDS * 4.
    * You don't have to run all of the timings at one preset. You might only be able to run tRRDS tRRDL tFAW at the tight preset, but you may be able to run tWR at the extreme preset.
+   * On Intel, tWR should be left on auto and controlled with TWRPRE. Dropping TWRPRE by 1 will drop tWR by 1, following the rule tWR = TWRPRE - tCWL - 4.
    
 3. Next are the primary timings (tCL, tRCD, tRP).
    * Start with tCL and drop that by 1 until you get instability.
@@ -365,7 +368,8 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
    | tWTRS tWTRL | 4 12 | 4 8 | - |
    | tRTP | 12 | 10 | 8 |
    | tCWL<sup>1</sup> | tCL | tCL - 1 | tCL - 2 |
-   * On Intel, tWTRS/L should be left on auto and controlled with tWRRD_dg/sg respectively. Dropping tWRRD_dg by 1 will drop tWTRS by 1. Likewise with tWRRD_sg. Once they're as low as you can go, manually set tWTRS/L.
+   * On Intel, tWTRS/L should be left on auto and controlled with tWRRD_sg/dg respectively. Dropping tWRRD_dg by 1 will drop tWTRS by 1. Likewise with tWRRD_sg. Once they're as low as you can go, manually set tWTRS/L.
+   * On Intel, changing tCWL will affect tWRRD_sg/dg and thus tWTR_S/L. If you lower tCWL by 1 you need to lower tWRRD_sg/dg by 1 to keep the same tWTR values.
    * <sup>1</sup>Some motherboards don't play nice with odd tCWL. For example, I'm stable at 4000 15-19-19 tCWL 14, yet tCWL 15 doesn't even POST. Another user has had similar experiences.
    
 6. Now for the tertiaries:
@@ -400,10 +404,13 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
 ### Intel
 * Loosening tCCDL to 8 may help with stability, especially above 3600MHz.
 * Higher cache (aka uncore, ring) frequency can increase bandwidth and reduce latency.
-* After you've finished tightening the timings, you can increase IOL offsets to reduce IOLs. Make sure to run a memory test after.
-  More info [here](https://hwbot.org/newsflash/3058_advanced_skylake_overclocking_tune_ddr4_memory_rtlio_on_maximus_viii_with_alexaros_guide).
+* After you've finished tightening the timings, you can increase IOL offsets to reduce IOLs. Make sure to run a memory test after. More info [here](https://hwbot.org/newsflash/3058_advanced_skylake_overclocking_tune_ddr4_memory_rtlio_on_maximus_viii_with_alexaros_guide).
+* On Asus Maximus boards, setting Maximus Tweak Mode 2 will tighten down both RTL and IOL values. This generally works up to a certain frequency below what Mode 1 is capable of, but with the advantage of lower latency. It's wise to do two different setups and compare the two performance-wise.
+  
 * If you have an Asus Maximus motherboard and you can't boot, you can try tweaking the skew control values.  
   More info [here](https://rog.asus.com/forum/showthread.php?47670-Maximus-7-Gene-The-road-to-overclocking-memory-without-increasing-voltage).
+* At higher frequencies some motherboards (Asus) won't post with an uneven tCWL. Manually setting tCWL equal to tCL if tCL is even or one below if tCL is uneven should alleviate this (eg. tCL = 18, tCWL = 18 or tCL = 17, tCWL = 16).
+* On Asus Maximus XI-boards enabling Trace Centering can help greatly with pushing 1T to higher frequencies.
 
 ### AMD
 * Try playing around with ProcODT if you can't boot. On Ryzen 1000 and 2000, you should try values between 40Ω and 68.6Ω.  
