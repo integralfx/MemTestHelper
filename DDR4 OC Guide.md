@@ -332,7 +332,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
    | tWR | 16 | 12 | 10 |
    * Minimum tFAW can be is tRRDS * 4.
    * You don't have to run all of the timings at one preset. You might only be able to run tRRDS tRRDL tFAW at the tight preset, but you may be able to run tWR at the extreme preset.
-   * On Intel, tWR should be left on auto and controlled with TWRPRE. Dropping TWRPRE by 1 will drop tWR by 1, following the rule tWR = TWRPRE - tCWL - 4.
+   * On Intel, tWR should be left on auto and controlled with tWRPRE. Dropping tWRPRE by 1 will drop tWR by 1, following the rule tWR = tWRPRE - tCWL - 4.
    
 3. Next are the primary timings (tCL, tRCD, tRP).
    * Start with tCL and drop that by 1 until you get instability.
@@ -409,7 +409,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
   
 * If you have an Asus Maximus motherboard and you can't boot, you can try tweaking the skew control values.  
   More info [here](https://rog.asus.com/forum/showthread.php?47670-Maximus-7-Gene-The-road-to-overclocking-memory-without-increasing-voltage).
-* At higher frequencies some motherboards (Asus) won't post with an uneven tCWL. Manually setting tCWL equal to tCL if tCL is even or one below if tCL is uneven should alleviate this (eg. tCL = 18, tCWL = 18 or tCL = 17, tCWL = 16).
+* At higher frequencies some motherboards (Asus) won't post with an odd tCWL. Manually setting tCWL equal to tCL if tCL is even or one below if tCL is uneven should alleviate this (eg. tCL = 18, tCWL = 18 or tCL = 17, tCWL = 16).
 * On Asus Maximus XI-boards enabling Trace Centering can help greatly with pushing 1T to higher frequencies.
 
 ### AMD
