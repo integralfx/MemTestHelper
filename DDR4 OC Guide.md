@@ -368,8 +368,8 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
    | tWTRS tWTRL | 4 12 | 4 8 | - |
    | tRTP | 12 | 10 | 8 |
    | tCWL<sup>1</sup> | tCL | tCL - 1 | tCL - 2 |
-   * On Intel, tWTRS/L should be left on auto and controlled with tWRRD_sg/dg respectively. Dropping tWRRD_dg by 1 will drop tWTRS by 1. Likewise with tWRRD_sg. Once they're as low as you can go, manually set tWTRS/L.
-   * On Intel, changing tCWL will affect tWRRD_sg/dg and thus tWTR_S/L. If you lower tCWL by 1 you need to lower tWRRD_sg/dg by 1 to keep the same tWTR values.
+   * On Intel, tWTRS/L should be left on auto and controlled with tWRRD_dg/sg respectively. Dropping tWRRD_dg by 1 will drop tWTRS by 1. Likewise with tWRRD_sg. Once they're as low as you can go, manually set tWTRS/L.
+   * On Intel, changing tCWL will affect tWRRD_dg/sg and thus tWTR_S/L. If you lower tCWL by 1 you need to lower tWRRD_dg/sg by 1 to keep the same tWTR values. Note that this will also affect tWR per the relationship described above.
    * <sup>1</sup>Some motherboards don't play nice with odd tCWL. For example, I'm stable at 4000 15-19-19 tCWL 14, yet tCWL 15 doesn't even POST. Another user has had similar experiences.
    
 6. Now for the tertiaries:
