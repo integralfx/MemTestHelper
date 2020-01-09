@@ -55,6 +55,8 @@
     5. You can now use the shortcut to instantly start Prime95 with the settings provided.
 * [Comparison](https://imgur.com/a/jhrFGhg) between Karhu RAMTest, TM5 with the extreme config and GSAT.
   * TM5 is the fastest and most stressful by quite a margin, though I have had instances where I would pass 30 mins of TM5 but fail within 10 mins of Karhu. Another user had a similar experience. YMMV.
+* [randomx-stress](https://github.com/00-matt/randomx-stress/releases) - Can be used to test FCLK stability.
+  * Make sure to specify the number of threads as it defaults to half.
     
 ## Timings Software
 * To view timings in Windows: 
