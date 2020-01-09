@@ -39,6 +39,7 @@
 * [TM5](http://testmem.tz.ru/tm5.rar) with the [extreme config by anta777](https://drive.google.com/file/d/1uegPn9ZuUoWxOssCP4PjMjGW9eC_1VJA) seems to be faster than Karhu RAMTest at finding errors. One user has thoroughly tested it and they couldn't seem to fool it. YMMV.
   * Make sure to load the config. It should say 'Customize: Extreme1 @anta777' if loaded.
   * Credits: [u/nucl3arlion](https://www.reddit.com/r/overclocking/comments/dlghvs/micron_reve_high_training_voltage_requirement/f4zcs04/)
+  * If you experience issues with all threads crashing upon launch with the extreme config it might help to edit the row "Testing Window Size (Mb)=1408". Replace the window size with your total RAM (minus some margin for Windows) divided by your processors available threads (e.g. 12800/16 = 800 MB per thread).
 * [Prime95](https://www.mersenne.org/download/) large FFTs is also decent at finding memory errors.
   * I've been using a custom FFT range of 800k - 800k, though I think any FFT value inside the large FFTs range should work.
     * Make sure 'Run FFTs in place' isn't checked.
@@ -332,7 +333,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
    | tWR | 16 | 12 | 10 |
    * Minimum tFAW can be is tRRDS * 4.
    * You don't have to run all of the timings at one preset. You might only be able to run tRRDS tRRDL tFAW at the tight preset, but you may be able to run tWR at the extreme preset.
-   * On Intel, tWR should be left on auto and controlled with tWRPRE. Dropping tWRPRE by 1 will drop tWR by 1, following the rule tWR = tWRPRE - tCWL - 4.
+   * On some Intel motherboards, tWR has to be left on auto and controlled through tWRPRE. Dropping tWRPRE by 1 will drop tWR by 1, following the rule tWR = tWRPRE - tCWL - 4.
    
 3. Next are the primary timings (tCL, tRCD, tRP).
    * Start with tCL and drop that by 1 until you get instability.
@@ -369,7 +370,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
    | tRTP | 12 | 10 | 8 |
    | tCWL<sup>1</sup> | tCL | tCL - 1 | tCL - 2 |
    * On Intel, tWTRS/L should be left on auto and controlled with tWRRD_dg/sg respectively. Dropping tWRRD_dg by 1 will drop tWTRS by 1. Likewise with tWRRD_sg. Once they're as low as you can go, manually set tWTRS/L.
-   * On Intel, changing tCWL will affect tWRRD_dg/sg and thus tWTR_S/L. If you lower tCWL by 1 you need to lower tWRRD_dg/sg by 1 to keep the same tWTR values. Note that this will also affect tWR per the relationship described above.
+   * On Intel, changing tCWL will affect tWRRD_dg/sg and thus tWTR_S/L. If you lower tCWL by 1 you need to lower tWRRD_dg/sg by 1 to keep the same tWTR values. Note that this might also affect tWR per the relationship described earlier.
    * <sup>1</sup>Some motherboards don't play nice with odd tCWL. For example, I'm stable at 4000 15-19-19 tCWL 14, yet tCWL 15 doesn't even POST. Another user has had similar experiences.
    
 6. Now for the tertiaries:
@@ -406,7 +407,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
 * Higher cache (aka uncore, ring) frequency can increase bandwidth and reduce latency.
 * After you've finished tightening the timings, you can increase IOL offsets to reduce IOLs. Make sure to run a memory test after. More info [here](https://hwbot.org/newsflash/3058_advanced_skylake_overclocking_tune_ddr4_memory_rtlio_on_maximus_viii_with_alexaros_guide).
 * On Asus Maximus boards, setting Maximus Tweak Mode 2 will tighten down both RTL and IOL values. This generally works up to a certain frequency below what Mode 1 is capable of, but with the advantage of lower latency. It's wise to do two different setups and compare the two performance-wise.
-  
+
 * If you have an Asus Maximus motherboard and you can't boot, you can try tweaking the skew control values.  
   More info [here](https://rog.asus.com/forum/showthread.php?47670-Maximus-7-Gene-The-road-to-overclocking-memory-without-increasing-voltage).
 * At higher frequencies some motherboards (Asus) won't post with an odd tCWL. Manually setting tCWL equal to tCL if tCL is even or one below if tCL is uneven should alleviate this (eg. tCL = 18, tCWL = 18 or tCL = 17, tCWL = 16).
