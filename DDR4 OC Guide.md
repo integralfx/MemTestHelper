@@ -153,6 +153,9 @@ As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage 
 * Binning is basically separating components based on their frequency.  
   Manufacturers would separate ICs into different containers/bins depending on their frequency. Hence the term binning.
 * B-die binned for 2400 15-15-15 is significantly worse than good B-die binned for 3200 14-14-14 or even 3000 14-14-14. Don't expect it to have the same voltage scaling characteristics as good B-die.
+  * Examples of bad B-die:
+    * [Basic OC on my Ryzen 5 3600 and Vengeance LPX 3200](https://www.reddit.com/r/overclocking/comments/ea8mgz/basic_oc_on_my_ryzen_5_3600_and_vengeance_lpx_3200/)
+    * [No luck with B-die overclocking?](https://www.reddit.com/r/overclocking/comments/ebdhdq/no_luck_with_bdie_overclocking/)
 * To figure out which frequency and timings are a better (tighter) bin within the same IC at the same voltage, find out which timing doesn't scale from voltage.  
   Simply divide the frequency by that timing and the higher value is the tighter bin.
   * For example, Crucial Ballistix 3000 15-16-16 and 3200 16-18-18 both use Micron Rev. E ICs. Simply dividing the frequency by tCL gives us the same value (200), so does that mean they're the same bin?  
