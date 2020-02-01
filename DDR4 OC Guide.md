@@ -286,8 +286,8 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
      * Asrock: SOC Overclock VID hidden in the AMD CBS menu.
        * [VID values](https://www.reddit.com/r/Amd/comments/842ehb/asrock_ab350_pro4_guide_bios_overclocking_raven/).
      * Asus: VDDCR SOC.
-     * Gigabyte: Dynamic Vcore SOC.
-       * Note that this is an offset voltage. The base voltage can change automatically when increasing DRAM frequency. +0.100v at 3000MHz might result in 1.10v actual, but +0.100v at 3400MHz might result in 1.20v actual.
+     * Gigabyte: (Dynamic) Vcore SOC.
+       * Note that dynamic Vcore SOC is an offset voltage. The base voltage can change automatically when increasing DRAM frequency. +0.100v at 3000MHz might result in 1.10v actual, but +0.100v at 3400MHz might result in 1.20v actual.
      * MSI: CPU NB/SOC.
 2. Set DRAM voltage to 1.40v. If you're using Micron/SpecTek ICs, excluding Rev. E, set 1.35v.
 3. Set primary timings to 16-20-20-40 (tCL-tRCD-tRP-tRAS).
