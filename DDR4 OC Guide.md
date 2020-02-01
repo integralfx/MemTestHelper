@@ -139,7 +139,7 @@
 
 ### Voltage Scaling
 * Voltage scaling simply means how the IC responds to voltage.
-* On many ICs, tCL scales with voltage, meaning giving it more voltage can allow you to drop tCL. Conversely, tRCD and tRP typically do not scale with voltage on many ICs, meaning no matter how much voltage you pump into it, it will not budge.  
+* On many ICs, tCL scales with voltage, meaning giving it more voltage can allow you to drop tCL. Conversely, tRCD and/or tRP typically do not scale with voltage on many ICs, meaning no matter how much voltage you pump into it, it will not budge.  
 As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage scaling.
 * Similarly, if a timing scales with voltage that means you can increase the voltage to run the same timing at a higher frequency.
 ![CL11 Voltage Scaling](https://i.imgur.com/66GrCz3.png)
