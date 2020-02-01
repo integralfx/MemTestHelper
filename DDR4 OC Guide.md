@@ -21,7 +21,7 @@
       1. [Intel - LGA1151](#intel---lga1151)
       2. [AMD - AM4](#amd---am4)
 4. [Overclocking](#overclocking)
-   1. [Finding the Maximum Frequency](#finding-the-maximum-frequency)
+   1. [Finding a Baseline](#finding-a-baseline)
    2. [Trying Higher Frequencies](#trying-higher-frequencies)
    3. [Tightening Timings](#tightening-timings)
    4. [Miscellaneous Tips](#miscellaneous-tips)
@@ -279,7 +279,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
   * Increase DRAM frequency until unstable.
   * Tighten (lower) timings.
 
-## Finding the Maximum Frequency
+## Finding a Baseline
 1. On Intel, start off with 1.15v VCCSA and VCCIO.  
    On AMD, start off with 1.10v SOC.
    * SOC voltage might be named differently depending on the manufacturer.
