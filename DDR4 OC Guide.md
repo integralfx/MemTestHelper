@@ -10,12 +10,13 @@
    1. [Motherboard](#motherboard)
    2. [ICs](#integrated-circuits-ics)
       1. [Thaiphoon Report](#thaiphoon-report)
-      2. [A Note on Ranks and Density](#a-note-on-ranks-and-density)
-      3. [Voltage Scaling](#voltage-scaling)
-      4. [Expected Max Frequency](#expected-max-frequency)
-      5. [Binning](#binning)
-      6. [Maximum Recommended Daily Voltage](#maximum-recommended-daily-voltage)
-      7. [Ranking](#ranking)
+      2. [Label on Sticks](#label-on-sticks)
+      3. [A Note on Ranks and Density](#a-note-on-ranks-and-density)
+      4. [Voltage Scaling](#voltage-scaling)
+      5. [Expected Max Frequency](#expected-max-frequency)
+      6. [Binning](#binning)
+      7. [Maximum Recommended Daily Voltage](#maximum-recommended-daily-voltage)
+      8. [Ranking](#ranking)
    3. [Integrated Memory Controller (IMC)](#integrated-memory-controller-imc)
       1. [Intel - LGA1151](#intel---lga1151)
       2. [AMD - AM4](#amd---am4)
@@ -107,6 +108,30 @@
   * SpecTek is supposedly lower binned Micron ICs.
   * Esoteric note: Many people have started calling this Micron E-die or even just E-die. The former is fine, but the latter can cause confusion as letter-die is typically used for Samsung ICs, i.e. 4Gbit Samsung E-die. Samsung is implied when you say E-die, but as people are calling Micron Rev. E E-die, it'd probably be a good idea to prefix the manufacturer.
 * [Dual rank 8Gb Samsung B-die](https://i.imgur.com/Nqn8s76.jpg).
+
+### Label on Sticks
+#### Corsair Version Number
+* Corsair has a 3 digit version number on the label on the sticks which indicate what ICs are on the stick.
+* The first digit is the manufacturer.
+  * 3 = Micron
+  * 4 = Samsung
+  * 5 = Hynix
+  * 8 = Nanya
+* The second digit is the density.
+  * 1 = 2Gb
+  * 2 = 4Gb
+  * 3 = 8Gb
+  * 4 = 16Gb
+* The last digit is the revision.
+* See the [r/overclocking wiki](https://www.reddit.com/r/overclocking/wiki/ram/ddr4#wiki_corsair) for a full list.
+#### G.Skill 042 Code
+* Similar to Corsair, G.Skill uses a 042 code to indicate the ICs.
+* Example: 04213X**8**8**10**B
+  * The first bolded character is the density. 4 for 4Gb and 8 for 8Gb.
+  * The second bolded pair is the manufacturer. 10 for Samsung and 21 for Hynix.
+  * The last character is the revision.
+  * This is the code for Samsung 8Gb B-die.
+* See the [r/overclocking wiki](https://www.reddit.com/r/overclocking/wiki/ram/ddr4#wiki_new_markings_-_.22042_code.22_table) for a full list.
 
 ### A Note on Ranks and Density
 * Single rank sticks can usually clock higher than dual rank sticks, but at the same frequency and timings, dual rank sticks can perform a bit better due to rank interleaving.
