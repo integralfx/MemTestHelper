@@ -135,7 +135,7 @@
 
 ### A Note on Ranks and Density
 * Single rank sticks can usually clock higher than dual rank sticks, but at the same frequency and timings, dual rank sticks can perform a bit better due to rank interleaving.
-* Density matters when determining how far your ICs can go. For example, 4Gb AFR and 8Gb AFR will not overclock the same despite being AFR.
+* Density matters when determining how far your ICs can go. For example, 4Gb AFR and 8Gb AFR will not overclock the same despite sharing the same name.
 
 ### Voltage Scaling
 * Voltage scaling simply means how the IC responds to voltage.
