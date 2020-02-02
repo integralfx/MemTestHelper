@@ -10,17 +10,18 @@
    1. [Motherboard](#motherboard)
    2. [ICs](#integrated-circuits-ics)
       1. [Thaiphoon Report](#thaiphoon-report)
-      2. [A Note on Ranks and Density](#a-note-on-ranks-and-density)
-      3. [Voltage Scaling](#voltage-scaling)
-      4. [Expected Max Frequency](#expected-max-frequency)
-      5. [Binning](#binning)
-      6. [Maximum Recommended Daily Voltage](#maximum-recommended-daily-voltage)
-      7. [Ranking](#ranking)
+      2. [Label on Sticks](#label-on-sticks)
+      3. [A Note on Ranks and Density](#a-note-on-ranks-and-density)
+      4. [Voltage Scaling](#voltage-scaling)
+      5. [Expected Max Frequency](#expected-max-frequency)
+      6. [Binning](#binning)
+      7. [Maximum Recommended Daily Voltage](#maximum-recommended-daily-voltage)
+      8. [Ranking](#ranking)
    3. [Integrated Memory Controller (IMC)](#integrated-memory-controller-imc)
       1. [Intel - LGA1151](#intel---lga1151)
       2. [AMD - AM4](#amd---am4)
 4. [Overclocking](#overclocking)
-   1. [Finding the Maximum Frequency](#finding-the-maximum-frequency)
+   1. [Finding a Baseline](#finding-a-baseline)
    2. [Trying Higher Frequencies](#trying-higher-frequencies)
    3. [Tightening Timings](#tightening-timings)
    4. [Miscellaneous Tips](#miscellaneous-tips)
@@ -108,13 +109,37 @@
   * Esoteric note: Many people have started calling this Micron E-die or even just E-die. The former is fine, but the latter can cause confusion as letter-die is typically used for Samsung ICs, i.e. 4Gbit Samsung E-die. Samsung is implied when you say E-die, but as people are calling Micron Rev. E E-die, it'd probably be a good idea to prefix the manufacturer.
 * [Dual rank 8Gb Samsung B-die](https://i.imgur.com/Nqn8s76.jpg).
 
+### Label on Sticks
+#### Corsair Version Number
+* Corsair has a 3 digit version number on the label on the sticks which indicate what ICs are on the stick.
+* The first digit is the manufacturer.
+  * 3 = Micron
+  * 4 = Samsung
+  * 5 = Hynix
+  * 8 = Nanya
+* The second digit is the density.
+  * 1 = 2Gb
+  * 2 = 4Gb
+  * 3 = 8Gb
+  * 4 = 16Gb
+* The last digit is the revision.
+* See the [r/overclocking wiki](https://www.reddit.com/r/overclocking/wiki/ram/ddr4#wiki_corsair) for a full list.
+#### G.Skill 042 Code
+* Similar to Corsair, G.Skill uses a 042 code to indicate the ICs.
+* Example: 04213X**8**8**10**B
+  * The first bolded character is the density. 4 for 4Gb and 8 for 8Gb.
+  * The second bolded pair is the manufacturer. 10 for Samsung and 21 for Hynix.
+  * The last character is the revision.
+  * This is the code for Samsung 8Gb B-die.
+* See the [r/overclocking wiki](https://www.reddit.com/r/overclocking/wiki/ram/ddr4#wiki_new_markings_-_.22042_code.22_table) for a full list.
+
 ### A Note on Ranks and Density
 * Single rank sticks can usually clock higher than dual rank sticks, but at the same frequency and timings, dual rank sticks can perform a bit better due to rank interleaving.
-* Density matters when determining how far your ICs can go. For example, 4Gb AFR and 8Gb AFR will not overclock the same despite being AFR.
+* Density matters when determining how far your ICs can go. For example, 4Gb AFR and 8Gb AFR will not overclock the same despite sharing the same name.
 
 ### Voltage Scaling
 * Voltage scaling simply means how the IC responds to voltage.
-* On many ICs, tCL scales with voltage, meaning giving it more voltage can allow you to drop tCL. Conversely, tRCD and tRP typically do not scale with voltage on many ICs, meaning no matter how much voltage you pump into it, it will not budge.  
+* On many ICs, tCL scales with voltage, meaning giving it more voltage can allow you to drop tCL. Conversely, tRCD and/or tRP typically do not scale with voltage on many ICs, meaning no matter how much voltage you pump into it, it will not budge.  
 As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage scaling.
 * Similarly, if a timing scales with voltage that means you can increase the voltage to run the same timing at a higher frequency.
 ![CL11 Voltage Scaling](https://i.imgur.com/66GrCz3.png)
@@ -251,15 +276,15 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
   * Increase DRAM frequency until unstable.
   * Tighten (lower) timings.
 
-## Finding the Maximum Frequency
+## Finding a Baseline
 1. On Intel, start off with 1.15v VCCSA and VCCIO.  
    On AMD, start off with 1.10v SOC.
    * SOC voltage might be named differently depending on the manufacturer.
      * Asrock: SOC Overclock VID hidden in the AMD CBS menu.
        * [VID values](https://www.reddit.com/r/Amd/comments/842ehb/asrock_ab350_pro4_guide_bios_overclocking_raven/).
      * Asus: VDDCR SOC.
-     * Gigabyte: Dynamic Vcore SOC.
-       * Note that this is an offset voltage. The base voltage can change automatically when increasing DRAM frequency. +0.100v at 3000MHz might result in 1.10v actual, but +0.100v at 3400MHz might result in 1.20v actual.
+     * Gigabyte: (Dynamic) Vcore SOC.
+       * Note that dynamic Vcore SOC is an offset voltage. The base voltage can change automatically when increasing DRAM frequency. +0.100v at 3000MHz might result in 1.10v actual, but +0.100v at 3400MHz might result in 1.20v actual.
      * MSI: CPU NB/SOC.
 2. Set DRAM voltage to 1.40v. If you're using Micron/SpecTek ICs, excluding Rev. E, set 1.35v.
 3. Set primary timings to 16-20-20-40 (tCL-tRCD-tRP-tRAS).
