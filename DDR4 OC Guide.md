@@ -110,6 +110,9 @@
 * [Dual rank 8Gb Samsung B-die](https://i.imgur.com/Nqn8s76.jpg).
 
 ### Label on Sticks
+
+Sometimes the Thaiphoon report won't tell you the IC or it may misidentify the IC. To confirm/deny this, you can check the label on the sticks. Currently, only Corsair, G.Skill and Kingston have a label to identify the IC.
+
 #### Corsair Version Number
 * Corsair has a 3 digit version number on the label on the sticks which indicate what ICs are on the stick.
 * The first digit is the manufacturer.
@@ -127,11 +130,19 @@
 #### G.Skill 042 Code
 * Similar to Corsair, G.Skill uses a 042 code to indicate the ICs.
 * Example: 04213X**8**8**10**B
-  * The first bolded character is the density. 4 for 4Gb and 8 for 8Gb.
+  * The first bolded letter is the density. 4 for 4Gb and 8 for 8Gb.
   * The second bolded pair is the manufacturer. 10 for Samsung and 21 for Hynix.
   * The last character is the revision.
   * This is the code for Samsung 8Gb B-die.
 * See the [r/overclocking wiki](https://www.reddit.com/r/overclocking/wiki/ram/ddr4#wiki_new_markings_-_.22042_code.22_table) for a full list.
+#### Kingston Code
+* Example: DPM**M**16A1823
+  * The bolded letter indicates the manufacturer. H for Hynix, M for Micron and S for Samsung.
+  * The next 2 digits indicate ranks. 08 = single rank and 16 = dual rank.
+  * The next letter indicates the production month. 1-9, A, B, C.
+  * THe next 2 digits indicate the production year.
+  * This is the code for dual rank Micron produced in October 2018.
+* [Source](http://www.xtremesystems.org/forums/showthread.php?285750-Interesting-memory-deals-thread&p=5230258&viewfull=1#post5230258)
 
 ### A Note on Ranks and Density
 * Single rank sticks can usually clock higher than dual rank sticks, but at the same frequency and timings, dual rank sticks can perform a bit better due to rank interleaving.
