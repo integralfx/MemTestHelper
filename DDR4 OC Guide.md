@@ -334,7 +334,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
    * Otherwise, set FCLK to whatever is stable (1600MHz if you're unsure).
 2. Loosen primary timings to 18-22-22-42.
 3. Increase DRAM voltage to 1.45v.
-5. Follow steps 4-7 from [Finding the Maximum Frequency](#finding-the-maximum-frequency).
+5. Follow steps 4-7 from [Finding a Baseline](#finding-a-baseline).
 6. Proceed to [Tightening Timings](#tightening-timings).
    
 ## Tightening Timings
