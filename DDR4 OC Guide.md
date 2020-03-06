@@ -64,7 +64,7 @@
   * Intel: [Asrock Timing Configurator v4.0.4](https://www.asrock.com/MB/Intel/X299%20OC%20Formula/index.asp#Download) (don't need an Asrock motherboard, though EVGA motherboards don't seem to work with this).
   * AMD: 
     * Ryzen 1000/2000: [Ryzen Timing Checker](https://www.techpowerup.com/download/ryzen-timing-checker/).
-    * Ryzen 3000: [Ryzen Master](https://www.amd.com/en/technologies/ryzen-master) or [ZenTimings](https://extreme.pcgameshardware.de/prozessoren/547193-ryzen-3000-troubleshooting-guide.html).
+    * Ryzen 3000: [Ryzen Master](https://www.amd.com/en/technologies/ryzen-master) or [ZenTimings](https://www.overclock.net/forum/13-amd-general/1740690-zentimings.html).
     
 ## Benchmarks
 * [AIDA64](https://www.aida64.com/downloads) - free 30 day trial. We'll be using the cache and memory benchmark (found under tools) to see how our memory is performing. You can right click the start benchmark button and run memory tests only to skip the cache tests.
