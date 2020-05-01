@@ -461,6 +461,7 @@ This seems to line up with [The Stilt's](https://www.overclock.net/forum/10-amd-
   > Increasing cLDO_VDDP seems beneficial > 3600MHz MEMCLKs, as increasing it seems to improve the margins and hence help with potential training issues.  
   [~ The Stilt](https://www.overclock.net/forum/10-amd-cpus/1728758-strictly-technical-matisse-not-really-26.html)
 * When pushing FCLK around 1800 MHz intermittent RAM training errors may be alleviated or completely eliminated by increasing VDDG. On AGESA 1.0.0.4 or newer VDDG is separated into VDDG IOD and VDDG CCD for the I/O die and the chiplets parts, respectively. In this case, the voltage to increase for more successful RAM training is VDDG CCD.
+* For Threadripper, Quad channel setups are mandatory for memory speed. Using dual channel will cut your possible RAM throughput in half, its as easy as that (from ~100GB/s to 50GB/s @ 3200Mhz)
 
 # Useful Information
 * [r/overclocking Wiki - DDR4](https://www.reddit.com/r/overclocking/wiki/ram/ddr4)
