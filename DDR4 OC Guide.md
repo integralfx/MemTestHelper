@@ -200,7 +200,7 @@ As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage 
 ### Maximum Recommended Daily Voltage
 * [JEDEC (p.174)](http://www.softnology.biz/pdf/JESD79-4B.pdf) specifies that the absolute maximum is 1.50v.
   > Stresses greater than those listed under “Absolute Maximum Ratings” may cause permanent damage to the device. This is a stress rating only and functional operation of the device at these or any other conditions above those indicated in the operational sections of this specification is not implied. Exposure to absolute maximum rating conditions for extended periods may affect reliability.
-* That being said, I'd only recommend running 1.50v on B-die as it's known to have high voltage tolerance. At least for the common ICs (4/8Gb AFR, 8Gb CJR, 8Gb Rev. E, 4/8Gb MFR), the max recommended voltage is 1.45v. Some of the lesser known ICs like [8Gb C-die](https://www.hardwareluxx.de/community/f13/samsung-8gbit-ddr4-c-die-k4a8g045wc-overclocking-ergebnisse-im-startbeitrag-1198323.html) have been reported to scale negatively or even die above 1.20v, though YMMV.
+* That being said, I'd only recommend running 1.50v on B-die as it's known to have high voltage tolerance, and Rev E. as there are XMP kits rated at 1.5v. At least for the common ICs (4/8Gb AFR, 8Gb CJR, 4/8Gb MFR), the max recommended voltage is 1.45v. Some of the lesser known ICs like [8Gb C-die](https://www.hardwareluxx.de/community/f13/samsung-8gbit-ddr4-c-die-k4a8g045wc-overclocking-ergebnisse-im-startbeitrag-1198323.html) have been reported to scale negatively or even die above 1.20v, though YMMV.
   
 ### Ranking
 * Below is how most of the common ICs rank in terms of frequency and timings.
@@ -219,11 +219,13 @@ As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage 
   | :-------------: | :-------------: |
   | 3000 - 3600 | 1.10 - 1.15 |
   | 3600 - 4000 | 1.15 - 1.20 |
-  | 4000+ | 1.20 - 1.25 |
+  | 4000 - 4200 | 1.20 - 1.25 |
+  | 4200 - 4400 | 1.25 - 1.30 |
   * With more DIMMs and/or dual rank DIMMs, you may need higher VCCSA and VCCIO than suggested.
 * tRCD and tRP are linked, meaning if you set tRCD 16 but tRP 17, both will run at the higher timing (17). This limitation is why many ICs don't do as well on Intel and why B-die is a good match for Intel.
   * On Asrock and EVGA UEFIs, they're combined into tRCDtRP. On ASUS UEFIs, tRP is hidden. On MSI and Gigabyte UEFIs, tRCD and tRP are visible but setting them to different values just sets both of them to the higher value.
 * Expected memory latency range: 40ns - 50ns.
+* Expected memory latency range for Samsung B-Die: 30ns - 40ns.
   
 ### AMD - AM4
 * Ryzen 1000 and 2000's IMC can be a bit finnicky when overclocking and can't hit as high frequencies as Intel can. Ryzen 3000's IMC is much better and is more or less on par with Intel.
@@ -297,7 +299,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
      * Gigabyte: (Dynamic) Vcore SOC.
        * Note that dynamic Vcore SOC is an offset voltage. The base voltage can change automatically when increasing DRAM frequency. +0.100v at 3000MHz might result in 1.10v actual, but +0.100v at 3400MHz might result in 1.20v actual.
      * MSI: CPU NB/SOC.
-2. Set DRAM voltage to 1.40v. If you're using Micron/SpecTek ICs, excluding Rev. E, set 1.35v.
+2. Set DRAM voltage to 1.40v. If you're using Micron/SpecTek ICs, excluding Rev. E, or Samsung C-Die, set 1.35v.
 3. Set primary timings to 16-20-20-40 (tCL-tRCD-tRP-tRAS).
    * See [this post](https://redd.it/ahs5a2) for more information on these timings.
 4. Increase the DRAM frequency until it doesn't boot into Windows any more. Keep in mind the expectations detailed above.
