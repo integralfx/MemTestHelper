@@ -200,7 +200,7 @@ As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage 
 ### Maximum Recommended Daily Voltage
 * [JEDEC (p.174)](http://www.softnology.biz/pdf/JESD79-4B.pdf) specifies that the absolute maximum is 1.50v.
   > Stresses greater than those listed under “Absolute Maximum Ratings” may cause permanent damage to the device. This is a stress rating only and functional operation of the device at these or any other conditions above those indicated in the operational sections of this specification is not implied. Exposure to absolute maximum rating conditions for extended periods may affect reliability.
-* That being said, I'd only recommend running 1.50v on B-die as it's known to have high voltage tolerance, and Rev E. as there are XMP kits rated at 1.5v. At least for the common ICs (4/8Gb AFR, 8Gb CJR, 4/8Gb MFR), the max recommended voltage is 1.45v. Some of the lesser known ICs like [8Gb C-die](https://www.hardwareluxx.de/community/f13/samsung-8gbit-ddr4-c-die-k4a8g045wc-overclocking-ergebnisse-im-startbeitrag-1198323.html) have been reported to scale negatively or even die above 1.20v, though YMMV.
+* That being said, I'd only recommend running 1.50v on B-die as it's known to have high voltage tolerance, and Rev E. as there are kits with XMP rated at 1.50v. At least for the common ICs (4/8Gb AFR, 8Gb CJR, 4/8Gb MFR), the max recommended voltage is 1.45v. Some of the lesser known ICs like [8Gb C-die](https://www.hardwareluxx.de/community/f13/samsung-8gbit-ddr4-c-die-k4a8g045wc-overclocking-ergebnisse-im-startbeitrag-1198323.html) have been reported to scale negatively or even die above 1.20v, though YMMV.
   
 ### Ranking
 * Below is how most of the common ICs rank in terms of frequency and timings.
@@ -225,7 +225,7 @@ As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage 
 * tRCD and tRP are linked, meaning if you set tRCD 16 but tRP 17, both will run at the higher timing (17). This limitation is why many ICs don't do as well on Intel and why B-die is a good match for Intel.
   * On Asrock and EVGA UEFIs, they're combined into tRCDtRP. On ASUS UEFIs, tRP is hidden. On MSI and Gigabyte UEFIs, tRCD and tRP are visible but setting them to different values just sets both of them to the higher value.
 * Expected memory latency range: 40ns - 50ns.
-* Expected memory latency range for Samsung B-Die: 30ns - 40ns.
+* Expected memory latency range for Samsung B-Die: 35ns - 40ns.
   
 ### AMD - AM4
 * Ryzen 1000 and 2000's IMC can be a bit finnicky when overclocking and can't hit as high frequencies as Intel can. Ryzen 3000's IMC is much better and is more or less on par with Intel.
@@ -335,7 +335,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
    * Desynchronising MCLK and FCLK can incur a massive latency penalty, so you're better off tightening timings to keep your MCLK:FCLK 1:1. See [AMD - AM4](#amd---am4) for more information.
    * Otherwise, set FCLK to whatever is stable (1600MHz if you're unsure).
 2. Loosen primary timings to 18-22-22-42.
-3. Increase DRAM voltage to 1.45v if safe for your IC.
+3. Increase DRAM voltage to 1.45v if it is safe for your IC.
 5. Follow steps 4-7 from [Finding a Baseline](#finding-a-baseline).
 6. Proceed to [Tightening Timings](#tightening-timings).
    
