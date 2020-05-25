@@ -391,8 +391,8 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
 4. Next is tRFC. Default for 8Gb ICs is 350**ns** (note the units).
    * To convert to ns: `2000 * timing / ddr_freq`.  
    For example, tRFC 250 at 3200MHz is `2000 * 250 / 3200 = 156.25ns`.
-   * To convert from ns: `ns * ddr_freq / 2000`.  
-   For example, 180ns at 3600MHz is `180 * 3600 / 2000 = 324`.
+   * To convert from ns (this is what you would type in your UEFI): `ns * ddr_freq / 2000`.  
+   For example, 180ns at 3600MHz is `180 * 3600 / 2000 = 324`, so you would type 324 in your UEFI.
    * Below are the typical tRFC in ns for the common ICs:
    
      | IC | tRFC (ns) |
@@ -402,6 +402,8 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
      | 8Gb Rev. E | 300 - 350 |
      | 8Gb B-die | 160 - 180 |
      
+   * For all other ICs, I would recommend doing a binary search to find the lowest stable tRFC.  
+   For example, say your tRFC is 630. The next tRFC you should try is half of that (315). If that is unstable, you know that your lowest tRFC is somewhere between 315 and 630, so you try the midpoint (`(315 + 630) / 2 = 472.5, round down to 472`). If that is stable, you know that your lowest tRFC is between 315 and 472, so you try the midpoint and so on.
 5. Here are my suggestions for the rest of the secondaries:
 
    | Timing | Safe | Tight | Extreme |
