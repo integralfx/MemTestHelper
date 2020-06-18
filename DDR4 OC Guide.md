@@ -400,7 +400,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
      | :-: | :-------: |
      | 8Gb AFR | 260 - 280 |
      | 8Gb CJR | 260 - 280 |
-     | 8Gb Rev. E | 300 - 350 |
+     | 8Gb Rev. E | 290 - 310 |
      | 8Gb B-die | 160 - 180 |
      
    * For all other ICs, I would recommend doing a binary search to find the lowest stable tRFC.  
@@ -409,7 +409,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
 
    | Timing | Safe | Tight | Extreme |
    | :----: | :--: | :---: | :-----: |
-   | tWTRS tWTRL | 4 12 | 4 8 | - |
+   | tWTRS tWTRL | 4 12 | 4 10 | 4 8 |
    | tRTP | 12 | 10 | 8 |
    | tCWL<sup>1</sup> | tCL | tCL - 1 | tCL - 2 |
    * On Intel, tWTRS/L should be left on auto and controlled with tWRRD_dg/sg respectively. Dropping tWRRD_dg by 1 will drop tWTRS by 1. Likewise with tWRRD_sg. Once they're as low as you can go, manually set tWTRS/L.
