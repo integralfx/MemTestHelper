@@ -157,6 +157,7 @@ As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage 
   * You can see that tCL scales almost linearly up to 2533 with voltage on 8Gb CJR.
   * tCL on B-die has perfect linear scaling with voltage.
   * tCL on Rev. E also has perfect linear scaling with voltage.
+  * I've adapted this data into a [calculator](https://www.desmos.com/calculator/psisrpx3oh). Change the *f* and *v* sliders to the frequency and voltage you want and it will output the frequencies and voltages achievable for a given CL (assuming that CL scales linearly up to 1.50v). For example, 3200 CL14 at 1.35v should be able to do ~3333 CL14 at 1.40v, ~3533 CL14 at 1.45v and 3733 CL14 at 1.50v.
 
 * B-die tRFC Voltage Scaling
 ![B-die tRFC Voltage Scaling](https://i.imgur.com/Wngug1M.png)
