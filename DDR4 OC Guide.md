@@ -361,13 +361,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
       * On single CCD Ryzen 3000 CPUs, write bandwidth should be 90% - 95% of half of the theoretical maximum bandwidth.  
         It is possible to hit half of the theoretical maximum write bandwidth. See [here](https://redd.it/cgc9bh).
 
-1. AMD:
-   * Try disabling GDM and setting CR to 1T. If that doesn't work, leave GDM enabled.
-   
-   Intel:
-   * Try setting CR to 1T. If that doesn't work, leave CR on 2T.
-
-2. I would recommend to tighten some of the secondary timings first, as they can speed up memory testing.  
+1. I would recommend to tighten some of the secondary timings first, as they can speed up memory testing.  
    My suggestions:
    
    | Timing | Safe | Tight | Extreme |
@@ -378,7 +372,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
    * You don't have to run all of the timings at one preset. You might only be able to run tRRDS tRRDL tFAW at the tight preset, but you may be able to run tWR at the extreme preset.
    * On some Intel motherboards, tWR has to be left on auto and controlled through tWRPRE. Dropping tWRPRE by 1 will drop tWR by 1, following the rule tWR = tWRPRE - tCWL - 4.
    
-3. Next are the primary timings (tCL, tRCD, tRP).
+2. Next are the primary timings (tCL, tRCD, tRP).
    * Start with tCL and drop that by 1 until you get instability.
    * Do the same with tRCD and tRP.
    * After the above timings are as tight as they can go, set `tRAS = tCL + tRCD(RD) + 2` and `tRC = tRP + tRAS + x`<sup>1</sup>.
@@ -391,7 +385,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
        * (3) [tRP 25 tRAS 36](https://i.imgur.com/7c46Qes.png) - stable up to 500%.
        * In (1) and (3), tRC is 61 and isn't completely unstable. However, in (2) tRC is 55 and RAMTest finds an error instantly. This indicates that my RAM can do `tRAS = tCL + tRCD(RD) + 2`, but needs `tRC = tRP + tRAS + 6`. Since tRC is hidden, I need higher tRAS to get higher tRC.
      
-4. Next is tRFC. Default for 8Gb ICs is 350**ns** (note the units).
+3. Next is tRFC. Default for 8Gb ICs is 350**ns** (note the units).
    * To convert to ns: `2000 * timing / ddr_freq`.  
    For example, tRFC 250 at 3200MHz is `2000 * 250 / 3200 = 156.25ns`.
    * To convert from ns (this is what you would type in your UEFI): `ns * ddr_freq / 2000`.  
@@ -408,7 +402,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
    * For all other ICs, I would recommend doing a binary search to find the lowest stable tRFC.  
    For example, say your tRFC is 630. The next tRFC you should try is half of that (315). If that is unstable, you know that your lowest tRFC is somewhere between 315 and 630, so you try the midpoint (`(315 + 630) / 2 = 472.5, round down to 472`). If that is stable, you know that your lowest tRFC is between 315 and 472, so you try the midpoint and so on.
    * [tRFC table by Reous](https://www.hardwareluxx.de/community/threads/hynix-8gbit-ddr4-cjr-c-die-h5an8g8ncjr-djr-2020-update.1206340/)(bottom of page).
-5. Here are my suggestions for the rest of the secondaries:
+4. Here are my suggestions for the rest of the secondaries:
 
    | Timing | Safe | Tight | Extreme |
    | :----: | :--: | :---: | :-----: |
@@ -419,7 +413,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
    * On Intel, changing tCWL will affect tWRRD_dg/sg and thus tWTR_S/L. If you lower tCWL by 1 you need to lower tWRRD_dg/sg by 1 to keep the same tWTR values. Note that this might also affect tWR per the relationship described earlier.
    * <sup>1</sup>Some motherboards don't play nice with odd tCWL. For example, I'm stable at 4000 15-19-19 tCWL 14, yet tCWL 15 doesn't even POST. Another user has had similar experiences.
    
-6. Now for the tertiaries:
+5. Now for the tertiaries:
     * If you're on AMD, refer to [this post](https://redd.it/ahs5a2).  
       My suggestion:
   
@@ -441,6 +435,19 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
       * tREFI is also a timing that can help with performance. Unlike all the other timings, higher is better for tREFI.  
         It's typically not a good idea to increase tREFI too much as ambient temperature changes (e.g. winter to summer) can be enough to cause instability.
     
+
+6. Finally onto command rate.
+   AMD:
+   * Getting geardown disabled and CR 1 stable can be pretty difficult but if you've come this far down the rabbit hole it's worth a shot.
+   1. Set the drive strengths to 60-20-20-24 and setup times to 63-63-63.
+   2. If you can't POST, adjust the setup times until you can (you should adjust them all together).
+   3. Run a memory test.
+   4. Adjust drive strengths and setup times if unstable.
+   * [My stable GDM off CR 1 settings](https://i.imgur.com/z547RLa.jpg)
+   
+   Intel:
+   * Try setting CR to 1T. If that doesn't work, leave CR on 2T.    
+
 7. You can also increase DRAM voltage to drop timings even more. Keep in mind the [voltage scaling characteristics of your ICs](#voltage-scaling) and the [maximum recommended daily voltage](#maximum-recommended-daily-voltage).
     
 ## Miscellaneous Tips
