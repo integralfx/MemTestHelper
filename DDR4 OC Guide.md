@@ -442,7 +442,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
    1. Set the drive strengths to 60-20-20-24 and setup times to 63-63-63.
    2. If you can't POST, adjust the setup times until you can (you should adjust them all together).
    3. Run a memory test.
-   4. Adjust drive strengths and setup times if unstable.
+   4. Adjust setup times then drive strengths if unstable.
    * [My stable GDM off CR 1 settings](https://i.imgur.com/z547RLa.jpg)
    
    Intel:
