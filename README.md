@@ -1,4 +1,4 @@
-[DDR4 OC Guide](https://github.com/integralfx/MemTestHelper/blob/master/DDR4%20OC%20Guide.md)
+[DDR4 OC Guide](DDR4%20OC%20Guide.md)
 
 # MemTestHelper is now EOL
 See [here](https://github.com/integralfx/MemTestHelper/issues/8#issuecomment-556867381)
