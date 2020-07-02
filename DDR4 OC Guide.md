@@ -88,6 +88,7 @@
 * RAM timings are split into 3 categories: primary, secondary and tertiary. These are indicated by 'P', 'S', and 'T' respectively.
   * Primary and secondary timings affect latency and bandwidth.
   * Tertiary timings affect bandwidth.
+    * The exception to this is tREFI/tREF which affects latency and bandwidth, though it isn't modifiable on AMD.
 
 # Expectations/Limitations
 * This section goes through 3 components that may influence your overclocking experience: ICs, motherboard and IMC.
