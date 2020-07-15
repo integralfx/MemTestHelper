@@ -468,6 +468,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
 * On Asus Maximus boards, setting Maximus Tweak Mode 2 will tighten down both RTL and IOL values. This generally works up to a certain frequency below what Mode 1 is capable of, but with the advantage of lower latency. It's wise to do two different setups and compare the two performance-wise.
 * If you have an Asus Maximus motherboard and you can't boot, you can try tweaking the skew control values.  
   More info [here](https://rog.asus.com/forum/showthread.php?47670-Maximus-7-Gene-The-road-to-overclocking-memory-without-increasing-voltage).
+* tXP has a major impact on AIDA64 memory latency. See [here](https://www.reddit.com/r/overclocking/comments/hpqsfc/txp_the_underrated_memory_timing/).
 
 ### AMD
 * Try playing around with ProcODT if you can't boot. On Ryzen 1000 and 2000, you should try values between 40Ω and 68.6Ω.  
