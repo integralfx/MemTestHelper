@@ -443,7 +443,8 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
 6. Finally onto command rate.
 
    AMD:
-   * Getting geardown disabled and CR 1 stable can be pretty difficult but if you've come this far down the rabbit hole it's worth a shot.
+   * Getting GDM disabled and CR 1 stable can be pretty difficult but if you've come this far down the rabbit hole it's worth a shot.
+   * If you can get GDM disabled and CR 1 stable without touching anything then you can skip this section.
    1. Set the drive strengths to 60-20-20-24 and setup times to 63-63-63.
    2. If you can't POST, adjust the setup times until you can (you should adjust them all together).
    3. Run a memory test.
