@@ -36,14 +36,23 @@
 * [Thaiphoon](http://www.softnology.biz/files.html) to show what ICs (integrated circuits or RAM chips) your sticks use. This will give you an idea of what frequency and timings to expect.
 
 ## Memory Testing Software
-* [MemTestHelper](https://github.com/integralfx/MemTestHelper/releases) or your memory tester of choice. [Karhu RAM Test](https://www.karhusoftware.com/ramtest/) (paid) is also a good choice. I wouldn't recommend AIDA64 memory test and [Memtest64](https://forums.anandtech.com/threads/techpowerups-memtest-64-is-it-better-than-hci-memtest-for-determining-stability.2532209/) as they are both not very good at finding memory errors.
+You should always test with a variety of stress tests to ensure your overclock is stable.
+### Recommended
 * [TM5](http://testmem.tz.ru/tm5.rar) with the [extreme config by anta777](https://drive.google.com/file/d/1uegPn9ZuUoWxOssCP4PjMjGW9eC_1VJA) seems to be faster than Karhu RAMTest at finding errors. One user has thoroughly tested it and they couldn't seem to fool it. YMMV.
   * Make sure to load the config. It should say 'Customize: Extreme1 @anta777' if loaded.
   * Credits: [u/nucl3arlion](https://www.reddit.com/r/overclocking/comments/dlghvs/micron_reve_high_training_voltage_requirement/f4zcs04/)
   * If you experience issues with all threads crashing upon launch with the extreme config it might help to edit the row "Testing Window Size (Mb)=1408". Replace the window size with your total RAM (minus some margin for Windows) divided by your processors available threads (e.g. 12800/16 = 800 MB per thread).
+* [OCCT](https://www.ocbase.com/) memory test or large data set.
+### Alternatives
+* [Karhu RAM Test](https://www.karhusoftware.com/ramtest/) (paid).
+* [y-cruncher](http://www.numberworld.org/y-cruncher/) with [this config](https://pastebin.com/dJQgFtDH).
+  * Paste this in a new file called `memtest.cfg` in the same folder as `y-cruncher.exe`.
+  * Create a shortcut to `y-cruncher.exe` and add `pause:1 config memtest.cfg` to the target field.
+    Your target field should look something like this: `"path\to\prime95\y-cruncher.exe" pause:1 config memtest.cfg`
+  * Credits: [u/Nerdsinc](https://www.reddit.com/r/overclocking/comments/iyp1n7/ycruncher_is_a_really_effective_tool_for_testing/)
 * [Prime95](https://www.mersenne.org/download/) large FFTs is also decent at finding memory errors.
   * I've been using a custom FFT range of 800k - 800k, though I think any FFT value inside the large FFTs range should work.
-    * Make sure 'Run FFTs in place' isn't checked.
+    * Make sure 'Run FFTs in place' is not checked.
     * In `prime.txt`, add `TortureAlternateInPlace=0` under `TortureWeak` to prevent P95 from testing in place. Testing in place will only use a bit of RAM, which we don't want.
   * You can create a shortcut to `prime95.exe` and add `-t` to 'Properties > Target' field to immediately start testing using the settings in `prime.txt`.  
     Your target field should look something like: `"path\to\prime95\prime95.exe" -t`.
@@ -54,10 +63,13 @@
     4. Create another shortcut to `prime95.exe` and in the target field add `-t -W<folder_name>`.  
        Your target field should look something like: `"path\to\prime95\prime95.exe" -t -WRAM`.
     5. You can now use the shortcut to instantly start Prime95 with the settings provided.
-* [Comparison](https://imgur.com/a/jhrFGhg) between Karhu RAMTest, TM5 with the extreme config and GSAT.
-  * TM5 is the fastest and most stressful by quite a margin, though I have had instances where I would pass 30 mins of TM5 but fail within 10 mins of Karhu. Another user had a similar experience. YMMV.
 * [randomx-stress](https://github.com/00-matt/randomx-stress/releases) - Can be used to test FCLK stability.
-  * Make sure to specify the number of threads as it defaults to half.
+* ~~[(DEPRECATED) MemTestHelper](https://github.com/integralfx/MemTestHelper/releases) - HCI memtest launcher.~~
+### Avoid
+* I wouldn't recommend AIDA64 memory test and [Memtest64](https://forums.anandtech.com/threads/techpowerups-memtest-64-is-it-better-than-hci-memtest-for-determining-stability.2532209/) as they are both not very good at finding memory errors.
+### Comparison
+[Comparison](https://imgur.com/a/jhrFGhg) between Karhu RAMTest, TM5 with the extreme config and GSAT.
+  * TM5 is the fastest and most stressful by quite a margin, though I have had instances where I would pass 30 mins of TM5 but fail within 10 mins of Karhu. Another user had a similar experience. YMMV.
     
 ## Timings Software
 * To view timings in Windows: 
