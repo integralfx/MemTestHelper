@@ -1,6 +1,10 @@
 # Table of Contents
 1. [Setup](#setup)
    1. [Memory Testing Software](#memory-testing-software)
+      1. [Avoid](#avoid)
+      2. [Recommended](#recommended)
+      3. [Alternatives](#alternatives)
+      4. [Comparison](#comparison)
    2. [Timings Software](#timings-software)
    3. [Benchmarks](#benchmarks)
 2. [General RAM Info](#general-ram-info)
@@ -37,6 +41,8 @@
 
 ## Memory Testing Software
 You should always test with a variety of stress tests to ensure your overclock is stable.
+### Avoid
+* I wouldn't recommend AIDA64 memory test and [Memtest64](https://forums.anandtech.com/threads/techpowerups-memtest-64-is-it-better-than-hci-memtest-for-determining-stability.2532209/) as they are both not very good at finding memory errors.
 ### Recommended
 * [TM5](http://testmem.tz.ru/tm5.rar) with the [extreme config by anta777](https://drive.google.com/file/d/1uegPn9ZuUoWxOssCP4PjMjGW9eC_1VJA) seems to be faster than Karhu RAMTest at finding errors. One user has thoroughly tested it and they couldn't seem to fool it. YMMV.
   * Make sure to load the config. It should say 'Customize: Extreme1 @anta777' if loaded.
@@ -65,8 +71,6 @@ You should always test with a variety of stress tests to ensure your overclock i
     5. You can now use the shortcut to instantly start Prime95 with the settings provided.
 * [randomx-stress](https://github.com/00-matt/randomx-stress/releases) - Can be used to test FCLK stability.
 * ~~[(DEPRECATED) MemTestHelper](https://github.com/integralfx/MemTestHelper/releases) - HCI memtest launcher.~~
-### Avoid
-* I wouldn't recommend AIDA64 memory test and [Memtest64](https://forums.anandtech.com/threads/techpowerups-memtest-64-is-it-better-than-hci-memtest-for-determining-stability.2532209/) as they are both not very good at finding memory errors.
 ### Comparison
 [Comparison](https://imgur.com/a/jhrFGhg) between Karhu RAMTest, TM5 with the extreme config and GSAT.
   * TM5 is the fastest and most stressful by quite a margin, though I have had instances where I would pass 30 mins of TM5 but fail within 10 mins of Karhu. Another user had a similar experience. YMMV.
