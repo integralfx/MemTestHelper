@@ -48,7 +48,7 @@ You should always test with a variety of stress tests to ensure your overclock i
 * [y-cruncher](http://www.numberworld.org/y-cruncher/) with [this config](https://pastebin.com/dJQgFtDH).
   * Paste this in a new file called `memtest.cfg` in the same folder as `y-cruncher.exe`.
   * Create a shortcut to `y-cruncher.exe` and add `pause:1 config memtest.cfg` to the target field.
-    Your target field should look something like this: `"path\to\prime95\y-cruncher.exe" pause:1 config memtest.cfg`
+    Your target field should look something like this: `"path\to\y-cruncher\y-cruncher.exe" pause:1 config memtest.cfg`
   * Credits: [u/Nerdsinc](https://www.reddit.com/r/overclocking/comments/iyp1n7/ycruncher_is_a_really_effective_tool_for_testing/)
 * [Prime95](https://www.mersenne.org/download/) large FFTs is also decent at finding memory errors.
   * I've been using a custom FFT range of 800k - 800k, though I think any FFT value inside the large FFTs range should work.
