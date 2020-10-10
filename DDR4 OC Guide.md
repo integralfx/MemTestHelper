@@ -121,7 +121,11 @@ You should always test with a variety of stress tests to ensure your overclock i
 * Lower end motherboard may not overclock as well, possibly due to the lower PCB quality and number of layers (?).
   
 ## Integrated Circuits (ICs)
+* Knowing what ICs are in your RAM will give you an idea of what to expect. Even if you don't know them you can still overclock your RAM.
+
 ### Thaiphoon Report
+* Thaiphoon is known to guess ICs so it shouldn't be fully trusted. It's highly recommended to check the label on the sticks if possible.
+  * See [here](https://www.reddit.com/r/overclocking/comments/ig9d76/thaiphoon_burner_cluelessly_guessing_memory_ics/) for more info.
 * [Single rank 8Gb Hynix CJR](https://i.imgur.com/hbFyKB2.jpg).
 * [Single rank 8Gb Micron Revision E](https://i.imgur.com/3pQjQIG.jpg) (source: Coleh#4297).
   * SpecTek is supposedly lower binned Micron ICs.
