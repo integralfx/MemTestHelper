@@ -252,6 +252,12 @@ As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage 
 * Expected memory latency range for Samsung B-Die: 35ns - 40ns.
   
 ### AMD - AM4
+Some terminology:
+* MCLK: Memory clock (half of the effective RAM speed). For example, for DDR4-3200 the MCLK is 1600MHz.
+* FCLK: Infinity Fabric clock.
+* UCLK: Unified memory controller clock. Half of MCLK when MCLK and FCLK are not equal (desynchronised, 2:1 mode).
+* On Zen and Zen+, MCLK == FCLK == UCLK. However on Zen 2, you can specify FCLK. If MCLK is 1600MHz (DDR4-3200) and you set FCLK to 1600MHz, UCLK will also be 1600MHz unless you set MCLK:UCLK ratio to 2:1 (also known as UCLK DIV mode, etc.). However, if you set FCLK to 1800MHz, UCLK will run at 800MHz (desynchronised).
+
 * Ryzen 1000 and 2000's IMC can be a bit finnicky when overclocking and can't hit as high frequencies as Intel can. Ryzen 3000's IMC is much better and is more or less on par with Intel.
 * SOC voltage is the voltage to the IMC and like with Intel, it's not recommended to leave it on auto. You typically want 1.0 - 1.1v as above 1.1v doesn't help much if at all.  
   On Ryzen 2000 (possibly 1000 and 3000 as well), above 1.15v can negatively impact overclocking.
