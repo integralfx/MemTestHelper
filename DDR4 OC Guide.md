@@ -410,21 +410,8 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
    * Minimum tFAW can be is tRRDS * 4.
    * You don't have to run all of the timings at one preset. You might only be able to run tRRDS tRRDL tFAW at the tight preset, but you may be able to run tWR at the extreme preset.
    * On some Intel motherboards, tWR in the UEFI does nothing and instead needs to be controlled through tWRPRE (sometimes tWRPDEN). Dropping tWRPRE by 1 will drop tWR by 1, following the rule tWR = tWRPRE - tCWL - 4.
-   
-2. Next are the primary timings (tCL, tRCD, tRP).
-   * Start with tCL and drop that by 1 until you get instability.
-   * Do the same with tRCD and tRP.
-   * After the above timings are as tight as they can go, set `tRAS = tCL + tRCD(RD) + 2` and `tRC = tRP + tRAS + x`<sup>1</sup>.
-     * Setting tRAS lower than this can incur a [performance penalty](https://www.overclock.net/forum/25801780-post3757.html).
-     * <sup>1</sup>Your RAM might not be able to do `tRP + tRAS`, hence the `x`. Setting `x` to 8, i.e. `tRP + tRAS + 8` should be a pretty safe gamble.
-     * tRC is only available on AMD and some Intel UEFIs.
-     * On Intel UEFIs, tRC does seem to follow the `tRP + tRAS + x` rule, even if it is hidden.
-       * (1) [tRP 19 tRAS 42](https://i.imgur.com/gz1YDcO.png) - fully stable.
-       * (2) [tRP 19 tRAS 36](https://i.imgur.com/lHjbLjC.png) - instant error.
-       * (3) [tRP 25 tRAS 36](https://i.imgur.com/7c46Qes.png) - stable up to 500%.
-       * In (1) and (3), tRC is 61 and isn't completely unstable. However, in (2) tRC is 55 and RAMTest finds an error instantly. This indicates that my RAM can do `tRAS = tCL + tRCD(RD) + 2`, but needs `tRC = tRP + tRAS + 6`. Since tRC is hidden, I need higher tRAS to get higher tRC.
      
-3. Next is tRFC. Default for 8Gb ICs is 350**ns** (note the units).
+2. Next is tRFC. Default for 8Gb ICs is 350**ns** (note the units).
    * To convert to ns: `2000 * timing / ddr_freq`.  
    For example, tRFC 250 at 3200MHz is `2000 * 250 / 3200 = 156.25ns`.
    * To convert from ns (this is what you would type in your UEFI): `ns * ddr_freq / 2000`.  
@@ -441,7 +428,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
    * For all other ICs, I would recommend doing a binary search to find the lowest stable tRFC.  
    For example, say your tRFC is 630. The next tRFC you should try is half of that (315). If that is unstable, you know that your lowest tRFC is somewhere between 315 and 630, so you try the midpoint (`(315 + 630) / 2 = 472.5, round down to 472`). If that is stable, you know that your lowest tRFC is between 315 and 472, so you try the midpoint and so on.
    * [tRFC table by Reous](https://www.hardwareluxx.de/community/threads/hynix-8gbit-ddr4-cjr-c-die-h5an8g8ncjr-djr-2020-update.1206340/)(bottom of page).
-4. Here are my suggestions for the rest of the secondaries:
+3. Here are my suggestions for the rest of the secondaries:
 
    | Timing | Safe | Tight | Extreme |
    | :----: | :--: | :---: | :-----: |
@@ -453,7 +440,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
    * <sup>1</sup>Some motherboards don't play nice with odd tCWL. For example, I'm stable at 4000 15-19-19 tCWL 14, yet tCWL 15 doesn't even POST. Another user has had similar experiences. Some motherboards may seem fine but have issues with it at higher frequencies (Asus). Manually setting tCWL equal to tCL if tCL is even or one below if tCL is uneven should alleviate this (eg. if tCL = 18 try tCWL = 18 or 16, if tCL = 17 try tCWL = 16).
    * The Extreme-preset is not the minimum floor in this case. tRTP can go as low as 6, while tWTRS/L can go as low as 1 6. Some boards are fine doing tCWL as low as tCL - 6. Keep in mind that this *will* increase the load on your memory controller.
    
-5. Now for the tertiaries:
+4. Now for the tertiaries:
     * If you're on AMD, refer to [this post](https://redd.it/ahs5a2).  
       My suggestion:
   
@@ -473,13 +460,29 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
       * Note that dr only affects dual rank sticks, so if you have single rank sticks you can ignore this timing. In the same way, dd only needs to be considered when you run two dimms per channel. 
         [These](https://i.imgur.com/61ZtPpR.jpg) are my timings on B-die, for reference.
       * For dual rank setups (see [notes on ranks](https://github.com/integralfx/MemTestHelper/blob/master/DDR4%20OC%20Guide.md#a-note-on-ranks-and-density)):
-         * tRDRD_dr/dd can be lowered a step further to 5 for a large bump in Read-bandwidth.
+         * tRDRD_dr/dd can be lowered a step further to 5 for a large bump in read bandwidth.
          * tWRWR_sg 6 can cause write bandwidth regression over tWRWR_sg 7, despite being stable.
       * tREFI is also a timing that can help with performance. Unlike all the other timings, higher is better for tREFI.  
         It's typically not a good idea to increase tREFI too much as ambient temperature changes (e.g. winter to summer) can be enough to cause instability.
     
+5. Drop tCL by 1 until it's unstable.
+   * On AMD, if GDM is enabled drop tCL by 2.   
+ 
+6. Drop tRCD (and tRP if on Intel) by 1 until unstable. Do the same with tRP if on AMD.
+   * Note: More IMC voltage may be necessary to stabilise tighter tRCD.
+   
+7. Set `tRAS = tCL + tRCD(RD) + 2`. Increase if unstable.
+   * Setting tRAS lower than this can incur a [performance penalty](https://www.overclock.net/forum/25801780-post3757.html).
 
-6. Finally onto command rate.
+8. Set `tRC = tRP + tRAS`. Increase if unstable.
+   * tRC is only available on AMD and some Intel UEFIs.
+   * On Intel UEFIs, tRC does seem to be affected by tRP and tRAS, even if it is hidden.
+     * (1) [tRP 19 tRAS 42](https://i.imgur.com/gz1YDcO.png) - fully stable.
+     * (2) [tRP 19 tRAS 36](https://i.imgur.com/lHjbLjC.png) - instant error.
+     * (3) [tRP 25 tRAS 36](https://i.imgur.com/7c46Qes.png) - stable up to 500%.
+     * In (1) and (3), tRC is 61 and isn't completely unstable. However, in (2) tRC is 55 and RAMTest finds an error instantly. This indicates that my RAM can do `tRAS = tCL + tRCD(RD) + 2`, but needs tRC higher than `tRP + tRAS`. Since tRC is hidden, I need higher tRAS to get higher tRC.
+
+7. Finally onto command rate.
 
    AMD:
    * Getting GDM disabled and CR 1 stable can be pretty difficult but if you've come this far down the rabbit hole it's worth a shot.
@@ -494,7 +497,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
    * Try setting CR to 1T. If that doesn't work, leave CR on 2T.
    * On Asus Maximus XI-boards enabling Trace Centering can help greatly with pushing 1T to higher frequencies.
 
-7. You can also increase DRAM voltage to drop timings even more. Keep in mind the [voltage scaling characteristics of your ICs](#voltage-scaling) and the [maximum recommended daily voltage](#maximum-recommended-daily-voltage).
+8. You can also increase DRAM voltage to drop timings even more. Keep in mind the [voltage scaling characteristics of your ICs](#voltage-scaling) and the [maximum recommended daily voltage](#maximum-recommended-daily-voltage).
     
 ## Miscellaneous Tips
 * Usually a 200MHz increase in DRAM frequency negates the latency penalty of loosening tCL, tRCD and tRP by 1, but has the benefit of higher bandwidth.  
