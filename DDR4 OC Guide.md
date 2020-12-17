@@ -321,7 +321,8 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
   * (Credits: [buildzoid](https://www.youtube.com/watch?v=10pYf9wqFFY))
   
 # Overclocking
-* Disclaimer: The silicon lottery will affect your overclocking potential so there may be some deviation from my suggestions.
+* **Disclaimer**: The silicon lottery will affect your overclocking potential so there may be some deviation from my suggestions.
+* **Warning**: Data corruption is possible when overclocking RAM. It's advised to run `sfc /scannow` every so often to ensure any corrupted system files are fixed.
 * The overclocking process is pretty simple and boils down to 3 steps:
   * Set very loose (high) timings.
   * Increase DRAM frequency until unstable.
