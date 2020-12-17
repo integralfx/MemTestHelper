@@ -21,6 +21,7 @@
       6. [Binning](#binning)
       7. [Maximum Recommended Daily Voltage](#maximum-recommended-daily-voltage)
       8. [Ranking](#ranking)
+      9. [Temperatures and Its Effect on Stability](#temperatures-and-its-effect-on-stability)
    3. [Integrated Memory Controller (IMC)](#integrated-memory-controller-imc)
       1. [Intel - LGA1151](#intel---lga1151)
       2. [AMD - AM4](#amd---am4)
@@ -172,7 +173,7 @@ Sometimes the Thaiphoon report won't tell you the IC or it may misidentify the I
 
 ### A Note on Ranks and Density
 * Single rank sticks usually clock higher than dual rank sticks, but depending on the benchmark the performance gain from rank interleaving<sup>1</sup> can be significant enough to outperform faster single rank sticks. [This can be observed in both synthetics and games](https://kingfaris.co.uk/ram).
-   * On recent platforms (Comet Lake and Zen3), bios support for dual rank has improved greatly. On many Z490-boards dual rank Samsung 8Gb B-die (2x16Gb) will clock just as high as single-sided B-die, meaning you have all the performance gains of rank interleaving without any downsides.
+   * On recent platforms (Comet Lake and Zen3), bios support for dual rank has improved greatly. On many Z490-boards dual rank Samsung 8Gb B-die (2x16GB) will clock just as high as single-sided B-die, meaning you have all the performance gains of rank interleaving without any downsides.
    * <sup>1</sup>Rank interleaving allows the memory controller to parallelize memory requests, for example writing on one rank while the other is refreshing. The impact of this is easily observed in AIDA64 Copy Bandwidth. From the eyes of the memory controller, it doesn't matter whether the second rank is on the same dimm (two ranks on one dimm) or a different dimm (two dimms in one channel). It does, however, matter from an overclocking perspective when you consider memory trace layouts and bios support.
 * Density matters when determining how far your ICs can go. For example, 4Gb AFR and 8Gb AFR will not overclock the same despite sharing the same name. The same can be said for Micron Rev.B which exists as both 8Gb and 16Gb while the 16Gb chips (which overclock better) are sold as both 16Gb and 8Gb (SPD modified, can be found on higher-end Crucial sticks).
 
@@ -235,7 +236,13 @@ As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage 
 * Below is how most of the common ICs rank in terms of frequency and timings.
 * 8Gb B-die > 8Gb Micron Rev. E > 8Gb CJR > 4Gb E-die > 8Gb AFR > 4Gb D-die > 8Gb MFR > 4Gb S-die
   * Based off [buildzoid's ranking](https://www.reddit.com/r/overclocking/comments/8cjla5/the_best_manufacturerdie_of_ddr_ram_in_order/dxfgd4x/).
-  
+ 
+### Temperatures and Its Effect on Stability
+* Generally, the hotter your RAM is the less stability it will have at higher frequencies and/or tighter timings.
+* B-die is temperature sensitive and its ideal range is ~30-40°C. Some may be able to withstand higher temperatures so YMMV.
+* Rev. E, on the other hand, doesn't seem to be temperature sensitive as demonstrated by [builzdoid](https://www.youtube.com/watch?v=OeHEtULQg3Q).
+* You might find that you're stable when running a memory test yet crash while gaming. This is because your CPU and/or GPU dump heat in the case, raising the RAM temperatures in the process. Thus, it is a good idea to stress test your GPU while running a memory test to simulate stability while gaming.
+ 
 ## Integrated Memory Controller (IMC)
 ### Intel - LGA1151
 * Intel's IMC is pretty strong, so it shouldn't be the bottleneck when overclocking.  
