@@ -438,7 +438,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
    * On Intel, tWTRS/L should be left on auto and controlled with tWRRD_dg/sg respectively. Dropping tWRRD_dg by 1 will drop tWTRS by 1. Likewise with tWRRD_sg. Once they're as low as you can go, manually set tWTRS/L.
    * On Intel, changing tCWL will affect tWRRD_dg/sg and thus tWTR_S/L. If you lower tCWL by 1 you need to lower tWRRD_dg/sg by 1 to keep the same tWTR values. Note that this might also affect tWR per the relationship described earlier.
    * <sup>1</sup>Some motherboards don't play nice with odd tCWL. For example, I'm stable at 4000 15-19-19 tCWL 14, yet tCWL 15 doesn't even POST. Another user has had similar experiences. Some motherboards may seem fine but have issues with it at higher frequencies (Asus). Manually setting tCWL equal to tCL if tCL is even or one below if tCL is uneven should alleviate this (eg. if tCL = 18 try tCWL = 18 or 16, if tCL = 17 try tCWL = 16).
-   * The Extreme-preset is not the minimum floor in this case. tRTP can go as low as 6, while tWTRS/L can go as low as 1 6. Some boards are fine doing tCWL as low as tCL - 6. Keep in mind that this *will* increase the load on your memory controller.
+   * The extreme preset is not the minimum floor in this case. tRTP can go as low as 6, while tWTRS/L can go as low as 1 6. Some boards are fine doing tCWL as low as tCL - 6. Keep in mind that this *will* increase the load on your memory controller.
    
 4. Now for the tertiaries:
     * If you're on AMD, refer to [this post](https://redd.it/ahs5a2).  
@@ -455,7 +455,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
       | ------ | ---- | ----- | ------- |
       | tRDRD_sg/dg/dr/dd | 8/4/8/8 | 7/4/7/7 | 6/4/6/6 |
       | tWRWR_sg/dg/dr/dd | 8/4/8/8 | 7/4/7/7 | 6/4/6/6 |
-      * For tWRRD_sg/dg, see step 5.
+      * For tWRRD_sg/dg, see step 3.
       * For tRDWR_sg/dg/dr/dd, drop them all by 1 until you get instability. You can usually run them all the same e.g. 9/9/9/9.
       * Note that dr only affects dual rank sticks, so if you have single rank sticks you can ignore this timing. In the same way, dd only needs to be considered when you run two dimms per channel. 
         [These](https://i.imgur.com/61ZtPpR.jpg) are my timings on B-die, for reference.
