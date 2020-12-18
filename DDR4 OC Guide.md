@@ -518,8 +518,8 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
 * Higher cache (aka uncore, ring) frequency can increase bandwidth and reduce latency.
 * After you've finished tightening the timings, you can increase IOL offsets to reduce IOLs. Make sure to run a memory test after. More info [here](https://hwbot.org/newsflash/3058_advanced_skylake_overclocking_tune_ddr4_memory_rtlio_on_maximus_viii_with_alexaros_guide).
   * In general, RTL and IOL values impact memory performance. Lowering them will increase bandwidth and decrease latency [quite significantly](https://i.imgur.com/wS2ZqUx.png). Lower values will in some cases also help with stability and lower memory controller voltage requirements. Some boards train them very well on their own. Some boards allow for easy tuning while other boards simply ignore any user input.
-  * If all else fails, you can also try manually decreasing the RTL and IOL pair.
-* For Asus Maximus-boards:
+  * If all else fails, you can try manually decreasing the RTL and IOL pair.
+* For Asus Maximus boards:
    * Play around with the Maximus Tweak Modes, sometimes one will post where the other does not.
    * You can enable Round Trip Latency under Memory Training Algorithms to let the board attempt to train RTL and IOL values.
    * If you can't boot, you can try tweaking the skew control values.  
