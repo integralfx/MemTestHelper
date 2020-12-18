@@ -491,7 +491,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
      * (3) [tRP 25 tRAS 36](https://i.imgur.com/7c46Qes.png) - stable up to 500%.
      * In (1) and (3), tRC is 61 and isn't completely unstable. However, in (2) tRC is 55 and RAMTest finds an error instantly. This indicates that my RAM can do `tRAS = tCL + tRCD(RD) + 2`, but needs tRC higher than `tRP + tRAS`. Since tRC is hidden, I need higher tRAS to get higher tRC.
 
-7. Finally onto command rate.
+9. Finally onto command rate.
 
    AMD:
    * Getting GDM disabled and CR 1 stable can be pretty difficult but if you've come this far down the rabbit hole it's worth a shot.
@@ -506,7 +506,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
    * Try setting CR to 1T. If that doesn't work, leave CR on 2T.
    * On Asus Maximus XI-boards enabling Trace Centering can help greatly with pushing 1T to higher frequencies.
 
-8. You can also increase DRAM voltage to drop timings even more. Keep in mind the [voltage scaling characteristics of your ICs](#voltage-scaling) and the [maximum recommended daily voltage](#maximum-recommended-daily-voltage).
+10. You can also increase DRAM voltage to drop timings even more. Keep in mind the [voltage scaling characteristics of your ICs](#voltage-scaling) and the [maximum recommended daily voltage](#maximum-recommended-daily-voltage).
     
 ## Miscellaneous Tips
 * Usually a 200MHz increase in DRAM frequency negates the latency penalty of loosening tCL, tRCD and tRP by 1, but has the benefit of higher bandwidth.  
@@ -517,7 +517,8 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
 * Loosening tCCDL to 8 may help with stability, especially above 3600MHz.
 * Higher cache (aka uncore, ring) frequency can increase bandwidth and reduce latency.
 * After you've finished tightening the timings, you can increase IOL offsets to reduce IOLs. Make sure to run a memory test after. More info [here](https://hwbot.org/newsflash/3058_advanced_skylake_overclocking_tune_ddr4_memory_rtlio_on_maximus_viii_with_alexaros_guide).
-* In general, RTL and IOL-values impact memory performance. Lowering them will increase bandwidths and decrease latency [quite significantly](https://i.imgur.com/wS2ZqUx.png). Lower values will in some cases also help with stability and lower memory controller voltage requirements. Some boards train them very well on their own, some boards allow for easy tuning while some boards simply ignore any user input.
+  * In general, RTL and IOL values impact memory performance. Lowering them will increase bandwidth and decrease latency [quite significantly](https://i.imgur.com/wS2ZqUx.png). Lower values will in some cases also help with stability and lower memory controller voltage requirements. Some boards train them very well on their own. Some boards allow for easy tuning while other boards simply ignore any user input.
+  * If all else fails, you can also try manually decreasing the RTL and IOL pair.
 * For Asus Maximus-boards:
    * Play around with the Maximus Tweak Modes, sometimes one will post where the other does not.
    * You can enable Round Trip Latency under Memory Training Algorithms to let the board attempt to train RTL and IOL values.
