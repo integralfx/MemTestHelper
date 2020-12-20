@@ -420,7 +420,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
    * On some Intel motherboards, tWR in the UEFI does nothing and instead needs to be controlled through tWRPRE (sometimes tWRPDEN). Dropping tWRPRE by 1 will drop tWR by 1, following the rule tWR = tWRPRE - tCWL - 4.
      
 2. Next is tRFC. Default for 8Gb ICs is 350**ns** (note the units).
-   * Note: Tightening tRFC too much can result in freezing.
+   * Note: Tightening tRFC too much can result in system freezes/lock ups.
    * To convert to ns: `2000 * timing / ddr_freq`.  
    For example, tRFC 250 at 3200MHz is `2000 * 250 / 3200 = 156.25ns`.
    * To convert from ns (this is what you would type in your UEFI): `ns * ddr_freq / 2000`.  
