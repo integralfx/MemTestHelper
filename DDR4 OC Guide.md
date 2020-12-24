@@ -198,7 +198,7 @@ As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage 
   | :-:        | :-: | :--: | :-: | :--: |
   | 8Gb AFR    | Y   | N    | N   | ?    | 
   | 8Gb CJR    | Y   | N    | N   | Y    |
-  | 8Gb Rev. E | Y   | N    | Y   | ?    |
+  | 8Gb Rev. E | Y   | N    | N   | N    |
   | 8Gb B-die  | Y   | Y    | Y   | Y    |
   * The timings that don't scale with voltage usually need to be increased as you increase frequency.
   
