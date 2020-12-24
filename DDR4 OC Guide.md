@@ -200,7 +200,6 @@ As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage 
   | 8Gb CJR    | Y   | N    | N   | Y    |
   | 8Gb Rev. E | Y   | N    | N   | N    |
   | 8Gb B-die  | Y   | Y    | Y   | Y    |
-  * tCWL and tRDWR are linked, one of them can be tightened together with tCL by the same amount if voltage is increased.
   * The timings that don't scale with voltage usually need to be increased as you increase frequency.
   
 ### Expected Max Frequency
