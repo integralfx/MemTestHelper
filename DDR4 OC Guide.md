@@ -45,11 +45,11 @@ You should always test with a variety of stress tests to ensure your overclock i
 ### Avoid
 * I wouldn't recommend AIDA64 memory test and [Memtest64](https://forums.anandtech.com/threads/techpowerups-memtest-64-is-it-better-than-hci-memtest-for-determining-stability.2532209/) as they are both not very good at finding memory errors.
 ### Recommended
-* [TM5](http://testmem.tz.ru/tm5.rar) with the [extreme config by anta777](https://drive.google.com/file/d/1uegPn9ZuUoWxOssCP4PjMjGW9eC_1VJA) seems to be faster than Karhu RAMTest at finding errors. One user has thoroughly tested it and they couldn't seem to fool it. YMMV.
-  * Make sure to load the config. It should say 'Customize: Extreme1 @anta777' if loaded.
-  * Credits: [u/nucl3arlion](https://www.reddit.com/r/overclocking/comments/dlghvs/micron_reve_high_training_voltage_requirement/f4zcs04/)
+* [TM5](http://testmem.tz.ru/tm5.rar) with any of the configs listed:
+  * [Extreme config by anta777](https://drive.google.com/file/d/1uegPn9ZuUoWxOssCP4PjMjGW9eC_1VJA) (recommended). Make sure to load the config. It should say 'Customize: Extreme1 @anta777' if loaded.  
+  Credits: [u/nucl3arlion](https://www.reddit.com/r/overclocking/comments/dlghvs/micron_reve_high_training_voltage_requirement/f4zcs04/).
+  * [1usmus' config](https://www.overclock.net/threads/new-dram-calculator-for-ryzen%E2%84%A2-1-7-3-overclocking-dram-on-am4-membench-0-8-dram-bench.1640919/page-216#post-27937684).
   * If you experience issues with all threads crashing upon launch with the extreme config it might help to edit the row "Testing Window Size (Mb)=1408". Replace the window size with your total RAM (minus some margin for Windows) divided by your processors available threads (e.g. 12800/16 = 800 MB per thread).
-  * [1usmus' config](https://www.overclock.net/threads/new-dram-calculator-for-ryzen%E2%84%A2-1-7-3-overclocking-dram-on-am4-membench-0-8-dram-bench.1640919/page-216#post-27937684) is also decent.
 * [OCCT](https://www.ocbase.com/) with the dedicated memory test using either SSE or AVX-instructions.
   * Note that AVX and SSE can vary in error detection speed. On Intel-based systems, SSE appears better for testing IMC-voltages while AVX appears better for DRAM voltage.
   * The Large AVX2 CPU-test is a great stability test for your CPU and RAM at the same time. The more you tune your ram the harder it'll be to stable in this test.
