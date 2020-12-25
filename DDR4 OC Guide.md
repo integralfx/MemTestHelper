@@ -512,6 +512,8 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
      More info [here](https://rog.asus.com/forum/showthread.php?47670-Maximus-7-Gene-The-road-to-overclocking-memory-without-increasing-voltage).
 * tXP (and subsequently PPD) has a major impact on AIDA64 memory latency. See [here](https://www.reddit.com/r/overclocking/comments/hpqsfc/txp_the_underrated_memory_timing/).
 * RTT Wr, Park and Nom can have a massive impact on overclocking. The ideal values may depend on your board, your memory IC and density. The "optimal" values will let you clock higher with less memory controller voltage. Some boards reveal the auto values (MSI) while others don't (Asus). Finding the perfect combination is time-consuming but very helpful for advanced tuning.
+* On some motherboards, enabling XMP can allow for better overclocking.
+  * Thanks to Bored and Muren for finding and verifying this on their Asrock motherboards.
 
 ### AMD
 * Try playing around with ProcODT if you can't boot. On Ryzen 1000 and 2000, you should try values between 40Ω and 68.6Ω.  
