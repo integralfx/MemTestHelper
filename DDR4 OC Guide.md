@@ -467,7 +467,8 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
       | tWRWR_sg/dg/dr/dd | 8/4/8/8 | 7/4/7/7 | 6/4/6/6 |
       * For tWRRD_sg/dg, see step 3.
       * For tRDWR_sg/dg/dr/dd, drop them all by 1 until you get instability. You can usually run them all the same e.g. 9/9/9/9.
-      * Note that dr only affects dual rank sticks, so if you have single rank sticks you can ignore this timing. In the same way, dd only needs to be considered when you run two dimms per channel. 
+        * Setting these too tight can cause system freezes.
+      * Note that dr only affects dual rank sticks, so if you have single rank sticks you can ignore this timing. In the same way, dd only needs to be considered when you run two dimms per channel. You can also set them to 0 or 1 if you really wanted to.
         [These](https://i.imgur.com/61ZtPpR.jpg) are my timings on B-die, for reference.
       * For dual rank setups (see [notes on ranks](https://github.com/integralfx/MemTestHelper/blob/master/DDR4%20OC%20Guide.md#a-note-on-ranks-and-density)):
          * tRDRD_dr/dd can be lowered a step further to 5 for a large bump in read bandwidth.
