@@ -49,6 +49,7 @@ You should always test with a variety of stress tests to ensure your overclock i
   * Make sure to load the config. It should say 'Customize: Extreme1 @anta777' if loaded.
   * Credits: [u/nucl3arlion](https://www.reddit.com/r/overclocking/comments/dlghvs/micron_reve_high_training_voltage_requirement/f4zcs04/)
   * If you experience issues with all threads crashing upon launch with the extreme config it might help to edit the row "Testing Window Size (Mb)=1408". Replace the window size with your total RAM (minus some margin for Windows) divided by your processors available threads (e.g. 12800/16 = 800 MB per thread).
+  * [1usmus' config](https://www.overclock.net/threads/new-dram-calculator-for-ryzen%E2%84%A2-1-7-3-overclocking-dram-on-am4-membench-0-8-dram-bench.1640919/page-216#post-27937684) is also decent.
 * [OCCT](https://www.ocbase.com/) with the dedicated memory test using either SSE or AVX-instructions.
   * Note that AVX and SSE can vary in error detection speed. On Intel-based systems, SSE appears better for testing IMC-voltages while AVX appears better for DRAM voltage.
   * The Large AVX2 CPU-test is a great stability test for your CPU and RAM at the same time. The more you tune your ram the harder it'll be to stable in this test.
