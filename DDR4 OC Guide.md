@@ -367,7 +367,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
        * In the advanced tab, make sure CPU cache is set to enabled. This will speed up testing by ~20%.
        * Testing for 6400% coverage and a 1 hour duration has an error cover rate of 99,41% and 98,43%, respectively ([Source - FAQ section](https://www.karhusoftware.com/ramtest/)).
      * TM5 anta777 Extreme: 3 cycles.
-       * Runtime varies with density. For 16Gb RAM, it usually takes between 1.5-2 hours. If you run 32Gb RAM you can set the 12th row of the config (Time (%)) to half and you'll get roughly the same runtime as 16Gb.
+       * Runtime varies with density. For 16GB RAM, it usually takes between 1.5-2 hours. If you run 32GB RAM you can set the 12th row of the config (Time (%)) to half and you'll get roughly the same runtime as 16GB.
      * OCCT Memory: 30 minutes each for SSE and AVX.
 6. If you crash/freeze/BSOD or get an error, drop the DRAM frequency by a notch and test again.
 7. Save your overclock profile in your UEFI.
