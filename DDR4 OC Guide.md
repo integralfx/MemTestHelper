@@ -48,7 +48,8 @@ You should always test with a variety of stress tests to ensure your overclock i
 * [TM5](http://testmem.tz.ru/tm5.rar) with any of the configs listed:
   * [Extreme config by anta777](https://drive.google.com/file/d/1uegPn9ZuUoWxOssCP4PjMjGW9eC_1VJA) (recommended). Make sure to load the config. It should say 'Customize: Extreme1 @anta777' if loaded.  
   Credits: [u/nucl3arlion](https://www.reddit.com/r/overclocking/comments/dlghvs/micron_reve_high_training_voltage_requirement/f4zcs04/).
-  * [1usmus' config](https://www.overclock.net/threads/new-dram-calculator-for-ryzen%E2%84%A2-1-7-3-overclocking-dram-on-am4-membench-0-8-dram-bench.1640919/page-216#post-27937684).
+  * [Here](https://www.overclock.net/threads/memory-testing-with-testmem5-tm5-with-custom-configs.1751608/) is a link to TM5 pre-packaged with many configs.
+  * [LMHz Universal 2 config](https://www.hardwareluxx.de/community/threads/ryzen-ram-oc-m%C3%B6gliche-limitierungen.1216557/page-159#post-27506598)
   * If you experience issues with all threads crashing upon launch with the extreme config it might help to edit the row "Testing Window Size (Mb)=1408". Replace the window size with your total RAM (minus some margin for Windows) divided by your processors available threads (e.g. 12800/16 = 800 MB per thread).
 * [OCCT](https://www.ocbase.com/) with the dedicated memory test using either SSE or AVX-instructions.
   * Note that AVX and SSE can vary in error detection speed. On Intel-based systems, SSE appears better for testing IMC-voltages while AVX appears better for DRAM voltage.
