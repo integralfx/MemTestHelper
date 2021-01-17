@@ -52,8 +52,8 @@ You should always test with a variety of stress tests to ensure your overclock i
   * [LMHz Universal 2 config](https://www.hardwareluxx.de/community/threads/ryzen-ram-oc-m%C3%B6gliche-limitierungen.1216557/page-159#post-27506598)
   * If you experience issues with all threads crashing upon launch with the extreme config it might help to edit the row "Testing Window Size (Mb)=1408". Replace the window size with your total RAM (minus some margin for Windows) divided by your processors available threads (e.g. 12800/16 = 800 MB per thread).
 * [OCCT](https://www.ocbase.com/) with the dedicated memory test using either SSE or AVX-instructions.
-  * Note that AVX and SSE can vary in error detection speed. On Intel-based systems, SSE appears better for testing IMC-voltages while AVX appears better for DRAM voltage.
-  * The Large AVX2 CPU-test is a great stability test for your CPU and RAM at the same time. The more you tune your ram the harder it'll be to stable in this test.
+  * Note that AVX and SSE can vary in error detection speed. On Intel-based systems, SSE appears better for testing IMC voltages while AVX appears better for DRAM voltage.
+  * The Large AVX2 CPU test is a great stability test for your CPU and RAM at the same time. The more you tune your ram the harder it'll be to stable in this test.
 ### Alternatives
 * [Karhu RAM Test](https://www.karhusoftware.com/ramtest/) (paid).
 * [y-cruncher](http://www.numberworld.org/y-cruncher/) with [this config](https://pastebin.com/dJQgFtDH).
