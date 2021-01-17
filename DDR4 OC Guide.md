@@ -471,11 +471,9 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
         * Setting these too tight can cause system freezes.
       * Note that dr only affects dual rank sticks, so if you have single rank sticks you can ignore this timing. In the same way, dd only needs to be considered when you run two dimms per channel. You can also set them to 0 or 1 if you really wanted to.  
         [These](https://i.imgur.com/61ZtPpR.jpg) are my timings on B-die, for reference.
-      * For dual rank setups (see [notes on ranks](https://github.com/integralfx/MemTestHelper/blob/master/DDR4%20OC%20Guide.md#a-note-on-ranks-and-density)):
+      * For dual rank setups (see [notes on ranks](#a-note-on-ranks-and-density)):
          * tRDRD_dr/dd can be lowered a step further to 5 for a large bump in read bandwidth.
          * tWRWR_sg 6 can cause write bandwidth regression over tWRWR_sg 7, despite being stable.
-      * tREFI is also a timing that can help with performance. Unlike all the other timings, higher is better for tREFI.  
-        It's typically not a good idea to increase tREFI too much as ambient temperature changes (e.g. winter to summer) can be enough to cause instability.
     
 5. Drop tCL by 1 until it's unstable.
    * On AMD, if GDM is enabled drop tCL by 2.   
@@ -494,22 +492,30 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
      * (3) [tRP 25 tRAS 36](https://i.imgur.com/7c46Qes.png) - stable up to 500%.
      * In (1) and (3), tRC is 61 and isn't completely unstable. However, in (2) tRC is 55 and RAMTest finds an error instantly. This indicates that my RAM can do `tRAS = tCL + tRCD(RD) + 2`, but needs tRC higher than `tRP + tRAS`. Since tRC is hidden, I need higher tRAS to get higher tRC.
 
-9. Finally onto command rate.
+9. Increase tREFI until it's unstable. The binary search method explained in finding the lowest tRFC can also be applied here.  
+   Otherwise, here are my suggestions:
+   | Timing | Safe | Tight | Extreme |
+   | ------ | ---- | ----- | ------- |
+   | tREFI | 32768 | 40000 | Max (65535 or 65534) |
+   * It's typically not a good idea to increase tREFI too much as ambient temperature changes (e.g. winter to summer) can be enough to cause instability.
+   * Keep in mind that running max tREFI can corrupt files so tread with caution.
 
-   AMD:
-   * Getting GDM disabled and CR 1 stable can be pretty difficult but if you've come this far down the rabbit hole it's worth a shot.
-   * If you can get GDM disabled and CR 1 stable without touching anything then you can skip this section.
-   1. Set the drive strengths to 60-20-20-24 and setup times to 63-63-63.
-   2. If you can't POST, adjust the setup times until you can (you should adjust them all together).
-   3. Run a memory test.
-   4. Adjust setup times then drive strengths if unstable.
-   * [My stable GDM off CR 1 settings](https://i.imgur.com/z547RLa.jpg)
+10. Finally onto command rate.
+
+    AMD:
+    * Getting GDM disabled and CR 1 stable can be pretty difficult but if you've come this far down the rabbit hole it's worth a shot.
+    * If you can get GDM disabled and CR 1 stable without touching anything then you can skip this section.
+    1. Set the drive strengths to 60-20-20-24 and setup times to 63-63-63.
+    2. If you can't POST, adjust the setup times until you can (you should adjust them all together).
+    3. Run a memory test.
+    4. Adjust setup times then drive strengths if unstable.
+    * [My stable GDM off CR 1 settings](https://i.imgur.com/z547RLa.jpg)
    
-   Intel:
-   * Try setting CR to 1T. If that doesn't work, leave CR on 2T.
-   * On Asus Maximus XI-boards enabling Trace Centering can help greatly with pushing 1T to higher frequencies.
+    Intel:
+    * Try setting CR to 1T. If that doesn't work, leave CR on 2T.
+    * On Asus Maximus XI-boards enabling Trace Centering can help greatly with pushing 1T to higher frequencies.
 
-10. You can also increase DRAM voltage to drop timings even more. Keep in mind the [voltage scaling characteristics of your ICs](#voltage-scaling) and the [maximum recommended daily voltage](#maximum-recommended-daily-voltage).
+11. You can also increase DRAM voltage to drop timings even more. Keep in mind the [voltage scaling characteristics of your ICs](#voltage-scaling) and the [maximum recommended daily voltage](#maximum-recommended-daily-voltage).
     
 ## Miscellaneous Tips
 * Usually a 200MHz increase in DRAM frequency negates the latency penalty of loosening tCL, tRCD and tRP by 1, but has the benefit of higher bandwidth.  
