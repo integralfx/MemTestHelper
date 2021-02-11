@@ -21,6 +21,7 @@
       6. [Binning](#binning)
       7. [Maximum Recommended Daily Voltage](#maximum-recommended-daily-voltage)
       8. [Ranking](#ranking)
+      9. [Temperatures and Its Effect on Stability](#temperatures-and-its-effect-on-stability)
    3. [Integrated Memory Controller (IMC)](#integrated-memory-controller-imc)
       1. [Intel - LGA1151](#intel---lga1151)
       2. [AMD - AM4](#amd---am4)
@@ -44,13 +45,15 @@ You should always test with a variety of stress tests to ensure your overclock i
 ### Avoid
 * I wouldn't recommend AIDA64 memory test and [Memtest64](https://forums.anandtech.com/threads/techpowerups-memtest-64-is-it-better-than-hci-memtest-for-determining-stability.2532209/) as they are both not very good at finding memory errors.
 ### Recommended
-* [TM5](http://testmem.tz.ru/tm5.rar) with the [extreme config by anta777](https://drive.google.com/file/d/1uegPn9ZuUoWxOssCP4PjMjGW9eC_1VJA) seems to be faster than Karhu RAMTest at finding errors. One user has thoroughly tested it and they couldn't seem to fool it. YMMV.
-  * Make sure to load the config. It should say 'Customize: Extreme1 @anta777' if loaded.
-  * Credits: [u/nucl3arlion](https://www.reddit.com/r/overclocking/comments/dlghvs/micron_reve_high_training_voltage_requirement/f4zcs04/)
+* [TM5](http://testmem.tz.ru/tm5.rar) with any of the configs listed:
+  * [Extreme config by anta777](https://drive.google.com/file/d/1uegPn9ZuUoWxOssCP4PjMjGW9eC_1VJA) (recommended). Make sure to load the config. It should say 'Customize: Extreme1 @anta777' if loaded.  
+  Credits: [u/nucl3arlion](https://www.reddit.com/r/overclocking/comments/dlghvs/micron_reve_high_training_voltage_requirement/f4zcs04/).
+  * [Here](https://www.overclock.net/threads/memory-testing-with-testmem5-tm5-with-custom-configs.1751608/) is a link to TM5 pre-packaged with many configs.
+  * [LMHz Universal 2 config](https://www.hardwareluxx.de/community/threads/ryzen-ram-oc-m%C3%B6gliche-limitierungen.1216557/page-159#post-27506598)
   * If you experience issues with all threads crashing upon launch with the extreme config it might help to edit the row "Testing Window Size (Mb)=1408". Replace the window size with your total RAM (minus some margin for Windows) divided by your processors available threads (e.g. 12800/16 = 800 MB per thread).
 * [OCCT](https://www.ocbase.com/) with the dedicated memory test using either SSE or AVX-instructions.
-  * Note that AVX and SSE can vary in error detection speed. On Intel-based systems, SSE appears better for testing IMC-voltages while AVX appears better for DRAM voltage.
-  * The Large AVX2 CPU-test is a great stability test for your CPU and RAM at the same time. The more you tune your ram the harder it'll be to stable in this test.
+  * Note that AVX and SSE can vary in error detection speed. On Intel-based systems, SSE appears better for testing IMC voltages while AVX appears better for DRAM voltage.
+  * The Large AVX2 CPU test is a great stability test for your CPU and RAM at the same time. The more you tune your ram the harder it'll be to stable in this test.
 ### Alternatives
 * [Karhu RAM Test](https://www.karhusoftware.com/ramtest/) (paid).
 * [y-cruncher](http://www.numberworld.org/y-cruncher/) with [this config](https://pastebin.com/dJQgFtDH).
@@ -88,6 +91,7 @@ You should always test with a variety of stress tests to ensure your overclock i
     
 ## Benchmarks
 * [AIDA64](https://www.aida64.com/downloads) - free 30 day trial. We'll be using the cache and memory benchmark (found under tools) to see how our memory is performing. You can right click the start benchmark button and run memory tests only to skip the cache tests.
+* [xmrig](https://github.com/xmrig/xmrig) is very memory sensitive so it's useful to test the effects of specific timings. Run as admin with `--bench=1M` as a command line argument to start the benchmark. Use the benchmark time to compare.
 * [Intel Memory Latency Checker](https://software.intel.com/content/www/us/en/develop/articles/intelr-memory-latency-checker.html) - contains a lot of useful tests for measuring memory performance. More extensive data than AIDA64 and bandwidth numbers differ between the tests. Note that it must be run as administrator to disable prefetching. On AMD-systems you may have to disable it in bios.
 * [MaxxMEM2](https://www.softpedia.com/get/System/Benchmarks/MaxxMEM2.shtml) - free alternative to AIDA64, but bandwidth tests seem to be a lot lower so it isn't directly comparable to AIDA64.
 * [Super Pi Mod v1.5 XS](https://www.techpowerup.com/download/super-pi/) - another memory sensitive benchmark, but I haven't used it as much as AIDA64. 1M - 8M digits should be enough for a quick benchmark. You only need to look at the last (total) time, where lower is better.
@@ -172,9 +176,9 @@ Sometimes the Thaiphoon report won't tell you the IC or it may misidentify the I
 
 ### A Note on Ranks and Density
 * Single rank sticks usually clock higher than dual rank sticks, but depending on the benchmark the performance gain from rank interleaving<sup>1</sup> can be significant enough to outperform faster single rank sticks. [This can be observed in both synthetics and games](https://kingfaris.co.uk/ram).
-   * On recent platforms (Comet Lake and Zen3), bios support for dual rank has improved greatly. On many Z490-boards dual rank Samsung 8Gb B-die (2x16Gb) will clock just as high as single-sided B-die, meaning you have all the performance gains of rank interleaving without any downsides.
+   * On recent platforms (Comet Lake and Zen3), bios support for dual rank has improved greatly. On many Z490-boards dual rank Samsung 8Gb B-die (2x16GB) will clock just as high as single-sided B-die, meaning you have all the performance gains of rank interleaving without any downsides.
    * <sup>1</sup>Rank interleaving allows the memory controller to parallelize memory requests, for example writing on one rank while the other is refreshing. The impact of this is easily observed in AIDA64 Copy Bandwidth. From the eyes of the memory controller, it doesn't matter whether the second rank is on the same dimm (two ranks on one dimm) or a different dimm (two dimms in one channel). It does, however, matter from an overclocking perspective when you consider memory trace layouts and bios support.
-* Density matters when determining how far your ICs can go. For example, 4Gb AFR and 8Gb AFR will not overclock the same despite sharing the same name. The same can be said for Micron Rev.B which exists as both 8Gb and 16Gb while the 16Gb chips (which overclock better) are sold as both 16Gb and 8Gb (SPD modified, can be found on higher-end Crucial sticks).
+* Density matters when determining how far your ICs can go. For example, 4Gb AFR and 8Gb AFR will not overclock the same despite sharing the same name. The same can be said for Micron Rev.B which exists as both 8Gb and 16Gb. The 16Gb chips overclock better and are sold as both in 16GB and 8GB capacities. The 8GB sticks have their SPD modified and can be found in higher-end Crucial kits (BLM2K8G51C19U4B).
 
 ### Voltage Scaling
 * Voltage scaling simply means how the IC responds to voltage.
@@ -230,12 +234,19 @@ As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage 
 * [JEDEC (p.174)](http://www.softnology.biz/pdf/JESD79-4B.pdf) specifies that the absolute maximum is 1.50v.
   > Stresses greater than those listed under “Absolute Maximum Ratings” may cause permanent damage to the device. This is a stress rating only and functional operation of the device at these or any other conditions above those indicated in the operational sections of this specification is not implied. Exposure to absolute maximum rating conditions for extended periods may affect reliability.
 * That being said, I'd only recommend running 1.50v on B-die as it's known to have high voltage tolerance, and Rev E. as there are kits with XMP rated at 1.50v. At least for the common ICs (4/8Gb AFR, 8Gb CJR, 4/8Gb MFR), the max recommended voltage is 1.45v. Some of the lesser known ICs like [8Gb C-die](https://www.hardwareluxx.de/community/f13/samsung-8gbit-ddr4-c-die-k4a8g045wc-overclocking-ergebnisse-im-startbeitrag-1198323.html) have been reported to scale negatively or even die above 1.20v, though YMMV.
+* It may be safe to daily 1.60v as there are kits on the [B550 Unify-X QVL](https://www.msi.com/Motherboard/support/MEG-B550-UNIFY-X#support-mem-20) rated for 1.60v. B-die, 8Gb Rev. E, DJR and potentially 16Gb Rev. B *should* be fine at running 1.60v daily, though it's recommended to have active airflow.
   
 ### Ranking
 * Below is how most of the common ICs rank in terms of frequency and timings.
 * 8Gb B-die > 8Gb Micron Rev. E > 8Gb CJR > 4Gb E-die > 8Gb AFR > 4Gb D-die > 8Gb MFR > 4Gb S-die
   * Based off [buildzoid's ranking](https://www.reddit.com/r/overclocking/comments/8cjla5/the_best_manufacturerdie_of_ddr_ram_in_order/dxfgd4x/).
-  
+ 
+### Temperatures and Its Effect on Stability
+* Generally, the hotter your RAM is the less stability it will have at higher frequencies and/or tighter timings.
+* B-die is temperature sensitive and its ideal range is ~30-40°C. Some may be able to withstand higher temperatures so YMMV.
+* Rev. E, on the other hand, doesn't seem to be temperature sensitive as demonstrated by [builzdoid](https://www.youtube.com/watch?v=OeHEtULQg3Q).
+* You might find that you're stable when running a memory test yet crash while gaming. This is because your CPU and/or GPU dump heat in the case, raising the RAM temperatures in the process. Thus, it is a good idea to stress test your GPU while running a memory test to simulate stability while gaming.
+ 
 ## Integrated Memory Controller (IMC)
 ### Intel - LGA1151
 * Intel's IMC is pretty strong, so it shouldn't be the bottleneck when overclocking.  
@@ -321,7 +332,8 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
   * (Credits: [buildzoid](https://www.youtube.com/watch?v=10pYf9wqFFY))
   
 # Overclocking
-* Disclaimer: The silicon lottery will affect your overclocking potential so there may be some deviation from my suggestions.
+* **Disclaimer**: The silicon lottery will affect your overclocking potential so there may be some deviation from my suggestions.
+* **Warning**: Data corruption is possible when overclocking RAM. It's advised to run `sfc /scannow` every so often to ensure any corrupted system files are fixed.
 * The overclocking process is pretty simple and boils down to 3 steps:
   * Set very loose (high) timings.
   * Increase DRAM frequency until unstable.
@@ -356,7 +368,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
        * In the advanced tab, make sure CPU cache is set to enabled. This will speed up testing by ~20%.
        * Testing for 6400% coverage and a 1 hour duration has an error cover rate of 99,41% and 98,43%, respectively ([Source - FAQ section](https://www.karhusoftware.com/ramtest/)).
      * TM5 anta777 Extreme: 3 cycles.
-       * Runtime varies with density. For 16Gb RAM, it usually takes between 1.5-2 hours. If you run 32Gb RAM you can set the 12th row of the config (Time (%)) to half and you'll get roughly the same runtime as 16Gb.
+       * Runtime varies with density. For 16GB RAM, it usually takes between 1.5-2 hours. If you run 32GB RAM you can set the 12th row of the config (Time (%)) to half and you'll get roughly the same runtime as 16GB.
      * OCCT Memory: 30 minutes each for SSE and AVX.
 6. If you crash/freeze/BSOD or get an error, drop the DRAM frequency by a notch and test again.
 7. Save your overclock profile in your UEFI.
@@ -409,21 +421,9 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
    * Minimum tFAW can be is tRRDS * 4.
    * You don't have to run all of the timings at one preset. You might only be able to run tRRDS tRRDL tFAW at the tight preset, but you may be able to run tWR at the extreme preset.
    * On some Intel motherboards, tWR in the UEFI does nothing and instead needs to be controlled through tWRPRE (sometimes tWRPDEN). Dropping tWRPRE by 1 will drop tWR by 1, following the rule tWR = tWRPRE - tCWL - 4.
-   
-2. Next are the primary timings (tCL, tRCD, tRP).
-   * Start with tCL and drop that by 1 until you get instability.
-   * Do the same with tRCD and tRP.
-   * After the above timings are as tight as they can go, set `tRAS = tCL + tRCD(RD) + 2` and `tRC = tRP + tRAS + x`<sup>1</sup>.
-     * Setting tRAS lower than this can incur a [performance penalty](https://www.overclock.net/forum/25801780-post3757.html).
-     * <sup>1</sup>Your RAM might not be able to do `tRP + tRAS`, hence the `x`. Setting `x` to 8, i.e. `tRP + tRAS + 8` should be a pretty safe gamble.
-     * tRC is only available on AMD and some Intel UEFIs.
-     * On Intel UEFIs, tRC does seem to follow the `tRP + tRAS + x` rule, even if it is hidden.
-       * (1) [tRP 19 tRAS 42](https://i.imgur.com/gz1YDcO.png) - fully stable.
-       * (2) [tRP 19 tRAS 36](https://i.imgur.com/lHjbLjC.png) - instant error.
-       * (3) [tRP 25 tRAS 36](https://i.imgur.com/7c46Qes.png) - stable up to 500%.
-       * In (1) and (3), tRC is 61 and isn't completely unstable. However, in (2) tRC is 55 and RAMTest finds an error instantly. This indicates that my RAM can do `tRAS = tCL + tRCD(RD) + 2`, but needs `tRC = tRP + tRAS + 6`. Since tRC is hidden, I need higher tRAS to get higher tRC.
      
-3. Next is tRFC. Default for 8Gb ICs is 350**ns** (note the units).
+2. Next is tRFC. Default for 8Gb ICs is 350**ns** (note the units).
+   * Note: Tightening tRFC too much can result in system freezes/lock ups.
    * To convert to ns: `2000 * timing / ddr_freq`.  
    For example, tRFC 250 at 3200MHz is `2000 * 250 / 3200 = 156.25ns`.
    * To convert from ns (this is what you would type in your UEFI): `ns * ddr_freq / 2000`.  
@@ -440,7 +440,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
    * For all other ICs, I would recommend doing a binary search to find the lowest stable tRFC.  
    For example, say your tRFC is 630. The next tRFC you should try is half of that (315). If that is unstable, you know that your lowest tRFC is somewhere between 315 and 630, so you try the midpoint (`(315 + 630) / 2 = 472.5, round down to 472`). If that is stable, you know that your lowest tRFC is between 315 and 472, so you try the midpoint and so on.
    * [tRFC table by Reous](https://www.hardwareluxx.de/community/threads/hynix-8gbit-ddr4-cjr-c-die-h5an8g8ncjr-djr-2020-update.1206340/)(bottom of page).
-4. Here are my suggestions for the rest of the secondaries:
+3. Here are my suggestions for the rest of the secondaries:
 
    | Timing | Safe | Tight | Extreme |
    | :----: | :--: | :---: | :-----: |
@@ -450,9 +450,9 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
    * On Intel, tWTRS/L should be left on auto and controlled with tWRRD_dg/sg respectively. Dropping tWRRD_dg by 1 will drop tWTRS by 1. Likewise with tWRRD_sg. Once they're as low as you can go, manually set tWTRS/L.
    * On Intel, changing tCWL will affect tWRRD_dg/sg and thus tWTR_S/L. If you lower tCWL by 1 you need to lower tWRRD_dg/sg by 1 to keep the same tWTR values. Note that this might also affect tWR per the relationship described earlier.
    * <sup>1</sup>Some motherboards don't play nice with odd tCWL. For example, I'm stable at 4000 15-19-19 tCWL 14, yet tCWL 15 doesn't even POST. Another user has had similar experiences. Some motherboards may seem fine but have issues with it at higher frequencies (Asus). Manually setting tCWL equal to tCL if tCL is even or one below if tCL is uneven should alleviate this (eg. if tCL = 18 try tCWL = 18 or 16, if tCL = 17 try tCWL = 16).
-   * The Extreme-preset is not the minimum floor in this case. tRTP can go as low as 6, while tWTRS/L can go as low as 1 6. Some boards are fine doing tCWL as low as tCL - 6. Keep in mind that this *will* increase the load on your memory controller.
+   * The extreme preset is not the minimum floor in this case. tRTP can go as low as 6, while tWTRS/L can go as low as 1 6. Some boards are fine doing tCWL as low as tCL - 6. Keep in mind that this *will* increase the load on your memory controller.
    
-5. Now for the tertiaries:
+4. Now for the tertiaries:
     * If you're on AMD, refer to [this post](https://redd.it/ahs5a2).  
       My suggestion:
   
@@ -467,33 +467,56 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
       | ------ | ---- | ----- | ------- |
       | tRDRD_sg/dg/dr/dd | 8/4/8/8 | 7/4/7/7 | 6/4/6/6 |
       | tWRWR_sg/dg/dr/dd | 8/4/8/8 | 7/4/7/7 | 6/4/6/6 |
-      * For tWRRD_sg/dg, see step 5.
-      * For tRDWR_sg/dg/dr/dd, drop them all by 1 until you get instability. You can usually run them all the same e.g. 9/9/9/9.
-      * Note that dr only affects dual rank sticks, so if you have single rank sticks you can ignore this timing. In the same way, dd only needs to be considered when you run two dimms per channel. 
+      * For tWRRD_sg/dg, see step 3. For tWRRD_dr/dd, drop them both by 1 until you get instability or performance degrades.
+      * For tRDWR_sg/dg/dr/dd, drop them all by 1 until you get instability or performance degrades. You can usually run them all the same e.g. 9/9/9/9.
+        * Setting these too tight can cause system freezes.
+      * Note that dr only affects dual rank sticks, so if you have single rank sticks you can ignore this timing. In the same way, dd only needs to be considered when you run two dimms per channel. You can also set them to 0 or 1 if you really wanted to.  
         [These](https://i.imgur.com/61ZtPpR.jpg) are my timings on B-die, for reference.
-      * For dual rank setups (see [notes on ranks](https://github.com/integralfx/MemTestHelper/blob/master/DDR4%20OC%20Guide.md#a-note-on-ranks-and-density)):
-         * tRDRD_dr/dd can be lowered a step further to 5 for a large bump in Read-bandwidth.
+      * For dual rank setups (see [notes on ranks](#a-note-on-ranks-and-density)):
+         * tRDRD_dr/dd can be lowered a step further to 5 for a large bump in read bandwidth.
          * tWRWR_sg 6 can cause write bandwidth regression over tWRWR_sg 7, despite being stable.
-      * tREFI is also a timing that can help with performance. Unlike all the other timings, higher is better for tREFI.  
-        It's typically not a good idea to increase tREFI too much as ambient temperature changes (e.g. winter to summer) can be enough to cause instability.
     
-
-6. Finally onto command rate.
-
-   AMD:
-   * Getting GDM disabled and CR 1 stable can be pretty difficult but if you've come this far down the rabbit hole it's worth a shot.
-   * If you can get GDM disabled and CR 1 stable without touching anything then you can skip this section.
-   1. Set the drive strengths to 60-20-20-24 and setup times to 63-63-63.
-   2. If you can't POST, adjust the setup times until you can (you should adjust them all together).
-   3. Run a memory test.
-   4. Adjust setup times then drive strengths if unstable.
-   * [My stable GDM off CR 1 settings](https://i.imgur.com/z547RLa.jpg)
+5. Drop tCL by 1 until it's unstable.
+   * On AMD, if GDM is enabled drop tCL by 2.   
+ 
+6. Drop tRCD (and tRP if on Intel) by 1 until unstable. Do the same with tRP if on AMD.
+   * Note: More IMC voltage may be necessary to stabilise tighter tRCD.
    
-   Intel:
-   * Try setting CR to 1T. If that doesn't work, leave CR on 2T.
-   * On Asus Maximus XI-boards enabling Trace Centering can help greatly with pushing 1T to higher frequencies.
+7. Set `tRAS = tCL + tRCD(RD) + 2`. Increase if unstable.
+   * Setting tRAS lower than this can incur a [performance penalty](https://www.overclock.net/forum/25801780-post3757.html).
 
-7. You can also increase DRAM voltage to drop timings even more. Keep in mind the [voltage scaling characteristics of your ICs](#voltage-scaling) and the [maximum recommended daily voltage](#maximum-recommended-daily-voltage).
+8. Set `tRC = tRP + tRAS`. Increase if unstable.
+   * tRC is only available on AMD and some Intel UEFIs.
+   * On Intel UEFIs, tRC does seem to be affected by tRP and tRAS, even if it is hidden.
+     * (1) [tRP 19 tRAS 42](https://i.imgur.com/gz1YDcO.png) - fully stable.
+     * (2) [tRP 19 tRAS 36](https://i.imgur.com/lHjbLjC.png) - instant error.
+     * (3) [tRP 25 tRAS 36](https://i.imgur.com/7c46Qes.png) - stable up to 500%.
+     * In (1) and (3), tRC is 61 and isn't completely unstable. However, in (2) tRC is 55 and RAMTest finds an error instantly. This indicates that my RAM can do `tRAS = tCL + tRCD(RD) + 2`, but needs tRC higher than `tRP + tRAS`. Since tRC is hidden, I need higher tRAS to get higher tRC.
+
+9. Increase tREFI until it's unstable. The binary search method explained in finding the lowest tRFC can also be applied here.  
+   Otherwise, here are my suggestions:
+   | Timing | Safe | Tight | Extreme |
+   | ------ | ---- | ----- | ------- |
+   | tREFI | 32768 | 40000 | Max (65535 or 65534) |
+   * It's typically not a good idea to increase tREFI too much as ambient temperature changes (e.g. winter to summer) can be enough to cause instability.
+   * Keep in mind that running max tREFI can corrupt files so tread with caution.
+
+10. Finally onto command rate.
+
+    AMD:
+    * Getting GDM disabled and CR 1 stable can be pretty difficult but if you've come this far down the rabbit hole it's worth a shot.
+    * If you can get GDM disabled and CR 1 stable without touching anything then you can skip this section.
+    1. Set the drive strengths to 60-20-20-24 and setup times to 63-63-63.
+    2. If you can't POST, adjust the setup times until you can (you should adjust them all together).
+    3. Run a memory test.
+    4. Adjust setup times then drive strengths if unstable.
+    * [My stable GDM off CR 1 settings](https://i.imgur.com/z547RLa.jpg)
+   
+    Intel:
+    * Try setting CR to 1T. If that doesn't work, leave CR on 2T.
+    * On Asus Maximus XI-boards enabling Trace Centering can help greatly with pushing 1T to higher frequencies.
+
+11. You can also increase DRAM voltage to drop timings even more. Keep in mind the [voltage scaling characteristics of your ICs](#voltage-scaling) and the [maximum recommended daily voltage](#maximum-recommended-daily-voltage).
     
 ## Miscellaneous Tips
 * Usually a 200MHz increase in DRAM frequency negates the latency penalty of loosening tCL, tRCD and tRP by 1, but has the benefit of higher bandwidth.  
@@ -504,8 +527,9 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
 * Loosening tCCDL to 8 may help with stability, especially above 3600MHz.
 * Higher cache (aka uncore, ring) frequency can increase bandwidth and reduce latency.
 * After you've finished tightening the timings, you can increase IOL offsets to reduce IOLs. Make sure to run a memory test after. More info [here](https://hwbot.org/newsflash/3058_advanced_skylake_overclocking_tune_ddr4_memory_rtlio_on_maximus_viii_with_alexaros_guide).
-* In general, RTL and IOL-values impact memory performance. Lowering them will increase bandwidths and decrease latency [quite significantly](https://i.imgur.com/wS2ZqUx.png). Lower values will in some cases also help with stability and lower memory controller voltage requirements. Some boards train them very well on their own, some boards allow for easy tuning while some boards simply ignore any user input.
-* For Asus Maximus-boards:
+  * In general, RTL and IOL values impact memory performance. Lowering them will increase bandwidth and decrease latency [quite significantly](https://i.imgur.com/wS2ZqUx.png). Lower values will in some cases also help with stability and lower memory controller voltage requirements. Some boards train them very well on their own. Some boards allow for easy tuning while other boards simply ignore any user input.
+  * If all else fails, you can try manually decreasing the RTL and IOL pair.
+* For Asus Maximus boards:
    * Play around with the Maximus Tweak Modes, sometimes one will post where the other does not.
    * You can enable Round Trip Latency under Memory Training Algorithms to let the board attempt to train RTL and IOL values.
    * If you can't boot, you can try tweaking the skew control values.  
@@ -534,3 +558,4 @@ This seems to line up with [The Stilt's](https://www.overclock.net/forum/10-amd-
 * [Intel Memory Overclocking Quick Reference by sdch](https://www.overclock.net/forum/27784556-post7836.html)
 * [The road to overclocking memory without increasing voltage by Raja@ASUS](https://rog.asus.com/forum/showthread.php?47670-Maximus-7-Gene-The-road-to-overclocking-memory-without-increasing-voltage)
 * [Advanced Skylake Overclocking: Tune DDR4 Memory RTL/IO on Maximus VIII with Alex@ro's Guide](https://hwbot.org/newsflash/3058_advanced_skylake_overclocking_tune_ddr4_memory_rtlio_on_maximus_viii_with_alexaros_guide)
+* [BSOD codes when OC'ing and possible actions](https://www.reddit.com/r/overclocking/comments/atwtt5/psa_bsod_codes_when_ocing_and_possible_actions/)
