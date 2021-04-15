@@ -32,7 +32,9 @@
    4. [Miscellaneous Tips](#miscellaneous-tips)
       1. [Intel](#intel)
       2. [AMD](#amd)
-5. [Useful Information](#useful-information)
+5. [Useful Links](#useful-links)
+   1. [Benchmarks](#benchmarks)
+   2. [Information](#infomation)
 
 # Setup
 * Ensure your sticks are in the recommended DIMM slots (usually 2 and 4).
@@ -552,7 +554,11 @@ This seems to line up with [The Stilt's](https://www.overclock.net/forum/10-amd-
   [~ The Stilt](https://www.overclock.net/forum/10-amd-cpus/1728758-strictly-technical-matisse-not-really-26.html)
 * When pushing FCLK around 1800 MHz intermittent RAM training errors may be alleviated or completely eliminated by increasing VDDG CCD.
 
-# Useful Information
+# Useful Links
+## Benchmarks
+* [Impact of RAM on Intel's Skylake desktop architecture by KingFaris](https://kingfaris.co.uk/ram)
+* [RAM timings and their influence on games and applications (AMD) by Reous](https://www.hardwareluxx.de/community/threads/ram-timings-und-deren-einfluss-auf-spiele-und-anwendungen-amd-update-23-05-2020.1269156/)
+## Information
 * [r/overclocking Wiki - DDR4](https://www.reddit.com/r/overclocking/wiki/ram/ddr4)
 * [Demystifying Memory Overclocking on Ryzen: OC Guidelines and Explaining Subtimings, Resistances, Voltages, and More! by varexos717](https://redd.it/ahs5a2)
 * [HardwareLUXX Ryzen RAM OC Thread](https://www.hardwareluxx.de/community/f13/ryzen-ram-oc-thread-moegliche-limitierungen-1216557.html)
