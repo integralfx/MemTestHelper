@@ -33,8 +33,8 @@
       1. [Intel](#intel)
       2. [AMD](#amd)
 5. [Useful Links](#useful-links)
-   1. [Benchmarks](#benchmarks)
-   2. [Information](#infomation)
+   1. [Benchmarks](#benchmarks-1)
+   2. [Information](#information)
 
 # Setup
 * Ensure your sticks are in the recommended DIMM slots (usually 2 and 4).
