@@ -479,7 +479,9 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
 5. Drop tCL by 1 until it's unstable.
    * On AMD, if GDM is enabled drop tCL by 2.   
  
-6. Drop tRCD (and tRP if on Intel) by 1 until unstable. Do the same with tRP if on AMD.
+6. On Intel, drop tRCD and tRP by 1 until unstable.  
+
+   On AMD, drop tRCD by 1 until unstable. Do the same with tRP.
    * Note: More IMC voltage may be necessary to stabilise tighter tRCD.
    
 7. Set `tRAS = tCL + tRCD(RD) + 2`. Increase if unstable.
