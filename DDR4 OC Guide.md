@@ -57,6 +57,14 @@ You should always test with a variety of stress tests to ensure your overclock i
   * Note that AVX and SSE can vary in error detection speed. On Intel-based systems, SSE appears better for testing IMC voltages while AVX appears better for DRAM voltage.
   * The Large AVX2 CPU test is a great stability test for your CPU and RAM at the same time. The more you tune your ram the harder it'll be to stable in this test.
 ### Alternatives
+* [GSAT](https://github.com/stressapptest/stressapptest).
+  1. [Install WSL](https://docs.microsoft.com/en-us/windows/wsl/install-win10) and [Ubuntu](https://www.microsoft.com/en-us/p/ubuntu/9nblggh4msv6?activetab=pivot:overviewtab).
+  2. Open an Ubuntu bash shell and type `sudo apt update`.
+  3. Type `sudo apt-get install stressapptest`.
+  4. To start testing type `./stressapptest -M 13000 -s 3600 -W --pause-delay 3600`.
+     * `-M` is the amount of memory to test (MB).
+     * `-s` is how long to test for (seconds).
+     * `--pause-delay` is the delay between power spikes. It should be the same as the `-s` argument to skip the power spikes test.
 * [Karhu RAM Test](https://www.karhusoftware.com/ramtest/) (paid).
 * [y-cruncher](http://www.numberworld.org/y-cruncher/) with [this config](https://pastebin.com/dJQgFtDH).
   * Paste this in a new file called `memtest.cfg` in the same folder as `y-cruncher.exe`.
