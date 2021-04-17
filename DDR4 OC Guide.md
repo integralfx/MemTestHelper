@@ -52,7 +52,7 @@ You should always test with a variety of stress tests to ensure your overclock i
   * [Here](https://www.overclock.net/threads/memory-testing-with-testmem5-tm5-with-custom-configs.1751608/) is a link to TM5 pre-packaged with many configs.
   * [LMHz Universal 2 config](https://www.hardwareluxx.de/community/threads/ryzen-ram-oc-m%C3%B6gliche-limitierungen.1216557/page-159#post-27506598)
   * If you experience issues with all threads crashing upon launch with the extreme config it might help to edit the row "Testing Window Size (Mb)=1408". Replace the window size with your total RAM (minus some margin for Windows) divided by your processors available threads (e.g. 12800/16 = 800 MB per thread).
-* [OCCT](https://www.ocbase.com/) with the dedicated memory test using either SSE or AVX-instructions.
+* [OCCT](https://www.ocbase.com/) with the dedicated memory test using either SSE or AVX instructions.
   * Note that AVX and SSE can vary in error detection speed. On Intel-based systems, SSE appears better for testing IMC voltages while AVX appears better for DRAM voltage.
   * The Large AVX2 CPU test is a great stability test for your CPU and RAM at the same time. The more you tune your ram the harder it'll be to stable in this test.
 ### Alternatives
@@ -84,7 +84,6 @@ You should always test with a variety of stress tests to ensure your overclock i
        Your target field should look something like: `"path\to\prime95\prime95.exe" -t -WRAM`.
     5. You can now use the shortcut to instantly start Prime95 with the settings provided.
 * [randomx-stress](https://github.com/00-matt/randomx-stress/releases) - Can be used to test FCLK stability.
-* ~~[(DEPRECATED) MemTestHelper](https://github.com/integralfx/MemTestHelper/releases) - HCI memtest launcher.~~
 ### Comparison
 [Comparison](https://imgur.com/a/jhrFGhg) between Karhu RAMTest, TM5 with the extreme config and GSAT.
   * TM5 is the fastest and most stressful by quite a margin, though I have had instances where I would pass 30 mins of TM5 but fail within 10 mins of Karhu. Another user had a similar experience. YMMV.
@@ -100,8 +99,8 @@ You should always test with a variety of stress tests to ensure your overclock i
     
 ## Benchmarks
 * [AIDA64](https://www.aida64.com/downloads) - free 30 day trial. We'll be using the cache and memory benchmark (found under tools) to see how our memory is performing. You can right click the start benchmark button and run memory tests only to skip the cache tests.
-* [xmrig](https://github.com/xmrig/xmrig) is very memory sensitive so it's useful to test the effects of specific timings. Run as admin with `--bench=1M` as a command line argument to start the benchmark. Use the benchmark time to compare.
 * [Intel Memory Latency Checker](https://software.intel.com/content/www/us/en/develop/articles/intelr-memory-latency-checker.html) - contains a lot of useful tests for measuring memory performance. More extensive data than AIDA64 and bandwidth numbers differ between the tests. Note that it must be run as administrator to disable prefetching. On AMD-systems you may have to disable it in bios.
+* [xmrig](https://github.com/xmrig/xmrig) is very memory sensitive so it's useful to test the effects of specific timings. Run as admin with `--bench=1M` as a command line argument to start the benchmark. Use the benchmark time to compare.
 * [MaxxMEM2](https://www.softpedia.com/get/System/Benchmarks/MaxxMEM2.shtml) - free alternative to AIDA64, but bandwidth tests seem to be a lot lower so it isn't directly comparable to AIDA64.
 * [Super Pi Mod v1.5 XS](https://www.techpowerup.com/download/super-pi/) - another memory sensitive benchmark, but I haven't used it as much as AIDA64. 1M - 8M digits should be enough for a quick benchmark. You only need to look at the last (total) time, where lower is better.
 * [HWBOT x265 Benchmark](https://hwbot.org/benchmark/hwbot_x265_benchmark_-_1080p/) - I've heard that this benchmark is also sensitive to memory, but I haven't really tested it myself.
