@@ -94,8 +94,7 @@ You should always test with a variety of stress tests to ensure your overclock i
     * Z370(?)/Z390: [Asrock Timing Configurator v4.0.4](https://www.asrock.com/MB/Intel/X299%20OC%20Formula/index.asp#Download) (don't need an Asrock motherboard).
     * EVGA motherboards and Z170/Z270(?)/Z490: [Asrock Timing Configurator v4.0.3](https://www.asrock.com/mb/Intel/Z170%20OC%20Formula/#Download).
   * AMD: 
-    * Ryzen 1000/2000: [Ryzen Timing Checker](https://www.techpowerup.com/download/ryzen-timing-checker/).
-    * Ryzen 3000: [Ryzen Master](https://www.amd.com/en/technologies/ryzen-master) or [ZenTimings](https://www.overclock.net/forum/13-amd-general/1740690-zentimings.html).
+    * [ZenTimings](https://zentimings.protonrom.com/).
     
 ## Benchmarks
 * [AIDA64](https://www.aida64.com/downloads) - free 30 day trial. We'll be using the cache and memory benchmark (found under tools) to see how our memory is performing. You can right click the start benchmark button and run memory tests only to skip the cache tests.
