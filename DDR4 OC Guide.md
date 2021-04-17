@@ -40,7 +40,6 @@
 * Ensure your sticks are in the recommended DIMM slots (usually 2 and 4).
 * Make sure your CPU is fully stable before overclocking RAM, as an unstable CPU can lead to memory errors. When pushing high frequency with tight timings, it's possible that your CPU can become unstable.
 * Make sure your UEFI is up to date.
-* [Thaiphoon](http://www.softnology.biz/files.html) to show what ICs (integrated circuits or RAM chips) your sticks use. This will give you an idea of what frequency and timings to expect.
 
 ## Memory Testing Software
 You should always test with a variety of stress tests to ensure your overclock is stable.
