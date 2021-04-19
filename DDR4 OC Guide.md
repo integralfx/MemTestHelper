@@ -249,14 +249,15 @@ As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage 
 ### Ranking
 * Below is how most of the common ICs rank in terms of frequency and timings.
   1. 8Gb Samsung B-die
-  2. 8Gb Micron Rev. E, 4Gb Samsung E-die, 8Gb DJR, 8Gb Nanya B-die
-  3. 8Gb CJR
-  4. 8Gb Samsung D-die 
-  5. 16Gb Micron Rev. E, 8Gb Samsung C-die
-  6. 8Gb AFR
-  7. 4Gb D-die
-  8. 8Gb MFR 
-  9. 4Gb S-die
+  2. 16Gb Micron Rev. B
+  3. 8Gb Micron Rev. E, 4Gb Samsung E-die, 8Gb Hynix DJR, 8Gb Nanya B-die
+  4. 8Gb Hynix CJR
+  5. 8Gb Samsung D-die 
+  6. 16Gb Micron Rev. E, 8Gb Samsung C-die
+  7. 8Gb Hynix AFR
+  8. 4Gb Samsung D-die
+  9. 8Gb Hynix MFR 
+  10. 4Gb Samsung S-die
   * Based off [buildzoid's ranking](https://www.reddit.com/r/overclocking/comments/8cjla5/the_best_manufacturerdie_of_ddr_ram_in_order/dxfgd4x/).
  
 ### Temperatures and Its Effect on Stability
