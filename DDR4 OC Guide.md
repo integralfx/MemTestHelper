@@ -362,14 +362,16 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
 1. On Intel, start off with 1.15v VCCSA and VCCIO.  
    On AMD, start off with 1.10v SOC.
    * SOC voltage might be named differently depending on the manufacturer.
-     * Asrock: SOC Overclock VID hidden in the AMD CBS menu.
+     * Asrock: CPU VDDCR_SOC Voltage. If you can't find that you can use SOC Overclock VID hidden in the AMD CBS menu.
        * [VID values](https://www.reddit.com/r/Amd/comments/842ehb/asrock_ab350_pro4_guide_bios_overclocking_raven/).
      * Asus: VDDCR SOC.
      * Gigabyte: (Dynamic) Vcore SOC.
        * Note that dynamic Vcore SOC is an offset voltage. The base voltage can change automatically when increasing DRAM frequency. +0.100v at 3000MHz might result in 1.10v actual, but +0.100v at 3400MHz might result in 1.20v actual.
      * MSI: CPU NB/SOC.
-2. Set DRAM voltage to 1.40v. If you're using Micron/SpecTek ICs, excluding Rev. E, or Samsung C-Die, set 1.35v.
+2. Set DRAM voltage to 1.40v. If you're using ICs that roll over above 1.35v, set 1.35v.
+   * ICs that are known to roll over above 1.35v include but is not limited to: 8Gb Samsung C-die, older Micron/SpecTek ICs (before 8Gb Rev. E).
 3. Set primary timings to 16-20-20-40 (tCL-tRCD-tRP-tRAS) and tCWL to 16.
+   * Most ICs need loose tRCD and/or tRP which is why I recommend 20.
    * See [this post](https://redd.it/ahs5a2) for more information on these timings.
 4. Increase the DRAM frequency until it doesn't boot into Windows any more. Keep in mind the expectations detailed above.
    * If you're on Intel, a quick way of knowing if you're unstable is to examine the RTLs and IOLs. Each group of RTLs and IOLs correspond to a channel. Within each group, there are 2 values which correspond to each DIMM.  
