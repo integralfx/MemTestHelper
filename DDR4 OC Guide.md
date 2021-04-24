@@ -367,13 +367,14 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
 1. On Intel, start off with 1.15v VCCSA and VCCIO.  
    On AMD, start off with 1.10v SOC.
    * SOC voltage might be named differently depending on the manufacturer.
-     * Asrock: CPU VDDCR_SOC Voltage. If you can't find that you can use SOC Overclock VID hidden in the AMD CBS menu.
+     * Asrock: CPU VDDCR_SOC Voltage. If you can't find that, you can use SOC Overclock VID hidden in the AMD CBS menu.
        * [VID values](https://www.reddit.com/r/Amd/comments/842ehb/asrock_ab350_pro4_guide_bios_overclocking_raven/).
      * Asus: VDDCR SOC.
      * Gigabyte: (Dynamic) Vcore SOC.
        * Note that dynamic Vcore SOC is an offset voltage. The base voltage can change automatically when increasing DRAM frequency. +0.100v at 3000MHz might result in 1.10v actual, but +0.100v at 3400MHz might result in 1.20v actual.
      * MSI: CPU NB/SOC.
 2. Set DRAM voltage to 1.40v. If you're using ICs that roll over above 1.35v, set 1.35v.
+   * "Roll over" means that the IC becomes more unstable as you increase the voltage, sometimes to the point of not even POSTing.
    * ICs that are known to roll over above 1.35v include but is not limited to: 8Gb Samsung C-die, older Micron/SpecTek ICs (before 8Gb Rev. E).
 3. Set primary timings to 16-20-20-40 (tCL-tRCD-tRP-tRAS) and tCWL to 16.
    * Most ICs need loose tRCD and/or tRP which is why I recommend 20.
@@ -507,7 +508,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
  
 6. On Intel, drop tRCD and tRP by 1 until unstable.  
 
-   On AMD, drop tRCD by 1 until unstable. Do the same with tRP.
+   On AMD, drop tRCD by 1 until unstable. Repeat with tRP.
    * Note: More IMC voltage may be necessary to stabilise tighter tRCD.
    
 7. Set `tRAS = tCL + tRCD(RD) + 2`. Increase if unstable.
@@ -534,7 +535,9 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
     AMD:
     * Getting GDM disabled and CR 1 stable can be pretty difficult but if you've come this far down the rabbit hole it's worth a shot.
     * If you can get GDM disabled and CR 1 stable without touching anything then you can skip this section.
-    1. Set the drive strengths (ClkDrvStr, AddrCmdDrvStr, CsOdtDrvStr, CkeDrvStr) to 60-20-20-24 and setup times (AddrCmdSetup, CsOdtSetup, CkeSetup) to 63-63-63.
+    1. Set the drive strengths to 60-20-20-24 and setup times to 63-63-63.
+       * Drive strengths are ClkDrvStr, AddrCmdDrvStr, CsOdtDrvStr and CkeDrvStr.
+       * Setup times are AddrCmdSetup, CsOdtSetup and CkeSetup.
     2. If you can't POST, adjust the setup times until you can (you should adjust them all together).
     3. Run a memory test.
     4. Adjust setup times then drive strengths if unstable.
