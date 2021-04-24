@@ -202,18 +202,19 @@ As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage 
 ![B-die tRFC Voltage Scaling](https://i.imgur.com/Wngug1M.png)
   * Here you can see that tRFC scales pretty well on B-die.
 
-* Some older Micron ICs (before Rev. E), are known to scale negatively with voltage. That is, they become unstable at the same frequency and timings just by increasing the voltage (usually above 1.35v).
+* Some older Micron ICs (before 8Gb Rev. E), are known to scale negatively with voltage. That is, they become unstable at the same frequency and timings just by increasing the voltage (usually above 1.35v).
 * Here is a table of ICs I have tested and if the timing scales with voltage:
 
   | IC                 | tCL | tRCD | tRP | tRFC |
   | :-:                | :-: | :--: | :-: | :--: |
-  | 8Gb Hynix AFR      | Y   | N    | N   | ?    | 
-  | 8Gb Hynix CJR      | Y   | N    | N   | Y    |
-  | 8Gb Hynix DJR      | Y   | N    | N   | Y    |
-  | 8Gb Micron Rev. E  | Y   | N    | N   | N    |
-  | 8Gb Nanya B-die    | Y   | N    | N   | N    |
-  | 8Gb Samsung B-die  | Y   | Y    | Y   | Y    |
-  | 8Gb Samsung D-die  | Y   | N    | N   | N    |
+  | Hynix 8Gb AFR      | Y   | N    | N   | ?    | 
+  | Hynix 8Gb CJR      | Y   | N    | N   | Y    |
+  | Hynix 8Gb DJR      | Y   | N    | N   | Y    |
+  | Micron 8Gb Rev. E  | Y   | N    | N   | N    |
+  | Nanya 8Gb B-die    | Y   | N    | N   | N    |
+  | Samsung 4Gb E-die  | Y   | N    | N   | N    |
+  | Samsung 8Gb B-die  | Y   | Y    | Y   | Y    |
+  | Samsung 8Gb D-die  | Y   | N    | N   | N    |
   * The timings that don't scale with voltage usually need to be increased as you increase frequency.
   
 ### Expected Max Frequency
@@ -221,13 +222,14 @@ As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage 
 
   | IC | Expected Max Frequency (MHz) |
   | :-: | :-------------------------: |
-  | 8Gb Hynix AFR | 3600 |
-  | 8Gb Hynix CJR | 4000<sup>1</sup> |
-  | 8Gb Hynix DJR | 4000+ |
-  | 8Gb Nanya B-die | 4000+ |
-  | 8Gb Micron Rev. E | 4000+ |
-  | 8Gb Samsung B-die | 4000+ |
-  | 8Gb Samsung D-die | 4000+ |
+  | Hynix 8Gb AFR | 3600 |
+  | Hynix 8Gb CJR | 4000<sup>1</sup> |
+  | Hynix 8Gb DJR | 4000+ |
+  | Nanya 8Gb B-die | 4000+ |
+  | Micron 8Gb Rev. E | 4000+ |
+  | Samsung 4Gb E-die | 4000+ |
+  | Samsung 8Gb B-die | 4000+ |
+  | Samsung 8Gb D-die | 4000+ |
   * <sup>1</sup>CJR is a bit inconsistent in my testing. I've tested 3 RipJaws V 3600 CL19 8GB sticks. One of them was stuck at 3600MHz, another at 3800MHz but the last could do 4000MHz, all at CL16 with 1.45v.
   * Don't expect lower binned ICs to overclock nearly as well as higher binned ICs. This is especially true for [B-die](https://www.youtube.com/watch?v=rmrap-Jrfww).
   
@@ -251,15 +253,15 @@ As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage 
   
 ### Ranking
 * Below is how most of the common ICs rank in terms of frequency and timings.
-  1. 8Gb Samsung B-die
-  2. 16Gb Micron Rev. B
-  3. 8Gb Micron Rev. E, 4Gb Samsung E-die, 8Gb Hynix DJR, 8Gb Nanya B-die
-  4. 8Gb Hynix CJR, 8Gb Samsung D-die 
-  6. 16Gb Micron Rev. E, 8Gb Samsung C-die
-  7. 8Gb Hynix AFR
-  8. 4Gb Samsung D-die
-  9. 8Gb Hynix MFR 
-  10. 4Gb Samsung S-die
+  1. Samsung 8Gb B-die
+  2. Micron 16Gb Rev. B
+  3. Micron 8Gb Rev. E, Samsung 4Gb E-die, Hynix 8Gb DJR, Nanya 8Gb B-die
+  4. Hynix 8Gb CJR, Samsung 8Gb D-die 
+  6. Micron 16Gb Rev. E, Samsung 8Gb C-die
+  7. Hynix 8Gb AFR
+  8. Samsung 4Gb D-die
+  9. Hynix 8Gb MFR 
+  10. Samsung 4Gb S-die
   * Based off [buildzoid's ranking](https://www.reddit.com/r/overclocking/comments/8cjla5/the_best_manufacturerdie_of_ddr_ram_in_order/dxfgd4x/).
   * Note that the ICs that have the same rank are in no particular order.
  
