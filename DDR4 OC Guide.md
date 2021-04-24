@@ -207,10 +207,10 @@ As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage 
 
   | IC                 | tCL | tRCD | tRP | tRFC |
   | :-:                | :-: | :--: | :-: | :--: |
-  | 8Gb AFR            | Y   | N    | N   | ?    | 
-  | 8Gb CJR            | Y   | N    | N   | Y    |
-  | 8Gb DJR            | Y   | N    | N   | Y    |
-  | 8Gb Rev. E         | Y   | N    | N   | N    |
+  | 8Gb Hynix AFR      | Y   | N    | N   | ?    | 
+  | 8Gb Hynix CJR      | Y   | N    | N   | Y    |
+  | 8Gb Hynix DJR      | Y   | N    | N   | Y    |
+  | 8Gb Micron Rev. E  | Y   | N    | N   | N    |
   | 8Gb Nanya B-die    | Y   | N    | N   | N    |
   | 8Gb Samsung B-die  | Y   | Y    | Y   | Y    |
   | 8Gb Samsung D-die  | Y   | N    | N   | N    |
@@ -221,10 +221,13 @@ As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage 
 
   | IC | Expected Max Frequency (MHz) |
   | :-: | :-------------------------: |
-  | 8Gb AFR | 3600 |
-  | 8Gb CJR | 4000<sup>1</sup> |
-  | 8Gb Rev. E | 4000+ |
-  | 8Gb B-die | 4000+ |
+  | 8Gb Hynix AFR | 3600 |
+  | 8Gb Hynix CJR | 4000<sup>1</sup> |
+  | 8Gb Hynix DJR | 4000+ |
+  | 8Gb Nanya B-die | 4000+ |
+  | 8Gb Micron Rev. E | 4000+ |
+  | 8Gb Samsung B-die | 4000+ |
+  | 8Gb Samsung D-die | 4000+ |
   * <sup>1</sup>CJR is a bit inconsistent in my testing. I've tested 3 RipJaws V 3600 CL19 8GB sticks. One of them was stuck at 3600MHz, another at 3800MHz but the last could do 4000MHz, all at CL16 with 1.45v.
   * Don't expect lower binned ICs to overclock nearly as well as higher binned ICs. This is especially true for [B-die](https://www.youtube.com/watch?v=rmrap-Jrfww).
   
