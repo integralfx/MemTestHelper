@@ -517,7 +517,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
    Here you can see that tRAS is the time between ACT and PRE commands.
      * ACT to READ = tRCD
      * READ to PRE = tRTP
-     * Hence, tRAS = tRCD = tRTP.
+     * Hence, tRAS = tRCD + tRTP.
 
 
 8. Set `tRC = tRP + tRAS`. Increase if unstable.
