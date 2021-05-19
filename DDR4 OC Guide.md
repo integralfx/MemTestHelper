@@ -511,8 +511,14 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
    On AMD, drop tRCD by 1 until unstable. Repeat with tRP.
    * Note: More IMC voltage may be necessary to stabilise tighter tRCD.
    
-7. Set `tRAS = tCL + tRCD(RD) + 2`. Increase if unstable.
-   * Setting tRAS lower than this can incur a [performance penalty](https://www.overclock.net/threads/official-intel-ddr4-24-7-memory-stability-thread.1569364/page-188#post-25801780).
+7. Set `tRAS = tRCD(RD) + tRTP`. Increase if unstable.
+   * This is the absolute minimum tRAS can be.  
+   ![tRAS](https://user-images.githubusercontent.com/16512539/118769121-298a6000-b8c3-11eb-8793-7d90e885ca67.png)
+   Here you can see that tRAS is the time between ACT and PRE commands.
+     * ACT to READ = tRCD
+     * READ to PRE = tRTP
+     * Hence, tRAS = tRCD = tRTP.
+
 
 8. Set `tRC = tRP + tRAS`. Increase if unstable.
    * tRC is only available on AMD and some Intel UEFIs.
