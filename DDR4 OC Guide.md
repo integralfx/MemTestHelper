@@ -93,6 +93,7 @@ You should always test with a variety of stress tests to ensure your overclock i
   * Intel: 
     * Z370(?)/Z390: [Asrock Timing Configurator v4.0.4](https://www.asrock.com/MB/Intel/X299%20OC%20Formula/index.asp#Download) (don't need an Asrock motherboard).
     * EVGA motherboards and Z170/Z270(?)/Z490: [Asrock Timing Configurator v4.0.3](https://www.asrock.com/mb/Intel/Z170%20OC%20Formula/#Download).
+    * For Rocket Lake: [ASRock Timing Configurator v4.0.10](http://picx.xfastest.com/nickshih/asrock/AsrTCSetup(v4.0.10).rar)
   * AMD: 
     * [ZenTimings](https://zentimings.protonrom.com/).
     
@@ -103,6 +104,7 @@ You should always test with a variety of stress tests to ensure your overclock i
 * [MaxxMEM2](https://www.softpedia.com/get/System/Benchmarks/MaxxMEM2.shtml) - free alternative to AIDA64, but bandwidth tests seem to be a lot lower so it isn't directly comparable to AIDA64.
 * [Super Pi Mod v1.5 XS](https://www.techpowerup.com/download/super-pi/) - another memory sensitive benchmark, but I haven't used it as much as AIDA64. 1M - 8M digits should be enough for a quick benchmark. You only need to look at the last (total) time, where lower is better.
 * [HWBOT x265 Benchmark](https://hwbot.org/benchmark/hwbot_x265_benchmark_-_1080p/) - I've heard that this benchmark is also sensitive to memory, but I haven't really tested it myself.
+* [PYPrime 2.x](https://github.com/monabuntur/PYPrime-2.x) - This benchmark is quick, and scales very well with CPU core clock, cache/FCLK, memory frequency, and timings
 
 # General RAM Info
 ## Frequency and Timings Relation
