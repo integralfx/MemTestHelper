@@ -169,7 +169,7 @@ Sometimes the Thaiphoon report won't tell you the IC or it may misidentify the I
 #### G.Skill 042 Code
 * Similar to Corsair, G.Skill uses a 042 code to indicate the ICs.
 * Example: 04213X**8**8**1**0B
-  * The first bolded character is the density. 4 for 4Gb, 8 for 8Gb and A for 16Gb.
+  * The first bolded character is the density. 4 for 4Gb, 8 for 8Gb and S for 16Gb.
   * The second bolded number is the manufacturer. 1 for Samsung, 2 for Hynix, 3 for Micron, 4 for PSC (powerchip), 5 for Nanya, and 9 for JHICC.
   * The last character is the revision.
   * This is the code for Samsung 8Gb B-die.
