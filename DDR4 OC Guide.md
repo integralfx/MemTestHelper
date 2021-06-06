@@ -339,7 +339,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
     > Meanwhile with 2 DPC SR config there is no issue in reaching 1866MHz FCLK/UCLK.  
 [~ The Stilt](https://www.overclock.net/forum/10-amd-cpus/1728758-strictly-technical-matisse-not-really-26.html#post28052342)
 * tRCD is split into tRCDRD (read) and tRCDWR (write). Usually, tRCDWR can go lower than tRCDRD, but I haven't noticed any performance improvements from lowering tRCDWR. It's best to keep them the same.
-* Geardown mode (GDM) is automatically enabled above 2666MHz, which forces even tCL, even tCWL, even tRTP and other even timings and CR 1T. If you want to run odd tCL, disable GDM. If you're unstable try running CR 2T, but that may negate the performance gain from dropping tCL.
+* Geardown mode (GDM) is automatically enabled above 2666MHz, which forces even tCL, even tCWL, even tRTP, even tWR and CR 1T. If you want to run odd tCL, disable GDM. If you're unstable try running CR 2T, but that may negate the performance gain from dropping tCL.
   * For example, if you try to run 3000 CL15 with GDM enabled, CL will be rounded up to 16.
   * In terms of performance: GDM disabled CR 1T > GDM enabled CR 1T > GDM disabled CR 2T.
 * On single CCD Ryzen 3000 CPUs (CPUs below 3900X), write bandwidth is halved.
