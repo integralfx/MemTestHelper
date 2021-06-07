@@ -339,7 +339,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
     > Meanwhile with 2 DPC SR config there is no issue in reaching 1866MHz FCLK/UCLK.  
 [~ The Stilt](https://www.overclock.net/forum/10-amd-cpus/1728758-strictly-technical-matisse-not-really-26.html#post28052342)
 * tRCD is split into tRCDRD (read) and tRCDWR (write). Usually, tRCDWR can go lower than tRCDRD, but I haven't noticed any performance improvements from lowering tRCDWR. It's best to keep them the same.
-* Geardown mode (GDM) is automatically enabled above 2666MHz, which forces even tCL, even tCWL and CR 1T. If you want to run odd tCL, disable GDM. If you're unstable try running CR 2T, but that may negate the performance gain from dropping tCL.
+* Geardown mode (GDM) is automatically enabled above 2666MHz, which forces even tCL, even tCWL, even tRTP, even tWR and CR 1T. If you want to run odd tCL, disable GDM. If you're unstable try running CR 2T, but that may negate the performance gain from dropping tCL.
   * For example, if you try to run 3000 CL15 with GDM enabled, CL will be rounded up to 16.
   * In terms of performance: GDM disabled CR 1T > GDM enabled CR 1T > GDM disabled CR 2T.
 * On single CCD Ryzen 3000 CPUs (CPUs below 3900X), write bandwidth is halved.
@@ -480,6 +480,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
    * On Intel, changing tCWL will affect tWRRD_dg/sg and thus tWTR_S/L. If you lower tCWL by 1 you need to lower tWRRD_dg/sg by 1 to keep the same tWTR values. Note that this might also affect tWR per the relationship described earlier.
    * <sup>1</sup>Some motherboards don't play nice with odd tCWL. For example, I'm stable at 4000 15-19-19 tCWL 14, yet tCWL 15 doesn't even POST. Another user has had similar experiences. Some motherboards may seem fine but have issues with it at higher frequencies (Asus). Manually setting tCWL equal to tCL if tCL is even or one below if tCL is uneven should alleviate this (eg. if tCL = 18 try tCWL = 18 or 16, if tCL = 17 try tCWL = 16).
    * The extreme preset is not the minimum floor in this case. tRTP can go as low as 6, while tWTRS/L can go as low as 1 6. Some boards are fine doing tCWL as low as tCL - 6. Keep in mind that this *will* increase the load on your memory controller.
+   * On AMD, tCWL can often be set to tCL - 2 but is known to require higher tWRRD.
    
 4. Now for the tertiaries:
     * If you're on AMD, refer to [this post](https://redd.it/ahs5a2).  
@@ -579,14 +580,15 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
   * Thanks to Bored and Muren for finding and verifying this on their Asrock motherboards.
 
 ### AMD
-* Try playing around with ProcODT if you can't boot. On Ryzen 1000 and 2000, you should try values between 40Ω and 68.6Ω.  
-On Ryzen 3000, [1usmus](https://www.overclock.net/forum/13-amd-general/1640919-new-dram-calculator-ryzena-1-5-1-overclocking-dram-am4-membench-0-7-dram-bench-480.html#post28049664) suggests 28Ω - 40Ω.  
+* Try playing around with ProcODT if you can't boot. This setting determines the processor on-die termination impedance. According to [Micron](https://www.micron.com/support/~/media/D546161C2C6140BCB0BAEE954AA53433.pdf), higher settings of ProcODT can lead to more stable RAM, but trade off potentially needing higher voltages. On Ryzen 1000 and 2000, you should try values between 40Ω and 68.6Ω due to the considerably weaker memory controller. 
+On Ryzen 3000 and 5000, [1usmus](https://www.overclock.net/forum/13-amd-general/1640919-new-dram-calculator-ryzena-1-5-1-overclocking-dram-am4-membench-0-7-dram-bench-480.html#post28049664) suggests 28Ω - 40Ω. Lower settings may be harder to run but potentially helps with voltage requirements.
 This seems to line up with [The Stilt's](https://www.overclock.net/forum/10-amd-cpus/1728758-strictly-technical-matisse-not-really-26.html) settings.
   > Phy at AGESA defaults, except ProcODT of 40.0Ohm, which is an ASUS auto-rule for Optimem III.
 * Lower SOC voltage and/or VDDG IOD may help with stability.
-* On Ryzen 3000, higher CLDO_VDDP can help with stability above 3600MHz.
-  > Increasing cLDO_VDDP seems beneficial > 3600MHz MEMCLKs, as increasing it seems to improve the margins and hence help with potential training issues.  
-  [~ The Stilt](https://www.overclock.net/forum/10-amd-cpus/1728758-strictly-technical-matisse-not-really-26.html)
+* On Ryzen 3000 and 5000, higher CLDO_VDDP can help with stability above 3600MHz.
+  > Increasing cLDO_VDDP seems beneficial > 3600MHz MEMCLKs, as increasing it seems to improve the margins and hence help with potential training issues. Source: [The Stilt](https://www.overclock.net/forum/10-amd-cpus/1728758-strictly-technical-matisse-not-really-26.html).
+ 
+  > This value is not to exceed 1.10v on Ryzen 3000 and 5000, and should always be restricted to at least 0.10v less than DRAM Voltage. Source: [AMD](https://community.amd.com/t5/blogs/community-update-4-let-s-talk-dram/ba-p/415902)
 * When pushing FCLK around 1800 MHz intermittent RAM training errors may be alleviated or completely eliminated by increasing VDDG CCD.
 
 # Useful Links
