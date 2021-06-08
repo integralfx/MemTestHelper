@@ -109,6 +109,7 @@ You should always test with a variety of stress tests to ensure your overclock i
 # General RAM Info
 ## Frequency and Timings Relation
 * RAM frequency is measured in megahertz (MHz) or million cycles per second. Higher frequency means more cycles per second, which means better performance.
+* Esoteric note: 
 * RAM timings are measured in clock cycles or ticks. Lower timings mean less cycles to perform an operation, which means better performance.
   * The exception to this is tREFI, which is the refresh interval. As its name suggests, tREFI is the time between refreshes. While the RAM is refreshing it can't do anything, so you'd want to refresh as infrequently as possible. To do that, you'd want the time between refreshes to be as long as possible. This means you'd want tREFI as high as possible.
 * While lower timings may be better, this also depends on the frequency the RAM is running at. For example, 3000MHz CL15 and 3200MHz CL16 have the same latency, despite 3000MHz running at a lower absolute CL. This is because the higher frequency offsets the increase in CL.
@@ -144,7 +145,7 @@ You should always test with a variety of stress tests to ensure your overclock i
   * See [here](https://www.reddit.com/r/overclocking/comments/ig9d76/thaiphoon_burner_cluelessly_guessing_memory_ics/) for more info.
 * [Single rank 8Gb Hynix CJR](https://i.imgur.com/hbFyKB2.jpg).
 * [Single rank 8Gb Micron Revision E](https://i.imgur.com/3pQjQIG.jpg) (source: Coleh#4297).
-  * SpecTek is supposedly lower binned Micron ICs.
+  * SpecTek is lower binned Micron ICs. [Source](https://www.micron.com/support/spectek-support)
   * Esoteric note: Many people have started calling this Micron E-die or even just E-die. The former is fine, but the latter can cause confusion as letter-die is typically used for Samsung ICs, i.e. 4Gbit Samsung E-die. Samsung is implied when you say E-die, but as people are calling Micron Rev. E E-die, it'd probably be a good idea to prefix the manufacturer.
 * [Dual rank 8Gb Samsung B-die](https://i.imgur.com/Nqn8s76.jpg).
 
@@ -183,11 +184,12 @@ Sometimes the Thaiphoon report won't tell you the IC or it may misidentify the I
   * This is the code for dual rank Micron produced in October 2018.
 * [Source](http://www.xtremesystems.org/forums/showthread.php?285750-Interesting-memory-deals-thread&p=5230258&viewfull=1#post5230258)
 
-### A Note on Ranks and Density
+### A Note on Logical Ranks and Density
 * Single rank sticks usually clock higher than dual rank sticks, but depending on the benchmark the performance gain from rank interleaving<sup>1</sup> can be significant enough to outperform faster single rank sticks. [This can be observed in both synthetics and games](https://kingfaris.co.uk/ram).
    * On recent platforms (Comet Lake and Zen3), bios support for dual rank has improved greatly. On many Z490-boards dual rank Samsung 8Gb B-die (2x16GB) will clock just as high as single-sided B-die, meaning you have all the performance gains of rank interleaving without any downsides.
    * <sup>1</sup>Rank interleaving allows the memory controller to parallelize memory requests, for example writing on one rank while the other is refreshing. The impact of this is easily observed in AIDA64 copy bandwidth. From the eyes of the memory controller, it doesn't matter whether the second rank is on the same DIMM (two ranks on one DIMM) or a different DIMM (two DIMM in one channel). It does, however, matter from an overclocking perspective when you consider memory trace layouts and BIOS support.
 * Density matters when determining how far your ICs can go. For example, 4Gb AFR and 8Gb AFR will not overclock the same despite sharing the same name. The same can be said for Micron Rev.B which exists as both 8Gb and 16Gb. The 16Gb chips overclock better and are sold as both in 16GB and 8GB capacities. The 8GB sticks have their SPD modified and can be found in higher-end Crucial kits (BLM2K8G51C19U4B).
+* As the count of ranks total in a system increases, so does the difficulty of scheduling info by the memory controller. This usually means that more memory ranks will a higher voltage, especially VCCSA on Intel and VSOC on AMD.
 
 ### Voltage Scaling
 * Voltage scaling simply means how the IC responds to voltage.
@@ -209,10 +211,12 @@ As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage 
 
   | IC                 | tCL | tRCD | tRP | tRFC |
   | :-:                | :-: | :--: | :-: | :--: |
-  | Hynix 8Gb AFR      | Y   | N    | N   | ?    | 
+  | Hynix 8Gb AFR      | Y   | N    | N   | ?    |
   | Hynix 8Gb CJR      | Y   | N    | N   | Y    |
   | Hynix 8Gb DJR      | Y   | N    | N   | Y    |
+  | Micron 8Gb Rev. B  | Y   | N    | N   | N    |
   | Micron 8Gb Rev. E  | Y   | N    | N   | N    |
+  | Micron 16Gb Rev. B  | Y   | N    | N   | N    |
   | Nanya 8Gb B-die    | Y   | N    | N   | N    |
   | Samsung 4Gb E-die  | Y   | N    | N   | N    |
   | Samsung 8Gb B-die  | Y   | Y    | Y   | Y    |
@@ -222,23 +226,26 @@ As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage 
 ### Expected Max Frequency
 * Below are the expected max frequency for some of the common ICs:
 
-  | IC | Expected Max Frequency (MHz) |
-  | :-: | :-------------------------: |
-  | Hynix 8Gb AFR | 3600 |
-  | Hynix 8Gb CJR | 4000<sup>1</sup> |
-  | Hynix 8Gb DJR | 4000+ |
-  | Nanya 8Gb B-die | 4000+ |
-  | Micron 8Gb Rev. E | 4000+ |
-  | Samsung 4Gb E-die | 4000+ |
-  | Samsung 8Gb B-die | 4000+ |
-  | Samsung 8Gb D-die | 4000+ |
+  | IC | Frequency attainable at 1.35v (MHz) | Expected Clock Limit (MHz) |
+  | :-: | :-------------------------: | :------------: |
+  | Hynix 8Gb AFR | 3600 | 3600 |
+  | Hynix 8Gb CJR | 3800 | 4133<sup>1</sup> |
+  | Hynix 8Gb DJR | 4000+ | Unknown (too high) |
+  | Nanya 8Gb B-die | 3600 | 4000+ |
+  | Micron 8Gb Rev. B | 3400 | 4000
+  | Micron 8Gb Rev. E | 4000+ | Unknown (too high) |
+  | Micron 16Gb Rev. B | 4000+ | Unknown (too high) |
+  | Samsung 4Gb E-die | 4000+ | 4200+ |
+  | Samsung 8Gb B-die | 4000+ | Unknown (too high) |
+  | Samsung 8Gb D-die | 4000+ | 4200+ |
   * <sup>1</sup>CJR is a bit inconsistent in my testing. I've tested 3 RipJaws V 3600 CL19 8GB sticks. One of them was stuck at 3600MHz, another at 3800MHz but the last could do 4000MHz, all at CL16 with 1.45v.
   * Don't expect lower binned ICs to overclock nearly as well as higher binned ICs. This is especially true for [B-die](https://www.youtube.com/watch?v=rmrap-Jrfww).
   
 ### Binning
-* Binning is basically separating components based on their frequency.  
+* Binning is basically separating components based on their frequency or voltage scaling.  
   Manufacturers would separate ICs into different containers/bins depending on their frequency. Hence the term binning.
-* B-die binned for 2400 15-15-15 is significantly worse than good B-die binned for 3200 14-14-14 or even 3000 14-14-14. Don't expect it to have the same voltage scaling characteristics as good B-die.
+* G.Skill is one manufacturer known for extensive binning and categorization. Oftentimes, several different SKUs of G.Skill memory will belong to the same factory bin )ie. 3600 16-16-16-36 1.35V Bin of B-Die being binned the same as 3200 14-14-14-34 1.35V B-Die)
+* B-die binned for 2400 15-15-15 is significantly worse than good B-die binned for 3200 14-14-14 or even 3000 14-14-14. Don't expect it to have the same voltage scaling characteristics as good B-Die.
 * To figure out which frequency and timings are a better (tighter) bin within the same IC at the same voltage, find out which timing doesn't scale from voltage.  
   Simply divide the frequency by that timing and the higher value is the tighter bin.
   * For example, Crucial Ballistix 3000 15-16-16 and 3200 16-18-18 both use Micron Rev. E ICs. Simply dividing the frequency by tCL gives us the same value (200), so does that mean they're the same bin?  
@@ -248,24 +255,24 @@ As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage 
   As you can see, 3000 15-16-16 is a tighter bin than 3200 16-18-18. This means that a kit rated for 3000 15-16-16 will probably be able to do 3200 16-18-18 but a kit rated for 3200 16-18-18 might not be able to do 3000 15-16-16. The frequency and timings difference is pretty small, so they'll probably overclock very similarly.
   
 ### Maximum Recommended Daily Voltage
-* [JEDEC (p.174)](http://www.softnology.biz/pdf/JESD79-4B.pdf) specifies that the absolute maximum is 1.50v.
+* [JEDEC JESD79-4B (p.174)](http://www.softnology.biz/pdf/JESD79-4B.pdf) specifies that the absolute maximum is 1.50V.
   > Stresses greater than those listed under “Absolute Maximum Ratings” may cause permanent damage to the device. This is a stress rating only and functional operation of the device at these or any other conditions above those indicated in the operational sections of this specification is not implied. Exposure to absolute maximum rating conditions for extended periods may affect reliability.
-* That being said, I'd only recommend running 1.50v on B-die as it's known to have high voltage tolerance, and Rev E. as there are kits with XMP rated at 1.50v. At least for the common ICs (4/8Gb AFR, 8Gb CJR, 4/8Gb MFR), the max recommended voltage is 1.45v. Some of the lesser known ICs like [8Gb C-die](https://www.hardwareluxx.de/community/f13/samsung-8gbit-ddr4-c-die-k4a8g045wc-overclocking-ergebnisse-im-startbeitrag-1198323.html) have been reported to scale negatively or even die above 1.20v, though YMMV.
-* It may be safe to daily 1.60v as there are kits on the [B550 Unify-X QVL](https://www.msi.com/Motherboard/support/MEG-B550-UNIFY-X#support-mem-20) rated for 1.60v. B-die, 8Gb Rev. E, DJR and potentially 16Gb Rev. B *should* be fine at running 1.60v daily, though it's recommended to have active airflow.
+* THis value is the officialy maximum of the DDR4 Spec for which all DDR4 is to be rated for, however numerous ICs are unable to remain safe at such high sustained voltages. As an example, degradation can be seen scaling negatively with voltages higher than as low as 1.20V on ICs such as [Samsung 8Gb C-die](https://www.hardwareluxx.de/community/f13/samsung-8gbit-ddr4-c-die-k4a8g045wc-overclocking-ergebnisse-im-startbeitrag-1198323.html). Furthermore, there are other ICs, such as Hynix 8Gb DJR or Samsung 8Gb B die that have been observed dailying voltages well in excess of 1.55v. DO your research about what voltages are safe on your IC, or stick to 1.35v or similar if this value is not known. Due to random chance and silicon variance, YMMV.
+* One common limiting factor for the maximum safe voltage on which you can operate is the architecture on which your CPU is based. According to [JEDEC](https://www.jedec.org/standards-documents/dictionary/terms/output-stage-drain-power-voltage-vddq), VDDQ, the voltage of data output, is often tied to VDD, colloquially reffered to as VDIMM or DRAM Voltage. This voltage interacts with the PHY or Physical Layer present on the CPU and may lead to long term degredation if set too high.
+* It may be safe to daily 1.60V as there are kits on the [B550 Unify-X QVL](https://www.msi.com/Motherboard/support/MEG-B550-UNIFY-X#support-mem-20) rated for 1.60v. B-die, 8Gb Rev. E, DJR and potentially 16Gb Rev. B *should* be fine at running 1.60v daily, though it's recommended to have active airflow. Power output of RAM is tied to the voltage at whih it operates, and high voltages can themselves lower the threshold for what voltages are considered safe.
   
 ### Ranking
 * Below is how most of the common ICs rank in terms of frequency and timings.
-  1. Samsung 8Gb B-die
-  2. Micron 16Gb Rev. B
-  3. Micron 8Gb Rev. E, Samsung 4Gb E-die, Hynix 8Gb DJR, Nanya 8Gb B-die
-  4. Hynix 8Gb CJR, Samsung 8Gb D-die 
-  6. Micron 16Gb Rev. E, Samsung 8Gb C-die
-  7. Hynix 8Gb AFR
-  8. Samsung 4Gb D-die
-  9. Hynix 8Gb MFR 
-  10. Samsung 4Gb S-die
-  * Based off [buildzoid's ranking](https://www.reddit.com/r/overclocking/comments/8cjla5/the_best_manufacturerdie_of_ddr_ram_in_order/dxfgd4x/).
-  * Note that the ICs that have the same rank are in no particular order.
+  | Tier | ICs | Description |
+  | :-:  | :-: | :--:        |
+  | S | Samsung 8Gb B-Die | Best DDR4 IC for all round performance |
+  | A | Hynix 8Gb DJR, Micron 8Gb Rev. E<sup>1</sup>, Micron 16Gb Rev. B | Top Performing ICs. Known not to clockwall and generally scale with voltage. |
+  | B | Hynix 8Gb CJR, Samsung 4Gb E-Die, Nanya 8Gb B-Die | High end ICs with the ability to run high frequencies with good timings. |
+  | C | Hynix 8Gb JJR, Hynix 16Gb MJR, Hynix 16Gb CJR, Micron 16Gb Rev. E, Samsung 8Gb D-Die, Nanya 8Gb A-Die | Decent ICs with good performance and decent frequency scaling.|
+  | D | Hynix 8Gb AFR, Hynix 8Gb BFR, Micron 8Gb Rev. B, Micron 8Gb Rev. H, Samsung 8Gb C-Die, Samsung 4Gb D-Die | Low end ICs commonly found in average cheap kits. Most are EOL and no longer relevant. 
+  | F | Hynix 8Gb MFR, Micron 4Gb Rev. A, Samsung 4Gb S-Die, Nanya 4Gb A-Die, Nanya 8Gb C-Die | Terrible ICs unable to reliably attain even the highest standard of the base JEDEC Specification.|
+  * Partially based off [Buildzoid's older ranking](https://www.reddit.com/r/overclocking/comments/8cjla5/the_best_manufacturerdie_of_ddr_ram_in_order/dxfgd4x/). Some ICs are not included in this list due to age of the post.
+  * <sup>1</sup> 8Gb Rev. E is extremely varied. The chips and various revisions that all fall under 8Gb Rev. E range from a really weak IC to an extremely strong one.
  
 ### Temperatures and Its Effect on Stability
 * Generally, the hotter your RAM is the less stability it will have at higher frequencies and/or tighter timings.
@@ -453,18 +460,22 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
      
 2. Next is tRFC. Default for 8Gb ICs is 350**ns** (note the units).
    * Note: Tightening tRFC too much can result in system freezes/lock ups.
+   * tRFC is a timing regulating the number of cycles for which the dram capacitors are "recharged" or refreshed. Because capacitor charge loss is proportional to temperature, RAM operating at higher temperatures may need substantially higher tRFC values.
    * To convert to ns: `2000 * timing / ddr_freq`.  
-   For example, tRFC 250 at 3200MHz is `2000 * 250 / 3200 = 156.25ns`.
+   For example, tRFC 250 at DDR4-3200 is `2000 * 250 / 3200 = 156.25ns`.
    * To convert from ns (this is what you would type in your UEFI): `ns * ddr_freq / 2000`.  
-   For example, 180ns at 3600MHz is `180 * 3600 / 2000 = 324`, so you would type 324 in your UEFI.
+   For example, 180ns at DDR4-3600 is `180 * 3600 / 2000 = 324`, so you would type 324 in your UEFI.
    * Below are the typical tRFC in ns for the common ICs:
    
      | IC | tRFC (ns) |
      | :-: | :-------: |
-     | 8Gb AFR | 260 - 280 |
-     | 8Gb CJR | 260 - 280 |
-     | 8Gb Rev. E | 290 - 310 |
-     | 8Gb B-die | 140 - 180 |
+     | Hynix 8Gb AFR | 260 - 280 |
+     | Hynix 8Gb CJR | 260 - 280 |
+     | 8Gb DJR | 260 - 280 |
+     | Micron 8Gb Rev. E | 280 - 310 |
+     | Micron 16Gb Rev. B | 290 - 310 |
+     | Samsung 8Gb B-Die | 120 - 180 |
+     | Samsung 8Gb C-Die | 300-340 |
      
    * For all other ICs, I would recommend doing a binary search to find the lowest stable tRFC.  
    For example, say your tRFC is 630. The next tRFC you should try is half of that (315). If that is unstable, you know that your lowest tRFC is somewhere between 315 and 630, so you try the midpoint (`(315 + 630) / 2 = 472.5, round down to 472`). If that is stable, you know that your lowest tRFC is between 315 and 472, so you try the midpoint and so on.
@@ -479,7 +490,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
    * On Intel, tWTRS/L should be left on auto and controlled with tWRRD_dg/sg respectively. Dropping tWRRD_dg by 1 will drop tWTRS by 1. Likewise with tWRRD_sg. Once they're as low as you can go, manually set tWTRS/L.
    * On Intel, changing tCWL will affect tWRRD_dg/sg and thus tWTR_S/L. If you lower tCWL by 1 you need to lower tWRRD_dg/sg by 1 to keep the same tWTR values. Note that this might also affect tWR per the relationship described earlier.
    * <sup>1</sup>Some motherboards don't play nice with odd tCWL. For example, I'm stable at 4000 15-19-19 tCWL 14, yet tCWL 15 doesn't even POST. Another user has had similar experiences. Some motherboards may seem fine but have issues with it at higher frequencies (Asus). Manually setting tCWL equal to tCL if tCL is even or one below if tCL is uneven should alleviate this (eg. if tCL = 18 try tCWL = 18 or 16, if tCL = 17 try tCWL = 16).
-   * The extreme preset is not the minimum floor in this case. tRTP can go as low as 6, while tWTRS/L can go as low as 1 6. Some boards are fine doing tCWL as low as tCL - 6. Keep in mind that this *will* increase the load on your memory controller.
+   * The extreme preset is not the minimum floor in this case. tRTP can go as low as 5 (6 with Gear Down Mode on), while tWTRS/L can go as low as 1 and 6 respectively. Some boards are fine doing tCWL as low as tCL - 6. Keep in mind that this *will* increase the load on your memory controller.
    * On AMD, tCWL can often be set to tCL - 2 but is known to require higher tWRRD.
    
 4. Now for the tertiaries:
@@ -489,6 +500,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
        | Timing | Safe | Tight | Extreme |
        | ------ | ---- | ----- | ------- |
        | tRDRDSCL tWRWRSCL | 4 4 | 3 3 | 2 2 |
+     
      
     * If you're on Intel, tune the tertiaries one group at a time.  
       My suggestions:
@@ -544,6 +556,9 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
     AMD:
     * Getting GDM disabled and CR 1 stable can be pretty difficult but if you've come this far down the rabbit hole it's worth a shot.
     * If you can get GDM disabled and CR 1 stable without touching anything then you can skip this section.
+    * CR 1 becomes signficiantly harder to run the higher frequency goes. Oftentimes, increase CR to 2 can help you acheive higher frequencies.
+    * On AMD, Gear Down Mode will override Command Rate. For this reason, turning Gear Down Mode off in order to set CR 2 may be benefitial to overall stability
+    
     1. Set the drive strengths to 60-20-20-24 and setup times to 63-63-63.
        * Drive strengths are ClkDrvStr, AddrCmdDrvStr, CsOdtDrvStr and CkeDrvStr.
        * Setup times are AddrCmdSetup, CsOdtSetup and CkeSetup.
@@ -560,11 +575,11 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
     
 ## Miscellaneous Tips
 * Usually a 200MHz increase in DRAM frequency negates the latency penalty of loosening tCL, tRCD and tRP by 1, but has the benefit of higher bandwidth.  
-  For example, 3000 15-17-17 has the same latency as 3200 16-18-18, but 3200 16-18-18 has higher bandwidth.
+  For example, 3000 15-17-17 has the same latency as 3200 16-18-18, but 3200 16-18-18 has higher bandwidth. This is typically after initial tuning has been completed, and not at XMP
 * Secondary and tertiary timings (except for tRFC) don't really change much, if at all, across the frequency range. If you have stable secondary and tertiary timings at 3200MHz, you could probably run them at 3600MHz, even 4000MHz, provided your ICs, IMC and motherboard are capable.
 
 ### Intel
-* Loosening tCCDL to 8 may help with stability, especially above 3600MHz.
+* Loosening tCCDL to 8 may help with stability, especially above 3600MHz. This does not bring significant penalty to latency but may affect memory read and write bandwidth considerably.
 * Higher cache (aka uncore, ring) frequency can increase bandwidth and reduce latency.
 * After you've finished tightening the timings, you can increase IOL offsets to reduce IOLs. Make sure to run a memory test after. More info [here](https://hwbot.org/newsflash/3058_advanced_skylake_overclocking_tune_ddr4_memory_rtlio_on_maximus_viii_with_alexaros_guide).
   * In general, RTL and IOL values impact memory performance. Lowering them will increase bandwidth and decrease latency [quite significantly](https://i.imgur.com/wS2ZqUx.png). Lower values will in some cases also help with stability and lower memory controller voltage requirements. Some boards train them very well on their own. Some boards allow for easy tuning while other boards simply ignore any user input.
