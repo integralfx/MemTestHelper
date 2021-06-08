@@ -447,7 +447,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
    | ------ | ---- | ----- | ------- |
    | tRRDS tRRDL tFAW | 6 6 24 | 4 6 16 | 4 4 16 |
    | tWR | 16 | 12 | 10 |
-   * Minimum tFAW can be whilst improving performance is tRRDS * 4 or tRRDL * 4, depending on if tRRDS or tRRDL is lower.
+   * Minimum tFAW can be while still improving performance is tRRDS * 4 or tRRDL * 4 (whichever is lower).
    * You don't have to run all of the timings at one preset. You might only be able to run tRRDS tRRDL tFAW at the tight preset, but you may be able to run tWR at the extreme preset.
    * On Intel DDR4 platforms the tWR timing does not exist and is replaced by the tWRPRE timing. This timing is the gap between the commands whilst tWR is from the last clock cycle of the write to the read command. Due to this the conversion from tWR to tWRPRE is tWR = tWRPRE - tCWL - 4. If your bios has tWRPRE it is recommended to use that as tWR isn't a real timing on Intel. However the tWR shown in something such as asrock timing configurator is the correct effective tWR. Acceptable range for tWRPRE is 23-95 on skylake mainstream platforms, and 18-159 on Rocketlake. tWR can be pushed to an effective negative timing using tWRPRE.
      
