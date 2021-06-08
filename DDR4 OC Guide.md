@@ -447,9 +447,9 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
    | ------ | ---- | ----- | ------- |
    | tRRDS tRRDL tFAW | 6 6 24 | 4 6 16 | 4 4 16 |
    | tWR | 16 | 12 | 10 |
-   * Minimum tFAW can be is tRRDS * 4.
+   * Minimum tFAW can be whilst improving performance is tRRDS * 4 or tRRDL * 4, depending on if tRRDS or tRRDL is lower.
    * You don't have to run all of the timings at one preset. You might only be able to run tRRDS tRRDL tFAW at the tight preset, but you may be able to run tWR at the extreme preset.
-   * On some Intel motherboards, tWR in the UEFI does nothing and instead needs to be controlled through tWRPRE (sometimes tWRPDEN). Dropping tWRPRE by 1 will drop tWR by 1, following the rule tWR = tWRPRE - tCWL - 4.
+   * On Intel DDR4 platforms the tWR timing does not exist and is replaced by the tWRPRE timing. This timing is the gap between the commands whilst tWR is from the last clock cycle of the write to the read command. Due to this the conversion from tWR to tWRPRE is tWR = tWRPRE - tCWL - 4. If your bios has tWRPRE it is recommended to use that as tWR isn't a real timing on Intel. However the tWR shown in something such as asrock timing configurator is the correct effective tWR. Acceptable range for tWRPRE is 23-95 on skylake mainstream platforms, and 18-159 on Rocketlake. tWR can be pushed to an effective negative timing using tWRPRE.
      
 2. Next is tRFC. Default for 8Gb ICs is 350**ns** (note the units).
    * Note: Tightening tRFC too much can result in system freezes/lock ups.
@@ -476,7 +476,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
    | tWTRS tWTRL | 4 12 | 4 10 | 4 8 |
    | tRTP | 12 | 10 | 8 |
    | tCWL<sup>1</sup> | tCL | tCL - 1 | tCL - 2 |
-   * On Intel, tWTRS/L should be left on auto and controlled with tWRRD_dg/sg respectively. Dropping tWRRD_dg by 1 will drop tWTRS by 1. Likewise with tWRRD_sg. Once they're as low as you can go, manually set tWTRS/L.
+   * Like tWR, on Intel tWTRS/L are not real timings and are replaced by tWRRD_dg and tWRRD_sg respectivly. Due to this, dropping tWRRD_dg will lower tWTRS by 1. Likewise with tWRRD_sg. In tWTRS/L readings it must be noted that the timings are read two lower then they physically, meaning a reading of 4/8 tWTRS/L in asrock timing configurator is actually 6/10. Conversion between tWTRS/L and tWRRD_sg/dg readings is tWTR = tWRRD - tCWL - 6. However this is two lower then actual, tWTR = tWWRD - tCWL - 4 is the actual effective tWTR.
    * On Intel, changing tCWL will affect tWRRD_dg/sg and thus tWTR_S/L. If you lower tCWL by 1 you need to lower tWRRD_dg/sg by 1 to keep the same tWTR values. Note that this might also affect tWR per the relationship described earlier.
    * <sup>1</sup>Some motherboards don't play nice with odd tCWL. For example, I'm stable at 4000 15-19-19 tCWL 14, yet tCWL 15 doesn't even POST. Another user has had similar experiences. Some motherboards may seem fine but have issues with it at higher frequencies (Asus). Manually setting tCWL equal to tCL if tCL is even or one below if tCL is uneven should alleviate this (eg. if tCL = 18 try tCWL = 18 or 16, if tCL = 17 try tCWL = 16).
    * The extreme preset is not the minimum floor in this case. tRTP can go as low as 6, while tWTRS/L can go as low as 1 6. Some boards are fine doing tCWL as low as tCL - 6. Keep in mind that this *will* increase the load on your memory controller.
@@ -525,11 +525,11 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
 
 8. Set `tRC = tRP + tRAS`. Increase if unstable.
    * tRC is only available on AMD and some Intel UEFIs.
-   * On Intel UEFIs, tRC does seem to be affected by tRP and tRAS, even if it is hidden.
+   * tRC as a timing is only aviable on AMD. On Intel this timing is not used so the effective tRC is tRAS + tRP or tRCD + tRTP + tRP, depending on which is higher. Due to this there can be many cases where stability issues are encountered due to the effective tRC being too low, as shown in the following images.
      * (1) [tRP 19 tRAS 42](https://i.imgur.com/gz1YDcO.png) - fully stable.
      * (2) [tRP 19 tRAS 36](https://i.imgur.com/lHjbLjC.png) - instant error.
      * (3) [tRP 25 tRAS 36](https://i.imgur.com/7c46Qes.png) - stable up to 500%.
-     * In (1) and (3), tRC is 61 and isn't completely unstable. However, in (2) tRC is 55 and RAMTest finds an error instantly. This indicates that my RAM can do `tRAS = tCL + tRCD(RD) + 2`, but needs tRC higher than `tRP + tRAS`. Since tRC is hidden, I need higher tRAS to get higher tRC.
+     * In (1) and (3), effective tRC is 61 and isn't completely unstable. However, in (2) effective tRC is 55 and RAMTest finds an error instantly. This indicates that my RAM can do 36 tRAS, but needs tRC higher than `tRP + tRAS`. Since tRC is non-existent, I need higher tRAS to get higher tRC.
 
 9. Increase tREFI until it's unstable. The binary search method explained in finding the lowest tRFC can also be applied here.  
    Otherwise, here are my suggestions:
