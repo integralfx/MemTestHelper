@@ -276,14 +276,16 @@ As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage 
  
 ### Temperatures and Its Effect on Stability
 * Generally, the hotter your RAM is the less stability it will have at higher frequencies and/or tighter timings.
-* B-die is temperature sensitive and its ideal range is ~30-40°C. Some may be able to withstand higher temperatures so YMMV.
+* The tRFC Timings are very dependant on temperatures, as are relates to capacitor leakage which is affected by temperature. Higher temperatures will need higher tRFC values. tRFC2 and tRFC4 are timings that activate when operating temperature of DRAM hits 85 degrees celsius. Below these temperatures,these timings dont do anything.
+* B-Die is temperature sensitive and its ideal range is ~30-40°C. Some may be able to withstand higher temperatures so YMMV.
 * Rev. E, on the other hand, doesn't seem to be temperature sensitive as demonstrated by [builzdoid](https://www.youtube.com/watch?v=OeHEtULQg3Q).
 * You might find that you're stable when running a memory test yet crash while gaming. This is because your CPU and/or GPU dump heat in the case, raising the RAM temperatures in the process. Thus, it is a good idea to stress test your GPU while running a memory test to simulate stability while gaming.
  
 ## Integrated Memory Controller (IMC)
 ### Intel - LGA1151
-* Intel's IMC is pretty strong, so it shouldn't be the bottleneck when overclocking.  
+* Intel's Skylake IMC is pretty strong, so it shouldn't be the bottleneck when overclocking.  
   What would you expect from 14+++++?
+* The Rocketlake IMC, aside from the limitations regarding Gear 1 and Gear 2 memory support, has the strongest memory controller of all Intel consumer CPUs, and by a fair margin.
 * There are 2 voltages you need to change if overclocking RAM: system agent (VCCSA) and IO (VCCIO).  
   **DO NOT** leave these on auto, as they can pump dangerous levels of voltage into your IMC, potentially degrading or even killing it. Most of the time you can keep VCCSA and VCCIO the same, but [sometimes too much can harm stability](https://i.imgur.com/Bv8617y.png) (credits: Silent_Scone). I wouldn't recommend going above 1.25v on each.  
   Below are my suggested VCCSA and VCCIO for 2 single rank DIMMs:
@@ -298,20 +300,21 @@ As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage 
 * tRCD and tRP are linked, meaning if you set tRCD 16 but tRP 17, both will run at the higher timing (17). This limitation is why many ICs don't do as well on Intel and why B-die is a good match for Intel.
   * On Asrock and EVGA UEFIs, they're combined into tRCDtRP. On ASUS UEFIs, tRP is hidden. On MSI and Gigabyte UEFIs, tRCD and tRP are visible but setting them to different values just sets both of them to the higher value.
 * Expected memory latency range: 40ns - 50ns.
-   * Expected memory latency range for Samsung B-Die: 35ns - 40ns.
+   * Expected memory latency range for Samsung B-Die: 35ns - 45ns.
    * Overall, latency varies between generations due to a difference in die size (ringbus). As a result, a 9900K will have slightly lower latency than a 10700K at the same settings since the 10700K has the same die as a 10900K.
+   * Latency is related to the values of RTLs and IOLs. Generally speaking, higher quality boards and overclocking oriented boards will be more direct in their routing of memory and likely will have lower RTLs and IOLs. On certain motherboards, RTL and IOL control is unlocked, making it modifyable, but it oftentimes isnt.
   
 ### AMD - AM4
 Some terminology:
-* MCLK: Memory clock (half of the effective RAM speed). For example, for DDR4-3200 the MCLK is 1600MHz.
+* MCLK: Real Memory clock (half of the effective RAM speed). For example, for DDR4-3200 the MCLK is 1600MHz.
 * FCLK: Infinity Fabric clock.
 * UCLK: Unified memory controller clock. Half of MCLK when MCLK and FCLK are not equal (desynchronised, 2:1 mode).
-* On Zen and Zen+, MCLK == FCLK == UCLK. However on Zen 2, you can specify FCLK. If MCLK is 1600MHz (DDR4-3200) and you set FCLK to 1600MHz, UCLK will also be 1600MHz unless you set MCLK:UCLK ratio to 2:1 (also known as UCLK DIV mode, etc.). However, if you set FCLK to 1800MHz, UCLK will run at 800MHz (desynchronised).
+* On Zen and Zen+, MCLK == FCLK == UCLK. However on Zen2 and Zen3, you can specify FCLK. If MCLK is 1600MHz (DDR4-3200) and you set FCLK to 1600MHz, UCLK will also be 1600MHz unless you set MCLK:UCLK ratio to 2:1 (also known as UCLK DIV mode, etc.). However, if you set FCLK to 1800MHz, UCLK will run at 800MHz (desynchronised).
 
-* Ryzen 1000 and 2000's IMC can be a bit finnicky when overclocking and can't hit as high frequencies as Intel can. Ryzen 3000's IMC is much better and is more or less on par with Intel.
-* SOC voltage is the voltage to the IMC and like with Intel, it's not recommended to leave it on auto. You typically want 1.0 - 1.1v as above 1.1v doesn't help much if at all.  
-  On Ryzen 2000 (possibly 1000 and 3000 as well), above 1.15v can negatively impact overclocking.
-  > There are clear differences in how the memory controller behaves on the different CPU specimens. The majority of the CPUs will do 3466MHz or higher at 1.050V SoC voltage, however the difference lies in how the different specimens react to the voltage. Some of the specimens seem scale with the increased SoC voltage, while the others simply refuse to scale at all or in some cases even illustrate negative scaling. All of the tested samples illustrated negative scaling (i.e. more errors or failures to train) when higher than 1.150V SoC was used. In all cases the maximum memory frequency was achieved at =< 1.100V SoC voltage.  
+* Ryzen 1000 and 2000's IMC can be a bit finnicky when overclocking and can't hit as high frequencies as Intel can. Ryzen 3000 and 5000's IMCs are much better and are more or less on par with Intel's newer Skylake based CPUs ie. 9th gen and 10th gen.
+* SOC voltage is the voltage to the IMC and like with Intel, it's not recommended to leave it on auto. Typical ranges for this value range around 1.00V and 1.10V. Higher values are generally acceptable, and may be necessary in stabilizing higher capacity memory and may aid in attaining FCLK stability.
+* By Contrast, when SOC voltage is set too high, it may experience negative scaling. This negative scaling typically begins to occur between 1.15V and 1.25V on most Ryzen CPUs.
+  > There are clear differences in how the memory controller behaves on the different CPU specimens. The majority of the CPUs will do 3466MHz or higher at 1.050V SoC voltage, however the difference lies in how the different specimens react to the voltage. Some of the specimens seem scale with the increased SoC voltage, while the others simply refuse to scale at all or in some cases even illustrate negative scaling. All of the tested samples illustrated negative scaling (i.e. more errors or failures to train) when higher than 1.15V SoC was used. In all cases the maximum memory frequency was achieved at =< 1.100V SoC voltage.  
   [~ The Stilt](https://forums.anandtech.com/threads/ryzen-strictly-technical.2500572/page-72#post-39391302)
 * On Ryzen 3000, there's also CLDO_VDDG (commonly abbreviated to VDDG, not to be confused with CLDO_VDD**P**), which is the voltage to the Infinity Fabric. SOC voltage should be at least 40mV above CLDO_VDDG as CLDO_VDDG is derived from SOC voltage.
   > Most cLDO voltages are regulated from the two main power rails of the CPU. In case of cLDO_VDDG and cLDO_VDDP, they are regulated from the VDDCR_SoC plane.
@@ -359,7 +362,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
   | 1000 | 65 - 75 |
   | 2000 | 60 - 70 |
   | 3000 | 65 - 75 (1:1 MCLK:FCLK) <br/> 75+ (2:1 MCLK:FCLK) |
-* On Ryzen 3000, high enough FCLK can overcome the penalties from desynchronising MCLK and FCLK, provided that you can lock your UCLK to MCLK.
+* On Ryzen 3000 and 5000, high enough FCLK can overcome the penalties from desynchronising MCLK and FCLK, provided that you can lock your UCLK to MCLK.
   
   ![Chart](https://i.imgur.com/F9HpkO2.png) 
   * (Credits: [buildzoid](https://www.youtube.com/watch?v=10pYf9wqFFY))
@@ -431,9 +434,14 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
 ## Tightening Timings
 * Make sure to run a memory test and benchmark after each change to ensure performance is improving.
   * I would recommend to benchmark 3 to 5 times and average the results, as memory benchmarks can have a bit of variance.
-  * Thereotical maximum bandwidth (MB/s) = `ddr_freq * num_channels * 64 / 8`.
-  
-    | Frequency (MHz) | Max Dual Channel Bandwidth (MB/s) |
+  * Thereotical maximum bandwidth (MB/s) = `Transfers per clock * Actual Clock * Channel Count * Bus Width * Bit to Byte ratio`.
+       * Transfers per clock refers to the number of data transfers that can occur in one full cycle of memory action. This occurs twice per cycle on DDR RAM, on the rising and falling clock edges.
+       * Actual Clock is the real clok of the memory, simply measured in MHz. This is generally shown as the real memory frequency by programs such as CPU-Z.
+       * Channel Count is the number of individually addressable pathways by which memory can be requested.
+       * Bus Width is the width of each memory channel, measured in bits.
+       * Bit to Byte ratio is a constant 1/8, or 0.125
+ 
+    | Effective Memory Clock (MHz) | Max Dual Channel Bandwidth (MB/s) |
     | :-------------: | :------------------------: |
     | 3000 | 48000 |
     | 3200 | 51200 |
@@ -443,18 +451,20 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
     | 3733 | 59728 |
     | 3800 | 60800 |
     | 4000 | 64000 |
-    * Your read and write bandwidth should be 90% - 95% of the theoretical maximum bandwidth.
-      * On single CCD Ryzen 3000 CPUs, write bandwidth should be 90% - 95% of half of the theoretical maximum bandwidth.  
+    
+    * Your read and write bandwidth should be 90% - 98% of the theoretical maximum bandwidth.
+      * On single CCD Ryzen 3000-5000 CPUs, write bandwidth should be 90% - 98% of half of the theoretical maximum bandwidth.  
         It is possible to hit half of the theoretical maximum write bandwidth. See [here](https://redd.it/cgc9bh).
+      * Percentage of theoretically max bandwidth is inversely proportional to most memory timings. Generally speaking, as RAM timings are tightened, this value will increase.
 
 1. I would recommend to tighten some of the secondary timings first, as they can speed up memory testing.  
    My suggestions:
    
    | Timing | Safe | Tight | Extreme |
    | ------ | ---- | ----- | ------- |
-   | tRRDS tRRDL tFAW | 6 6 24 | 4 6 16 | 4 4 16 |
+   | tRRDS tRRDL tFAW | 6, 6, 24 | 4, 6, 16 | 4, 4, 16 |
    | tWR | 16 | 12 | 10 |
-   * Minimum tFAW can be is tRRDS * 4.
+   * The minimum value for which lowering tFAW will have an effect on the performance of RAM is `tRRDS * 4` or `tRRDL * 4`, whichever is greater.
    * You don't have to run all of the timings at one preset. You might only be able to run tRRDS tRRDL tFAW at the tight preset, but you may be able to run tWR at the extreme preset.
    * On some Intel motherboards, tWR in the UEFI does nothing and instead needs to be controlled through tWRPRE (sometimes tWRPDEN). Dropping tWRPRE by 1 will drop tWR by 1, following the rule tWR = tWRPRE - tCWL - 4.
      
