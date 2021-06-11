@@ -567,7 +567,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
     * Getting GDM disabled and CR 1 stable can be pretty difficult but if you've come this far down the rabbit hole it's worth a shot.
     * If you can get GDM disabled and CR 1 stable without touching anything then you can skip this section.
     * CR 1 becomes signficiantly harder to run the higher frequency goes. Oftentimes, increase CR to 2 can help you acheive higher frequencies.
-    * On AMD, Gear Down Mode will override Command Rate. For this reason, turning Gear Down Mode off in order to set CR 2 may be benefitial to overall stability
+    * On AMD, Gear Down Mode will override Command Rate. For this reason, disabling Gear Down Mode in order to set CR 2 may be beneficial to overall stability.
     
     1. Set the drive strengths to 60-20-20-24 and setup times to 63-63-63.
        * Drive strengths are ClkDrvStr, AddrCmdDrvStr, CsOdtDrvStr and CkeDrvStr.
