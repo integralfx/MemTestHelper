@@ -585,7 +585,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
     
 ## Miscellaneous Tips
 * Usually a 200MHz increase in DRAM frequency negates the latency penalty of loosening tCL, tRCD and tRP by 1, but has the benefit of higher bandwidth.  
-  For example, 3000 15-17-17 has the same latency as 3200 16-18-18, but 3200 16-18-18 has higher bandwidth. This is typically after initial tuning has been completed, and not at XMP
+  For example, 3000 15-17-17 has the same latency as 3200 16-18-18, but 3200 16-18-18 has higher bandwidth. This is typically after initial tuning has been completed, and not at XMP.
 * Secondary and tertiary timings (except for tRFC) don't really change much, if at all, across the frequency range. If you have stable secondary and tertiary timings at 3200MHz, you could probably run them at 3600MHz, even 4000MHz, provided your ICs, IMC and motherboard are capable.
 
 ### Intel
