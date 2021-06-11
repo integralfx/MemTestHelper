@@ -303,7 +303,7 @@ As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage 
 * Expected memory latency range: 40ns - 50ns.
    * Expected memory latency range for Samsung B-Die: 35ns - 45ns.
    * Overall, latency varies between generations due to a difference in die size (ringbus). As a result, a 9900K will have slightly lower latency than a 10700K at the same settings since the 10700K has the same die as a 10900K.
-   * Latency is related to the values of RTLs and IOLs. Generally speaking, higher quality boards and overclocking oriented boards will be more direct in their routing of memory and likely will have lower RTLs and IOLs. On certain motherboards, RTL and IOL control is unlocked, making it modifyable, but it oftentimes isnt.
+   * Latency is affected by the RTLs and IOLs. Generally speaking, higher quality boards and overclocking oriented boards will be more direct in their routing of the memory traces and will likely have lower RTLs and IOLs. On some motherboards, changing RTLs and IOLs have no effect.
   
 ### AMD - AM4
 Some terminology:
