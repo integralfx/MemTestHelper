@@ -437,7 +437,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
   * Thereotical maximum bandwidth (MB/s) = `Transfers per clock * Actual Clock * Channel Count * Bus Width * Bit to Byte ratio`.
        * Transfers per clock refers to the number of data transfers that can occur in one full cycle of memory action. This occurs twice per cycle on DDR RAM, on the rising and falling clock edges.
        * Actual Clock is the real clok of the memory, simply measured in MHz. This is generally shown as the real memory frequency by programs such as CPU-Z.
-       * Channel Count is the number of individually addressable pathways by which memory can be requested.
+       * Channel Count is the number of memory channels active on your CPU.
        * Bus Width is the width of each memory channel, measured in bits.
        * Bit to Byte ratio is a constant 1/8, or 0.125
  
