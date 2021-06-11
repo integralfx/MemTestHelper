@@ -435,7 +435,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
 * Make sure to run a memory test and benchmark after each change to ensure performance is improving.
   * I would recommend to benchmark 3 to 5 times and average the results, as memory benchmarks can have a bit of variance.
   * Thereotical maximum bandwidth (MB/s) = `Transfers per clock * Actual Clock * Channel Count * Bus Width * Bit to Byte ratio`.
-       * Transfers per clock refers to the number of data transfers that can occur in one full cycle of memory action. This occurs twice per cycle on DDR RAM, on the rising and falling clock edges.
+       * Transfers per clock refers to the number of data transfers that can occur in one full memory clock cycle. This occurs twice per cycle on DDR RAM, on the rising and falling clock edges.
        * Actual Clock is the real clock of the memory, simply measured in MHz. This is generally shown as the real memory frequency by programs such as CPU-Z.
        * Channel Count is the number of memory channels active on your CPU.
        * Bus Width is the width of each memory channel, measured in bits.
