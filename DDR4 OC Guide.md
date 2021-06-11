@@ -470,7 +470,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
      
 2. Next is tRFC. Default for 8Gb ICs is 350**ns** (note the units).
    * Note: Tightening tRFC too much can result in system freezes/lock ups.
-   * tRFC is a timing regulating the number of cycles for which the dram capacitors are "recharged" or refreshed. Because capacitor charge loss is proportional to temperature, RAM operating at higher temperatures may need substantially higher tRFC values.
+   * tRFC is the number of cycles for which the DRAM capacitors are "recharged" or refreshed. Because capacitor charge loss is proportional to temperature, RAM operating at higher temperatures may need substantially higher tRFC values.
    * To convert to ns: `2000 * timing / ddr_freq`.  
    For example, tRFC 250 at DDR4-3200 is `2000 * 250 / 3200 = 156.25ns`.
    * To convert from ns (this is what you would type in your UEFI): `ns * ddr_freq / 2000`.  
