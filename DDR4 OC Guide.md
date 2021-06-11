@@ -464,7 +464,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
    | ------ | ---- | ----- | ------- |
    | tRRDS tRRDL tFAW | 6, 6, 24 | 4, 6, 16 | 4, 4, 16 |
    | tWR | 16 | 12 | 10 |
-   * The minimum value for which lowering tFAW will have an effect on the performance of RAM is `tRRDS * 4` or `tRRDL * 4`, whichever is greater.
+   * The minimum value for which lowering tFAW will have an effect on the performance of RAM is `tRRDS * 4` or `tRRDL * 4`, whichever is lower.
    * You don't have to run all of the timings at one preset. You might only be able to run tRRDS tRRDL tFAW at the tight preset, but you may be able to run tWR at the extreme preset.
    * On some Intel motherboards, tWR in the UEFI does nothing and instead needs to be controlled through tWRPRE (sometimes tWRPDEN). Dropping tWRPRE by 1 will drop tWR by 1, following the rule tWR = tWRPRE - tCWL - 4.
      
