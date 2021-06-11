@@ -244,7 +244,7 @@ As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage 
 ### Binning
 * Binning is basically grading components based on their performance characteristics.  
   Manufacturers would separate ICs into different containers/bins depending on their frequency. Hence the term binning.
-* G.Skill is one manufacturer known for extensive binning and categorization. Oftentimes, several different SKUs of G.Skill memory will belong to the same factory bin )ie. 3600 16-16-16-36 1.35V Bin of B-Die being binned the same as 3200 14-14-14-34 1.35V B-Die)
+* G.Skill is one manufacturer known for extensive binning and categorization. Oftentimes, several different SKUs of G.Skill memory will belong to the same factory bin (i.e. 3600 16-16-16-36 1.35V bin of B-Die being binned the same as 3200 14-14-14-34 1.35V B-Die).
 * B-die binned for 2400 15-15-15 is significantly worse than good B-die binned for 3200 14-14-14 or even 3000 14-14-14. Don't expect it to have the same voltage scaling characteristics as good B-Die.
 * To figure out which frequency and timings are a better (tighter) bin within the same IC at the same voltage, find out which timing doesn't scale from voltage.  
   Simply divide the frequency by that timing and the higher value is the tighter bin.
