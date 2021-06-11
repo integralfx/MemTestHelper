@@ -439,7 +439,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
        * Transfers per clock refers to the number of data transfers that can occur in one full memory clock cycle. This occurs twice per cycle on DDR RAM, on the rising and falling clock edges.
        * Actual Clock is the real clock of the memory, simply measured in MHz. This is generally shown as the real memory frequency by programs such as CPU-Z.
        * Channel Count is the number of memory channels active on your CPU.
-       * Bus Width is the width of each memory channel, measured in bits.
+       * Bus Width is the width of each memory channel, measured in bits. Since DDR1, this is 64 bits.
        * Bit to Byte ratio is a constant 1/8, or 0.125
  
     | Effective Memory Clock (MHz) | Max Dual Channel Bandwidth (MB/s) |
