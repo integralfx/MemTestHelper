@@ -307,7 +307,7 @@ As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage 
   
 ### AMD - AM4
 Some terminology:
-* MCLK: Real Memory clock (half of the effective RAM speed). For example, for DDR4-3200 the MCLK is 1600MHz.
+* MCLK: Real memory clock (half of the effective RAM speed). For example, for DDR4-3200 the MCLK is 1600MHz.
 * FCLK: Infinity Fabric clock.
 * UCLK: Unified memory controller clock. Half of MCLK when MCLK and FCLK are not equal (desynchronised, 2:1 mode).
 * On Zen and Zen+, MCLK == FCLK == UCLK. However on Zen2 and Zen3, you can specify FCLK. If MCLK is 1600MHz (DDR4-3200) and you set FCLK to 1600MHz, UCLK will also be 1600MHz unless you set MCLK:UCLK ratio to 2:1 (also known as UCLK DIV mode, etc.). However, if you set FCLK to 1800MHz, UCLK will run at 800MHz (desynchronised).
