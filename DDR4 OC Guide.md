@@ -485,7 +485,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
      | Micron 8Gb Rev. E | 280 - 310 |
      | Micron 16Gb Rev. B | 290 - 310 |
      | Samsung 8Gb B-Die | 120 - 180 |
-     | Samsung 8Gb C-Die | 300-340 |
+     | Samsung 8Gb C-Die | 300 - 340 |
      
    * For all other ICs, I would recommend doing a binary search to find the lowest stable tRFC.  
    For example, say your tRFC is 630. The next tRFC you should try is half of that (315). If that is unstable, you know that your lowest tRFC is somewhere between 315 and 630, so you try the midpoint (`(315 + 630) / 2 = 472.5, round down to 472`). If that is stable, you know that your lowest tRFC is between 315 and 472, so you try the midpoint and so on.
