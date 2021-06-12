@@ -330,7 +330,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
 
 * Below are the expected memory frequency ranges for 2 single rank DIMMs, provided your motherboard and ICs are capable:
 
-  | Ryzen | Expected Effective Clock (MHz) |
+  | Ryzen | Expected Effective Speed (MT/s) |
   | :---: | :----------------------: |
   | 1000 | 3000 - 3600 |
   | 2000 | 3400 - 3800<sup>1</sup> |
