@@ -553,7 +553,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
      * (1) [tRP 19 tRAS 42](https://i.imgur.com/gz1YDcO.png) - fully stable.
      * (2) [tRP 19 tRAS 36](https://i.imgur.com/lHjbLjC.png) - instant error.
      * (3) [tRP 25 tRAS 36](https://i.imgur.com/7c46Qes.png) - stable up to 500%.
-     * In (1) and (3), tRC is 61 and isn't completely unstable. However, in (2) tRC is 55 and RAMTest finds an error instantly. This indicates that my RAM can do low tRAS, but due to limitations of tRC's stability, tRC must be significantly more than it's minimum scaling value with low tRAS. Since tRC is hidden, I need higher tRAS to get higher tRC to ensure stability.
+     * In (1) and (3), tRC is 61 and isn't completely unstable. However, in (2) tRC is 55 and RAMTest finds an error instantly. This indicates that my RAM can do low tRAS, but not low tRC. Since tRC is hidden, I need higher tRAS to get higher tRC to ensure stability.
 
 9. Increase tREFI until it's unstable. The binary search method explained in finding the lowest tRFC can also be applied here.  
    Otherwise, here are my suggestions:
