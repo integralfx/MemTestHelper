@@ -240,7 +240,7 @@ As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage 
   | Samsung 8Gb D-die | 4000+ | 4200+ |
   * <sup>1</sup>CJR is a bit inconsistent in my testing. I've tested 3 RipJaws V 3600 CL19 8GB sticks. One of them was stuck at DDR4-3600, another at DDR4-3800 but the last could do DDR4-4000, all at CL16 with 1.45V.
   * Don't expect lower binned ICs to overclock nearly as well as higher binned ICs. This is especially true for [B-die](https://www.youtube.com/watch?v=rmrap-Jrfww).
-  * These values are simply reffering to the IC's average capabilities, however other factors from motherboard to CPU have a substantial impact on whether or not said values are attainabe.
+  * These values are simply referring to the IC's average capabilities, however other factors, such as motherboard and CPU, have a substantial impact on whether or not said values are attainable.
   
 ### Binning
 * Binning is basically grading components based on their performance characteristics.  
