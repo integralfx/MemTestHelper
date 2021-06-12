@@ -442,7 +442,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
        * Bus Width is the width of each memory channel, measured in bits. Since DDR1, this is 64 bits.
        * Bit to Byte ratio is a constant 1/8, or 0.125
  
-    | Effective Memory Clock (MHz) | Max Dual Channel Bandwidth (MB/s) |
+    | Effective Memory Speed (MT/s) | Max Dual Channel Bandwidth (MB/s) |
     | :-------------: | :------------------------: |
     | 3000 | 48000 |
     | 3200 | 51200 |
