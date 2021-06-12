@@ -589,7 +589,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
 ## Miscellaneous Tips
 * Usually a 200MHz increase in effective DRAM frequency negates the latency penalty of loosening tCL, tRCD and tRP by 1, but has the benefit of higher bandwidth.  
   For example, DDR4-3000 15-17-17 has the same latency as DDR4-3200 16-18-18, but DDR4-3200 16-18-18 has higher bandwidth. This is typically after initial tuning has been completed, and not at XMP.
-* Generally speaking, frequency should be prioritized over tighter timings, so long as other factors such as FCLK sync, Command Rate or Memory gear are not substantial factors.
+* Generally speaking, frequency should be prioritized over tighter timings, so long as performance is not negatively impacted by FCLK sync, Command Rate or Memory Gear mode.
 * Secondary and tertiary timings (except for tRFC) don't really change much, if at all, across the frequency range. If you have stable secondary and tertiary timings at DDR4-3200, you could probably run them at DDR4-3600, even DDR4-4000, provided your ICs, IMC and motherboard are capable.
 
 ### Intel
