@@ -138,7 +138,7 @@ You should always test with a variety of stress tests to ensure your overclock i
 * Lower end motherboard may not overclock as well, possibly due to the lower PCB quality and number of layers (?).
   
 ## Integrated Circuits (ICs)
-* Knowing what ICs (Sometimes reffered to as "Dies") are in your RAM will give you an idea of what to expect. Even if you don't know them you can still overclock your RAM.
+* Knowing what ICs (sometimes referred to as "dies") are in your RAM will give you an idea of what to expect. Even if you don't know them you can still overclock your RAM.
 
 ### Thaiphoon Report
 * Note: Thaiphoon is known to guess ICs so it shouldn't be fully trusted. It's highly recommended to check the label on the sticks if possible.
