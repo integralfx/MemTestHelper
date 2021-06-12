@@ -134,7 +134,7 @@ You should always test with a variety of stress tests to ensure your overclock i
   * On motherboards that use a daisy chain [memory trace layout](https://www.youtube.com/watch?v=3vQwGGbW1AE), 2 sticks are preferred. Using 4 sticks may significantly impact your maximum memory frequency.
   * On the other hand, motherboards that use T-topology will overclock the best with 4 sticks. Using 2 sticks won't impact your maximum memory frequency as much as using 4 sticks on a daisy chain motherboard (?).
   * Most vendors don't advertise what memory trace layout they use, but you can make an educated guess based on the QVL. For example, the [Z390 Aorus Master](http://download.gigabyte.asia/FileList/Memory/mb_memory_z390-aorus-master_20190214.pdf) uses a T-Topology layout as its highest validated frequency is with 4 DIMMs. If the highest validated frequency were done with 2 DIMMs, it *probably* uses a daisy chain layout.
-  * According to Buildzoid, Daisy Chain vs T-Topology only matters above DDR4-4000, however a lot of the overclocking community is critical of this notion. Following Buildzoid's logic, if you're on Ryzen 3000, this doesn't matter as DDR4-3800 is the typical max memory frequency when running MCLK:FCLK 1:1.
+  * According to Buildzoid, Daisy Chain vs T-Topology only matters above DDR4-4000. Following Buildzoid's logic, if you're on Ryzen 3000, this doesn't matter as DDR4-3800 is the typical max memory frequency when running MCLK:FCLK 1:1.
 * Lower end motherboard may not overclock as well, possibly due to the lower PCB quality and number of layers (?).
   
 ## Integrated Circuits (ICs)
@@ -240,7 +240,7 @@ As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage 
   | Samsung 8Gb D-die | 4000+ | 4200+ |
   * <sup>1</sup>CJR is a bit inconsistent in my testing. I've tested 3 RipJaws V 3600 CL19 8GB sticks. One of them was stuck at DDR4-3600, another at DDR4-3800 but the last could do DDR4-4000, all at CL16 with 1.45V.
   * Don't expect lower binned ICs to overclock nearly as well as higher binned ICs. This is especially true for [B-die](https://www.youtube.com/watch?v=rmrap-Jrfww).
-  * These values are simply referring to the IC's average capabilities, however other factors, such as motherboard and CPU, have a substantial impact on whether or not said values are attainable.
+  * These values are simply reffering to the IC's average capabilities, however other factors from motherboard to CPU have a substantial impact on whether or not said values are attainabe.
   
 ### Binning
 * Binning is basically grading components based on their performance characteristics.  
@@ -502,7 +502,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
    * On Intel, changing tCWL will affect tWRRD_dg/sg and thus tWTR_S/L. If you lower tCWL by 1 you need to lower tWRRD_dg/sg by 1 to keep the same tWTR values. Note that this might also affect tWR per the relationship described earlier.
    * <sup>1</sup>Some motherboards don't play nice with odd tCWL. For example, I'm stable at 4000 15-19-19 tCWL 14, yet tCWL 15 doesn't even POST. Another user has had similar experiences. Some motherboards may seem fine but have issues with it at higher frequencies (Asus). Manually setting tCWL equal to tCL if tCL is even or one below if tCL is uneven should alleviate this (eg. if tCL = 18 try tCWL = 18 or 16, if tCL = 17 try tCWL = 16).
    * The extreme preset is not the minimum floor in this case. tRTP can go as low as 5 (6 with Gear Down Mode on), while tWTRS/L can go as low as 1/6. Some boards are fine doing tCWL as low as tCL - 6. Keep in mind that this *will* increase the load on your memory controller.
-   * On AMD, tCWL can often be set to tCL - 2 but is known to require higher tWRRD. Read to Write burst gap is tCWL-tCL + tRDWR. Since this value normally has a set threshold fr stability, increase the gap between tCWL and tCL will require a higher tRDWR to compensate.
+   * On AMD, tCWL can often be set to tCL - 2 but is known to require higher tWRRD.
    
 4. Now for the tertiaries:
     * If you're on AMD, refer to [this post](https://redd.it/ahs5a2).  
@@ -510,9 +510,9 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
   
        | Timing | Safe | Tight | Extreme |
        | ------ | ---- | ----- | ------- |
-       | tRDRDSCL tWRWRSCL | 5 5 | 4 4 | 3 3 |
+       | tRDRDSCL tWRWRSCL | 4 4 | 3 3 | 2 2 |
      
-        * Lower values of these timings are possible, namely values at 2, however attaining this value often is unstable on all but a few ICs, including Samsung 8Gb. 
+        * A lot of ICs are known to have issues with low SCLs. Values such as 2 are extremely difficult for all but ICs such as Samsung 8Gb B-Die. These values are no necessarily linked, and values such as 5 are acceptable. Mixing and matching is possible, and more often than not tRDRDSCL will be the one that needs to be run 1 or even 2 values higher. Values above 5 greatly hurt bandwidth and so their use is not advised.
      
     * If you're on Intel, tune the tertiaries one group at a time.  
       My suggestions:
