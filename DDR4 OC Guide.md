@@ -226,7 +226,7 @@ As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage 
 ### Expected Max Frequency
 * Below are the expected max frequency for some of the common ICs:
 
-  | IC | Effective frequency attainable at 1.35V (MHz) | Expected Clock Limit (MHz) |
+  | IC | Effective Speed attainable at 1.35V (MT/s) | Expected Max Effective Speed (MT/s) |
   | :-: | :-------------------------: | :------------: |
   | Hynix 8Gb AFR | 3600 | 3600 |
   | Hynix 8Gb CJR | 3800 | 4133<sup>1</sup> |
