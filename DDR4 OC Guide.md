@@ -291,7 +291,7 @@ As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage 
   **DO NOT** leave these on auto, as they can pump dangerous levels of voltage into your IMC, potentially degrading or even killing it. Most of the time you can keep VCCSA and VCCIO the same, but [sometimes too much can harm stability](https://i.imgur.com/Bv8617y.png) (credits: Silent_Scone). I wouldn't recommend going above 1.25V on each.  
   Below are my suggested VCCSA and VCCIO for 2 single rank DIMMs:
 
-  | Effective frequency (MHz) | VCCSA/VCCIO (V) |
+  | Effective Speed (MT/s) | VCCSA/VCCIO (V) |
   | :-------------: | :-------------: |
   | 3000 - 3600 | 1.10 - 1.15 |
   | 3600 - 4000 | 1.15 - 1.20 |
