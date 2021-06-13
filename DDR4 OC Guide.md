@@ -273,7 +273,7 @@ As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage 
   | D | Hynix 8Gb AFR, Hynix 8Gb BFR, Micron 8Gb Rev. B, Micron 8Gb Rev. H, Samsung 8Gb C-Die, Samsung 4Gb D-Die | Low end ICs commonly found in average cheap kits. Most are EOL and no longer relevant. 
   | F | Hynix 8Gb MFR, Micron 4Gb Rev. A, Samsung 4Gb S-Die, Nanya 4Gb A-Die, Nanya 8Gb C-Die | Terrible ICs unable to reliably attain even the highest standard of the base JEDEC Specification.|
   * Partially based off [Buildzoid's older ranking](https://www.reddit.com/r/overclocking/comments/8cjla5/the_best_manufacturerdie_of_ddr_ram_in_order/dxfgd4x/). Some ICs are not included in this list due to age of the post.
-  * <sup>1</sup> 8Gb Rev. E has a slight amount of variation. This mainly manifests as the minimum tRCD and tRP to which the ram scales. Similarly, timings such as tRAS, tRC and tRFC may be affected. VTT is a voltage that requires tuning on Rev. E to clock high and OC far, and different chips of Rev. E may behave differently in regards to how high they can clock without modification of VTT.
+  * <sup>1</sup>Revisions of 8Gb Rev. E mainly differ in the minimum tRCD achievable and how high they can clock without modification of VTT while maintaining stability. Generally, newer revisions of 8Gb Rev. E (C9BKV, C9BLL, etc.) do tighter tRCD and clock higher without modification of VTT.
  
 ### Temperatures and Its Effect on Stability
 * Generally, the hotter your RAM is the less stability it will have at higher frequencies and/or tighter timings.
