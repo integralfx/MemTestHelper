@@ -226,18 +226,18 @@ As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage 
 ### Expected Max Frequency
 * Below are the expected max frequency for some of the common ICs:
 
-  | IC | Effective Speed attainable at 1.35V (MT/s) | Expected Max Effective Speed (MT/s) |
-  | :-: | :-------------------------: | :------------: |
-  | Hynix 8Gb AFR | 3600 | 3600 |
-  | Hynix 8Gb CJR | 3800 | 4133<sup>1</sup> |
-  | Hynix 8Gb DJR | 4000+ | 5000+ |
-  | Nanya 8Gb B-die | 3600 | 4000+ |
-  | Micron 8Gb Rev. B | 3400 | 4000
-  | Micron 8Gb Rev. E | 4000+ | 5000+ |
-  | Micron 16Gb Rev. B | 4000+ | 5000+ |
-  | Samsung 4Gb E-die | 4000+ | 4200+ |
-  | Samsung 8Gb B-die | 4000+ | 5000+ |
-  | Samsung 8Gb D-die | 4000+ | 4200+ |
+  | IC | Expected Max Effective Speed (MT/s) |
+  | :-: | :------------: |
+  | Hynix 8Gb AFR | 3600 |
+  | Hynix 8Gb CJR | 4133<sup>1</sup> |
+  | Hynix 8Gb DJR | 5000+ |
+  | Nanya 8Gb B-die | 4000+ |
+  | Micron 8Gb Rev. B | 4000
+  | Micron 8Gb Rev. E | 5000+ |
+  | Micron 16Gb Rev. B | 5000+ |
+  | Samsung 4Gb E-die | 4200+ |
+  | Samsung 8Gb B-die | 5000+ |
+  | Samsung 8Gb D-die | 4200+ |
   * <sup>1</sup>CJR is a bit inconsistent in my testing. I've tested 3 RipJaws V 3600 CL19 8GB sticks. One of them was stuck at DDR4-3600, another at DDR4-3800 but the last could do DDR4-4000, all at CL16 with 1.45V.
   * Don't expect lower binned ICs to overclock nearly as well as higher binned ICs. This is especially true for [B-die](https://www.youtube.com/watch?v=rmrap-Jrfww).
   * These values are simply reffering to the IC's average capabilities, however other factors from motherboard to CPU have a substantial impact on whether or not said values are attainabe.
