@@ -232,7 +232,7 @@ As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage 
   | Hynix 8Gb CJR | 4133<sup>1</sup> |
   | Hynix 8Gb DJR | 5000+ |
   | Nanya 8Gb B-die | 4000+ |
-  | Micron 8Gb Rev. B | 4000
+  | Micron 8Gb Rev. B | 3600 |
   | Micron 8Gb Rev. E | 5000+ |
   | Micron 16Gb Rev. B | 5000+ |
   | Samsung 4Gb E-die | 4200+ |
