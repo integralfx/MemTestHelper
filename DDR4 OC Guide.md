@@ -269,7 +269,7 @@ As far as I know, tCL, tRCD, tRP and possibly tRFC can (or can not) see voltage 
   | S | Samsung 8Gb B-Die | Best DDR4 IC for all round performance |
   | A | Hynix 8Gb DJR, Micron 8Gb Rev. E<sup>1</sup>, Micron 16Gb Rev. B | Top Performing ICs. Known not to clockwall and generally scale with voltage. |
   | B | Hynix 8Gb CJR, Samsung 4Gb E-Die, Nanya 8Gb B-Die | High end ICs with the ability to run high frequencies with good timings. |
-  | C | Hynix 8Gb JJR, Hynix 16Gb MJR, Hynix 16Gb CJR, Micron 16Gb Rev. E, Samsung 8Gb D-Die, Nanya 8Gb A-Die | Decent ICs with good performance and decent frequency scaling.|
+  | C | Hynix 8Gb JJR, Hynix 16Gb MJR, Hynix 16Gb CJR, Micron 16Gb Rev. E, Samsung 8Gb D-Die | Decent ICs with good performance and decent frequency scaling.|
   | D | Hynix 8Gb AFR, Micron 8Gb Rev. B, Samsung 8Gb C-Die, Samsung 4Gb D-Die | Low end ICs commonly found in average cheap kits. Most are EOL and no longer relevant. 
   | F | Hynix 8Gb MFR, Micron 4Gb Rev. A, Samsung 4Gb S-Die, Nanya 8Gb C-Die | Terrible ICs unable to reliably attain even the highest standard of the base JEDEC Specification.|
   * Partially based off [Buildzoid's older ranking](https://www.reddit.com/r/overclocking/comments/8cjla5/the_best_manufacturerdie_of_ddr_ram_in_order/dxfgd4x/). Some ICs are not included in this list due to age of the post.
