@@ -36,6 +36,7 @@
    1. [Benchmarks](#benchmarks-1)
    2. [Information](#information)
 
+# Setup
 ## Memory Testing Software
 You should always test with a variety of stress tests to ensure your overclock is stable.
 ### Avoid
@@ -115,8 +116,14 @@ You should always test with a variety of stress tests to ensure your overclock i
   * Similarly, CL16 at DDR4-3200 is `2000 * 16 / 3200 = 10ns`.
 
 ## Primary, Secondary and Tertiary Timings
-* [Intel](https://i.imgur.com/hcKDkCc.png)
-* [AMD](https://i.imgur.com/Ie4LVtI.png)
+* Intel
+
+  ![image](https://user-images.githubusercontent.com/69487009/156914502-104b0cbd-bbc4-4c94-a583-426e84f732eb.png)
+
+* AMD
+
+  ![image](https://user-images.githubusercontent.com/69487009/156914518-5510c6a2-6187-41ee-8acd-a8f76a5590c4.png)
+
 * RAM timings are split into 3 categories: primary, secondary, and tertiary. These are indicated by 'P', 'S', and 'T' respectively.
   * Primary and secondary timings affect latency and bandwidth.
   * Tertiary timings affect bandwidth.
@@ -140,11 +147,20 @@ You should always test with a variety of stress tests to ensure your overclock i
 ### Thaiphoon Report
 * Note: Thaiphoon is known to guess ICs so it shouldn't be fully trusted. It's highly recommended to check the label on the sticks if possible.
   * See [here](https://www.reddit.com/r/overclocking/comments/ig9d76/thaiphoon_burner_cluelessly_guessing_memory_ics/) for more info.
-* [Single rank 8Gb Hynix CJR](https://i.imgur.com/hbFyKB2.jpg).
-* [Single rank 8Gb Micron Revision E](https://i.imgur.com/3pQjQIG.jpg) (source: Coleh#4297).
+* Single rank 8Gb Hynix CJR.
+
+   ![image](https://user-images.githubusercontent.com/69487009/156914589-ad2f0410-f66f-4fa1-8fb5-1c4461c6beb5.png)
+
+* Single rank 8Gb Micron Revision E (source: Coleh#4297).
+
+   ![image](https://user-images.githubusercontent.com/69487009/156914627-fa8f1938-abd1-4401-b9cc-13310ef3877a.png)
+
   * [SpecTek](https://www.micron.com/support/spectek-support) ICs are lower binned Micron ICs.
   * Esoteric note: Many people have started calling this Micron E-die or even just E-die. The former is fine, but the latter can cause confusion as letter-die is typically used for Samsung ICs, i.e. 4Gbit Samsung E-die. Samsung is implied when you say E-die, but as people are calling Micron Rev. E E-die, it'd probably be a good idea to prefix the manufacturer.
-* [Dual rank 8Gb Samsung B-die](https://i.imgur.com/Nqn8s76.jpg).
+* Dual rank 8Gb Samsung B-die.
+
+   ![image](https://user-images.githubusercontent.com/69487009/156914678-6eed4b9c-5874-4c71-89d3-dd77fba51b5f.png)
+
 
 ### Label on Sticks
 
@@ -260,7 +276,7 @@ As far as I know, tCL, tRCD, tRP, and possibly tRFC can (or can not) see voltage
 ### Maximum Recommended Daily Voltage
 * [JEDEC JESD79-4B (p.174)](http://www.softnology.biz/pdf/JESD79-4B.pdf) specifies that the absolute maximum is 1.50V.
   > Stresses greater than those listed under “Absolute Maximum Ratings” may cause permanent damage to the device. This is a stress rating only and functional operation of the device at these or any other conditions above those indicated in the operational sections of this specification is not implied. Exposure to absolute maximum rating conditions for extended periods may affect reliability.
-* This value is the official maximum of the DDR4 Spec for which all DDR4 are rated, however, numerous ICs are unable to remain safe at such high sustained voltages.[Samsung 8Gb C-die](https://www.hardwareluxx.de/community/f13/samsung-8gbit-ddr4-c-die-k4a8g045wc-overclocking-ergebnisse-im-startbeitrag-1198323.html) can degrade with voltages as low as 1.35V under the right thermal and power delivery conditions. Furthermore, there are other ICs, such as Hynix 8Gb DJR or Samsung 8Gb B-Die that have been observed dailying voltages well over 1.55V. Do your research about what voltages are safe on your IC, or stick to 1.35v or similar if this value is not known. Due to random chance and silicon variance, YMMV compared to other people, so be safe.
+* This value is the official maximum of the DDR4 Spec for which all DDR4 are rated, however, numerous ICs are unable to remain safe at such high sustained voltages. [Samsung 8Gb C-die](https://www.hardwareluxx.de/community/f13/samsung-8gbit-ddr4-c-die-k4a8g045wc-overclocking-ergebnisse-im-startbeitrag-1198323.html) can degrade with voltages as low as 1.35V under the right thermal and power delivery conditions. Furthermore, there are other ICs, such as Hynix 8Gb DJR or Samsung 8Gb B-Die that have been observed dailying voltages well over 1.55V. Do your research about what voltages are safe on your IC, or stick to 1.35v or similar if this value is not known. Due to random chance and silicon variance, YMMV compared to other people, so be safe.
 * One common limiting factor for the maximum safe voltage on which you can operate is your CPU's architecture. According to [JEDEC](https://www.jedec.org/standards-documents/dictionary/terms/output-stage-drain-power-voltage-vddq), VDDQ, the voltage of data output, is tied to VDD, colloquially referred to as VDIMM or DRAM Voltage. This voltage interacts with the PHY or Physical Layer present on the CPU and may lead to long-term degradation of the IMC if set too high. As a result, daily use of VDIMM voltages above 1.60V on Ryzen 3000 and 5000, 1.65V on Intel Consumer Lake-series Processors is not advisable. Err on the side of caution with this, as CPU degradation of the PHY is difficult to measure or notice until the issue becomes serious.
 * It may be safe to daily 1.60V as there are kits on the [B550 Unify-X QVL](https://www.msi.com/Motherboard/support/MEG-B550-UNIFY-X#support-mem-20) rated for 1.60V. B-Die, 8Gb Rev. E, DJR, and 16Gb Rev. B *should* be fine at running 1.60V daily, though it's recommended to have active airflow. Higher voltages lead to higher temperatures and high temperatures can themselves lower the threshold for what voltages are considered safe.
   
@@ -290,7 +306,10 @@ As far as I know, tCL, tRCD, tRP, and possibly tRFC can (or can not) see voltage
   What would you expect from 14+++++?
 * The Rocket Lake IMC, aside from the limitations regarding Gear 1 and Gear 2 memory support, has the strongest memory controller of all Intel consumer CPUs, and by a fair margin.
 * There are 2 voltages you need to change if overclocking RAM: system agent (VCCSA) and IO (VCCIO).  
-  **DO NOT** leave these on auto, as they can pump dangerous levels of voltage into your IMC, potentially degrading or even killing it. Most of the time you can keep VCCSA and VCCIO the same, but [sometimes too much can harm stability](https://i.imgur.com/Bv8617y.png) (credits: Silent_Scone). I wouldn't recommend going above 1.25V on each.  
+  **DO NOT** leave these on auto, as they can pump dangerous levels of voltage into your IMC, potentially degrading or even killing it. Most of the time you can keep VCCSA and VCCIO the same, but sometimes too much can harm stability (credits: Silent_Scone). I wouldn't recommend going above 1.25V on each.
+  
+  ![image](https://user-images.githubusercontent.com/69487009/156914787-b9eba0e9-69a6-4bd6-a5a1-f7d794e64f00.png)
+
   Below are my suggested VCCSA and VCCIO for 2 single rank DIMMs:
 
   | Effective Speed (MT/s) | VCCSA/VCCIO (V) |
@@ -400,7 +419,10 @@ The default value is fixed at .1.100V and AMD recommends keeping it at that leve
    * See [this post](https://redd.it/ahs5a2) for more information on these timings.
 5. Increase the DRAM frequency until it doesn't boot into Windows anymore. Keep in mind the expectations detailed above.
    * If you're on Intel, a quick way of knowing if you're unstable is to examine the RTLs and IOLs. Each group of RTLs and IOLs correspond to a channel. Within each group, 2 values correspond to each DIMM.  
-   [Asrock Timing Configurator](https://i.imgur.com/EQBl2wd.jpg)  
+   Asrock Timing Configurator:
+   
+   ![image](https://user-images.githubusercontent.com/69487009/156914822-7443c639-1e4a-41d1-a282-5b0022af9154.png)
+
    As I have my sticks installed in channel A slot 2 and channel B slot 2, I need to look at D1 within each group of RTLs and IOLs.  
    RTLs should be no more than 2 apart and IOLs should be no more than 1 apart.  
    In my case, RTLs are 53 and 55 which are exactly 2 apart and IOLs are both 7.
@@ -533,7 +555,10 @@ The default value is fixed at .1.100V and AMD recommends keeping it at that leve
       * For tRDWR_sg/dg/dr/dd, drop them all by 1 until you get instability or performance degrades. You can usually run them all the same e.g. 9/9/9/9.
         * Setting these too tight can cause system freezes.
       * Note that dr only affects dual rank sticks, so if you have single rank sticks you can ignore this timing. In the same way, dd only needs to be considered when you run two DIMMs per channel. You can also set them to 0 or 1 if you really wanted to.  
-        [These](https://i.imgur.com/61ZtPpR.jpg) are my timings on B-die, for reference.
+        These are my timings on B-die, for reference.
+        
+        ![image](https://user-images.githubusercontent.com/69487009/156914848-edfa7660-efc1-44ee-b8fb-56bb789fdb20.png)
+
       * For dual rank setups (see [notes on ranks](#a-note-on-ranks-and-density)):
          * tRDRD_dr/dd can be lowered a step further to 5 for a large bump in read bandwidth.
          * tWRWR_sg 6 can cause write bandwidth regression over tWRWR_sg 7, despite being stable.
@@ -585,7 +610,10 @@ The default value is fixed at .1.100V and AMD recommends keeping it at that leve
     2. If you can't POST, adjust the setup times until you can (you should adjust them all together).
     3. Run a memory test.
     4. Adjust setup times then drive strengths if unstable.
-    * [My stable GDM off CR 1 settings](https://i.imgur.com/z547RLa.jpg)
+    * My stable GDM off CR 1 settings
+
+      ![image](https://user-images.githubusercontent.com/69487009/156914875-ce4d1d15-edf1-464f-be7a-62315ed20a1d.png)
+
     5. Oftentimes, a drive strength above 24 ohms may hurt stability. Furthermore, running non-zero setup times is rarely needed, however may aid in the stabilization of CR 1.
    
     Intel:
@@ -604,7 +632,11 @@ The default value is fixed at .1.100V and AMD recommends keeping it at that leve
 * Loosening tCCDL to 8 may help with stability, especially above DDR4-3600. This does not bring a significant penalty to latency but may affect memory read and write bandwidth considerably.
 * Higher cache (aka uncore, ring) frequency can increase bandwidth and reduce latency.
 * After you've finished tightening the timings, you can increase IOL offsets to reduce IOLs. Make sure to run a memory test after. More info [here](https://hwbot.org/newsflash/3058_advanced_skylake_overclocking_tune_ddr4_memory_rtlio_on_maximus_viii_with_alexaros_guide).
-  * In general, RTL and IOL values impact memory performance. Lowering them will increase bandwidth and decrease latency [quite significantly](https://i.imgur.com/wS2ZqUx.png). Lower values will in some cases also help with stability and lower memory controller voltage requirements. Some boards train them very well on their own. Some boards allow for easy tuning while other boards simply ignore any user input.
+  * In general, RTL and IOL values impact memory performance. Lowering them will increase bandwidth and decrease latency quite significantly.
+  
+    ![image](https://user-images.githubusercontent.com/69487009/156914900-da840c47-c4bb-4cad-8a0e-227e4e482024.png)
+
+  * Lower values will in some cases also help with stability and lower memory controller voltage requirements. Some boards train them very well on their own. Some boards allow for easy tuning while other boards simply ignore any user input.
   * If all else fails, you can try manually decreasing the RTL and IOL pair.
 * For Asus Maximus boards:
    * Play around with the Maximus Tweak Modes, sometimes one will post where the other does not.
