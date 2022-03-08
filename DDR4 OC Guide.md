@@ -400,7 +400,7 @@ The default value is fixed at .1.100V and AMD recommends keeping it at that leve
 ## Finding a Baseline
 1. * Ensure your sticks are in the recommended DIMM slots (usually 2 and 4).
    * Make sure your CPU overclock is disabled when tuning RAM, as an unstable CPU can lead to memory errors. When pushing high frequency with tight timings, your CPU may become unstable and may need to be re-done.
-   * Make sure your UEFI/Bios is up to date.
+   * Make sure your UEFI/BIOS is up to date.
 
 2. On Intel, start with 1.15V VCCSA and VCCIO.  
    On AMD, start with 1.10V SOC.
