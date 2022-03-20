@@ -306,7 +306,7 @@ As far as I know, tCL, tRCD, tRP, and possibly tRFC can (or can not) see voltage
   What would you expect from 14+++++?
 * The Rocket Lake IMC, aside from the limitations regarding Gear 1 and Gear 2 memory support, has the strongest memory controller of all Intel consumer CPUs, and by a fair margin.
 * There are 2 voltages you need to change if overclocking RAM: system agent (VCCSA) and IO (VCCIO).  
-  **DO NOT** leave these on auto, as they can pump dangerous levels of voltage into your IMC, potentially degrading or even killing it. Most of the time you can keep VCCSA and VCCIO the same, but sometimes too much can harm stability (credits: Silent_Scone). I wouldn't recommend going above 1.25V on each.
+  **DO NOT** leave these on auto, as they can pump dangerous levels of voltage into your IMC, potentially degrading or even killing it. Most of the time you can keep VCCSA and VCCIO the same, but sometimes too much can harm stability (credits: Silent_Scone).
   
   ![image](https://user-images.githubusercontent.com/69487009/156914787-b9eba0e9-69a6-4bd6-a5a1-f7d794e64f00.png)
 
@@ -314,11 +314,12 @@ As far as I know, tCL, tRCD, tRP, and possibly tRFC can (or can not) see voltage
 
   | Effective Speed (MT/s) | VCCSA/VCCIO (V) |
   | :-------------: | :-------------: |
-  | 3000 - 3600 | 1.10 - 1.15 |
-  | 3600 - 4000 | 1.15 - 1.20 |
-  | 4000 - 4200 | 1.20 - 1.25 |
-  | 4200 - 4400 | 1.25 - 1.30 |
-  * With more DIMMs and/or dual-rank DIMMs, you may need higher VCCSA and VCCIO than suggested.
+  | 3000 - 3600 | 1.15 - 1.20 |
+  | 3600 - 4000 | 1.20 - 1.25 |
+  | 4000 - 4200 | 1.25 - 1.30 |
+  | 4200 - 4400 | 1.30 - 1.35 |
+  * VCCIO should generally be 50mV lower than VCCSA and running 1.4V VCCSA + 1.35V VCCSA is acceptable as an upper limit.
+  * With more DIMMs and/or dual-rank DIMMs, you may need higher VCCSA and VCCIO than suggested (1.4V daily max unlesss extreme overclocking).
 * tRCD and tRP are linked, meaning if you set tRCD 16 but tRP 17, both will run at the higher timing (17). This limitation is why many ICs don't do as well on Intel and why B-die is a good match for Intel.
   * On Asrock and EVGA UEFIs, they're combined into tRCDtRP. On ASUS UEFIs, tRP is hidden. On MSI and Gigabyte UEFIs, tRCD and tRP are visible but setting them to different values just sets both of them to the higher value.
 * Expected memory latency range: 40ns - 50ns.
@@ -336,7 +337,7 @@ Some terminology:
 * Ryzen 1000 and 2000's IMC can be a bit finicky when overclocking and can't hit as high frequencies as Intel can. Ryzen 3000 and 5000's IMCs are much better and are more or less on par with Intel's newer Skylake based CPUs ie. 9th gen and 10th gen.
 * SOC voltage is the voltage to the IMC and like with Intel, it's not recommended to leave it on auto. Typical ranges for this value range around 1.00V and 1.10V. Higher values are generally acceptable and may be necessary for stabilizing higher capacity memory and may aid in attaining FCLK stability.
 * By contrast, when SOC voltage is set too high, memory instability can occur. This negative scaling typically occurs between 1.15V and 1.25V on most Ryzen CPUs.
-  > TThere are clear differences in how the memory controller behaves on the different CPU specimens. The majority of the CPUs will do DDR4-3466 or higher at 1.050V SoC voltage, however the difference lies in how the different specimens react to the voltage. Some of the specimens seem scale with the increased SoC voltage, while the others simply refuse to scale at all or in some cases even illustrate negative scaling. All of the tested samples illustrated negative scaling (i.e. more errors or failures to train) when higher than 1.150V SoC was used. In all cases the maximum memory frequency was achieved at =< 1.100V SoC voltage.  
+  > There are clear differences in how the memory controller behaves on the different CPU specimens. The majority of the CPUs will do DDR4-3466 or higher at 1.050V SoC voltage, however the difference lies in how the different specimens react to the voltage. Some of the specimens seem scale with the increased SoC voltage, while the others simply refuse to scale at all or in some cases even illustrate negative scaling. All of the tested samples illustrated negative scaling (i.e. more errors or failures to train) when higher than 1.150V SoC was used. In all cases the maximum memory frequency was achieved at =< 1.100V SoC voltage.  
   [~ The Stilt](https://forums.anandtech.com/threads/ryzen-strictly-technical.2500572/page-72#post-39391302)
 * On Ryzen 3000, there's also CLDO_VDDG (commonly abbreviated to VDDG, not to be confused with CLDO_VDD**P**), which is the voltage to the Infinity Fabric. SOC voltage should be at least 40mV above CLDO_VDDG as CLDO_VDDG is derived from SOC voltage.
   > Most cLDO voltages are regulated from the two main power rails of the CPU. In case of cLDO_VDDG and cLDO_VDDP, they are regulated from the VDDCR_SoC plane.
@@ -414,6 +415,17 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
 3. Set DRAM voltage to 1.40V. If you're using ICs that roll over above 1.35V, set 1.35V.
    * "Roll over" means that the IC becomes more unstable as you increase the voltage, sometimes to the point of not even POSTing.
    * ICs that are known to roll over above 1.35V include but is not limited to: 8Gb Samsung C-die, older Micron/SpecTek ICs (before 8Gb Rev. E).
+   * Here is a list of common IC's and safe voltages for them:
+   
+   | IC                                | Daily voltage (V) | Extreme voltage |
+   | :---:                             | :---------:       | :-------------: |
+   | 8Gbit Samsung B-Die               | 1.45 - 1.55       | 1.55 - 1.65     |
+   | 8Gbit Hynix DJR/16Gbit AJR        | 1.45 - 1.55       | 1.50 - 1.65     |
+   | 8Gbit Micron Rev. E/16Gbit Rev. B | 1.45 - 1.55       | 1.55 - 1.60     |
+   | 8Gbit Hynix CJR                   | 1.35 - 1.40       | 1.40 - 1.45     |
+   | 16Gbit Hynix CJR                  | 1.40 - 1.50       | 1.50 - 1.55     |
+   | 8Gbit Nanya B-Die                 | 1.35 - 1.40       | 1.40 - 1.45     |
+   | Samsung C-Die                     | 1.30 - 1.35       | Likely Unsafe   |
 4. Set primary timings to 16-20-20-40 (tCL-tRCD-tRP-tRAS) and tCWL to 16.
    * Most ICs need loose tRCD and/or tRP which is why I recommend 20.
    * See [this post](https://redd.it/ahs5a2) for more information on these timings.
