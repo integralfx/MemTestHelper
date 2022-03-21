@@ -199,7 +199,7 @@ Sometimes the Thaiphoon report won't tell you the IC or it may misidentify the I
   * The bolded letter indicates the manufacturer. H for Hynix, M for Micron, and S for Samsung.
   * The next 2 digits indicate ranks. 08 = single rank and 16 = dual rank.
   * The next letter indicates the production month. 1-9, A, B, C.
-  * THe next 2 digits indicate the production year.
+  * The next 2 digits indicate the production year.
   * This is the code for dual-rank Micron produced in October 2018.
 * [Source](http://www.xtremesystems.org/forums/showthread.php?285750-Interesting-memory-deals-thread&p=5230258&viewfull=1#post5230258)
 
@@ -311,8 +311,8 @@ As far as I know, tCL, tRCD, tRP, and possibly tRFC can (or can not) see voltage
 * Intel's Skylake IMC is pretty strong, so it shouldn't be the bottleneck when overclocking.  
   What would you expect from 14+++++?
 * The Rocket Lake IMC, aside from the limitations regarding Gear 1 and Gear 2 memory support, has the strongest memory controller of all Intel consumer CPUs, and by a fair margin.
-* Gear 1 is prefered due to the memory controller clock being synced with the DRAM clock speed.
-* On Alder Lake, non K CPU's have locked VCCSA and may not work at higher frequencies at gear 1.
+* Gear 1 is preferred due to the memory controller clock being synced with the DRAM clock speed.
+* On Alder Lake, non-K CPUs have locked VCCSA and may not work at higher frequencies at gear 1.
 * There are 2 voltages you need to change if overclocking RAM: system agent (VCCSA) and IO (VCCIO).  
   **DO NOT** leave these on auto, as they can pump dangerous levels of voltage into your IMC, potentially degrading or even killing it. Most of the time you can keep VCCSA and VCCIO the same, but sometimes too much can harm stability (credits: Silent_Scone).
   
@@ -328,20 +328,20 @@ As far as I know, tCL, tRCD, tRP, and possibly tRFC can (or can not) see voltage
   | 4200 - 4400 | 1.30 - 1.35 |
   * VCCIO should generally be 50mV lower than VCCSA and running 1.4V VCCSA + 1.35V VCCIO is acceptable as an upper limit.
   * Safe voltages on ADL are not known at the moment due to it being fairly new. 1.25V-1.35V VCCSA has not been proven to show considerable degradation.
-  * With more DIMMs and/or dual-rank DIMMs, you may need higher VCCSA and VCCIO than suggested (1.4V daily max unlesss extreme overclocking).
+  * With more DIMMs and/or dual-rank DIMMs, you may need higher VCCSA and VCCIO than suggested (1.4V daily max unless extreme overclocking).
 * tRCD and tRP are linked, meaning if you set tRCD 16 but tRP 17, both will run at the higher timing (17). This limitation is why many ICs don't do as well on Intel and why B-die is a good match for Intel.
   * On Asrock and EVGA UEFIs, they're combined into tRCDtRP. On ASUS UEFIs, tRP is hidden. On MSI and Gigabyte UEFIs, tRCD and tRP are visible but setting them to different values just sets both of them to the higher value.
 * Expected memory latency range: 40ns - 50ns.
    * Expected memory latency range for Samsung B-Die: 35ns - 45ns.
-   * Overall, latency varies between generations due to a difference in die size (ring bus). As a result, a 9900K will have a slightly lower latency than a 10700K at the same settings since the 10700K has the same die as a 10900K.
+   * Overall, latency varies between generations due to a difference in die size (ring bus). As a result, a 9900K will have slightly lower latency than a 10700K at the same settings since the 10700K has the same die as a 10900K.
    * Latency is affected by the RTLs and IOLs. Generally speaking, higher quality boards and overclocking oriented boards will be more direct in their routing of the memory traces and will likely have lower RTLs and IOLs. On some motherboards, changing RTLs and IOLs have no effect.
   
 ### AMD - AM4
 Some terminology:
 * MCLK: Real memory clock (half of the effective RAM speed). For example, for DDR4-3200 the MCLK is 1600MHz.
 * FCLK: Infinity Fabric clock.
-* UCLK: Unified memory controller clock. Half of MCLK when MCLK and FCLK are not equal (desynchronised, 2:1 mode).
-* On Zen and Zen+, MCLK == FCLK == UCLK. However, on Zen2 and Zen3, you can specify FCLK. If MCLK is 1600MHz (DDR4-3200) and you set FCLK to 1600MHz, UCLK will also be 1600MHz unless you set MCLK:UCLK ratio to 2:1 (also known as UCLK DIV mode, etc.). However, if you set FCLK to 1800MHz, UCLK will run at 800MHz (desynchronised).
+* UCLK: Unified memory controller clock. Half of MCLK when MCLK and FCLK are not equal (desynchronized, 2:1 mode).
+* On Zen and Zen+, MCLK == FCLK == UCLK. However, on Zen2 and Zen3, you can specify FCLK. If MCLK is 1600MHz (DDR4-3200) and you set FCLK to 1600MHz, UCLK will also be 1600MHz unless you set MCLK:UCLK ratio to 2:1 (also known as UCLK DIV mode, etc.). However, if you set FCLK to 1800MHz, UCLK will run at 800MHz (desynchronized).
 
 * Ryzen 1000 and 2000's IMC can be a bit finicky when overclocking and can't hit as high frequencies as Intel can. Ryzen 3000 and 5000's IMCs are much better and are more or less on par with Intel's newer Skylake based CPUs ie. 9th gen and 10th gen.
 * SOC voltage is the voltage to the IMC and like with Intel, it's not recommended to leave it on auto. Typical ranges for this value range around 1.00V and 1.10V. Higher values are generally acceptable and may be necessary for stabilizing higher capacity memory and may aid in attaining FCLK stability.
@@ -423,7 +423,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
      * MSI: CPU NB/SOC.
 3. Set DRAM voltage to 1.40V. If you're using ICs that roll over above 1.35V, set 1.35V.
    * "Roll over" means that the IC becomes more unstable as you increase the voltage, sometimes to the point of not even POSTing.
-   * ICs that are known to roll over above 1.35V include but is not limited to: 8Gb Samsung C-die, older Micron/SpecTek ICs (before 8Gb Rev. E).
+   * ICs that are known to roll over above 1.35V include but are not limited to: 8Gb Samsung C-die, older Micron/SpecTek ICs (before 8Gb Rev. E).
    * Here is a list of common IC's and safe voltages for them:
    
    | IC                                | Daily voltage (V) | Extreme voltage |
@@ -468,7 +468,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
    
 ## Trying Higher Frequencies
 * This section is applicable if you're not at the limit of your motherboard, ICs, and IMC.  
-  This section is not for those who are having trouble stabilising frequencies within the expected range.
+  This section is not for those who are having trouble stabilizing frequencies within the expected range.
      * Note that some boards have auto rules that can stifle your progress, an example being tCWL = tCL - 1 which can lead to uneven values of tCWL. Reading the [Miscellaneous Tips](#miscellaneous-tips) might give you insight into your particular platform and your motherboard's functionality.
 1. Intel:
    * Increase VCCSA and VCCIO to 1.25V. For ADL, VCCIO does not exist.
@@ -590,7 +590,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
 6. On Intel, drop tRCD and tRP by 1 until unstable.  
 
    On AMD, drop tRCD by 1 until unstable. Repeat with tRP.
-   * Note: More IMC voltage may be necessary to stabilise tighter tRCD.
+   * Note: More IMC voltage may be necessary to stabilize tighter tRCD.
    
 7. Set `tRAS = tRCD(RD) + tRTP`. Increase if unstable.
    * This is the absolute minimum tRAS can be.  
@@ -635,7 +635,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
 
       ![image](https://user-images.githubusercontent.com/69487009/156914875-ce4d1d15-edf1-464f-be7a-62315ed20a1d.png)
 
-    5. Oftentimes, a drive strength above 24 ohms may hurt stability. Furthermore, running non-zero setup times is rarely needed, however may aid in the stabilization of CR 1.
+    5. Oftentimes, a drive strength above 24 ohms may hurt stability. Furthermore, running non-zero setup times is rarely needed, however, it may aid in the stabilization of CR 1.
    
     Intel:
     * If below DDR4-4400, try setting CR to 1T. If that doesn't work, leave CR on 2T.
