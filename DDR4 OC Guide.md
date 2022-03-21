@@ -305,6 +305,8 @@ As far as I know, tCL, tRCD, tRP, and possibly tRFC can (or can not) see voltage
 * Intel's Skylake IMC is pretty strong, so it shouldn't be the bottleneck when overclocking.  
   What would you expect from 14+++++?
 * The Rocket Lake IMC, aside from the limitations regarding Gear 1 and Gear 2 memory support, has the strongest memory controller of all Intel consumer CPUs, and by a fair margin.
+* Gear 1 is prefered due to the memory controller clock being synced with the DRAM clock speed.
+* On Alder Lake, non K CPU's have locked VCCSA and may not work at higher frequencies at gear 1.
 * There are 2 voltages you need to change if overclocking RAM: system agent (VCCSA) and IO (VCCIO).  
   **DO NOT** leave these on auto, as they can pump dangerous levels of voltage into your IMC, potentially degrading or even killing it. Most of the time you can keep VCCSA and VCCIO the same, but sometimes too much can harm stability (credits: Silent_Scone).
   
@@ -318,7 +320,8 @@ As far as I know, tCL, tRCD, tRP, and possibly tRFC can (or can not) see voltage
   | 3600 - 4000 | 1.20 - 1.25 |
   | 4000 - 4200 | 1.25 - 1.30 |
   | 4200 - 4400 | 1.30 - 1.35 |
-  * VCCIO should generally be 50mV lower than VCCSA and running 1.4V VCCSA + 1.35V VCCSA is acceptable as an upper limit.
+  * VCCIO should generally be 50mV lower than VCCSA and running 1.4V VCCSA + 1.35V VCCIO is acceptable as an upper limit.
+  * Safe voltages on ADL are not known at the moment due to it being fairly new. 1.25V-1.35V VCCSA has not been proven to show considerable degradation.
   * With more DIMMs and/or dual-rank DIMMs, you may need higher VCCSA and VCCIO than suggested (1.4V daily max unlesss extreme overclocking).
 * tRCD and tRP are linked, meaning if you set tRCD 16 but tRP 17, both will run at the higher timing (17). This limitation is why many ICs don't do as well on Intel and why B-die is a good match for Intel.
   * On Asrock and EVGA UEFIs, they're combined into tRCDtRP. On ASUS UEFIs, tRP is hidden. On MSI and Gigabyte UEFIs, tRCD and tRP are visible but setting them to different values just sets both of them to the higher value.
