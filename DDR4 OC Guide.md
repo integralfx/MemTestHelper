@@ -139,8 +139,8 @@ You should always test with a variety of stress tests to ensure your overclock i
 * For motherboards with 4 DIMM slots, the number of sticks installed will affect your maximum memory frequency. 
   * On motherboards that use a daisy chain [memory trace layout](https://www.youtube.com/watch?v=3vQwGGbW1AE), 2 sticks are preferred. Using 4 sticks may significantly impact your maximum memory frequency.
   * On the other hand, motherboards that use T-topology will overclock the best with 4 sticks. Using 2 sticks won't impact your maximum memory frequency as much as using 4 sticks on a daisy chain motherboard (?).
-  * Most vendors don't advertise what memory trace layout they use, but you can make an educated guess based on the QVL. For example, the [Z390 Aorus Master](http://download.gigabyte.asia/FileList/Memory/mb_memory_z390-aorus-master_20190214.pdf) uses a T-Topology layout as its highest validated frequency is with 4 DIMMs. If the highest validated frequency were done with 2 DIMMs, it *probably* uses a daisy chain layout.
-  * According to Buildzoid, Daisy Chain vs T-Topology only matters above DDR4-4000. Following Buildzoid's logic, if you're on Ryzen 3000, this doesn't matter as DDR4-3800 is the typical max memory frequency when running MCLK:FCLK 1:1.
+  * Most vendors don't advertise what memory trace layout they use, but you can make an educated guess based on the QVL. For example, the Z390 Aorus Master uses a T-Topology layout as its highest validated frequency is with 4 DIMMs. If the highest validated frequency were done with 2 DIMMs, it *probably* uses a daisy chain layout.
+  * According to Buildzoid, Daisy Chain vs T-Topology only matters above DDR4-4000. Following Buildzoid's logic, if you're on Ryzen 3000 or 5000, this doesn't matter as DDR4-3800 is the typical max memory frequency when running MCLK:FCLK 1:1.
 * Lower end motherboard may not overclock as well, possibly due to the lower PCB quality and the number of layers (?).
   
 ## Integrated Circuits (ICs)
@@ -352,7 +352,7 @@ Meaning you ACTUAL SoC voltage has to be at least by this much higher, than the 
 Adjusting the SoC voltage alone, unlike on previous gen. parts doesn't do much if anything at all.
 The default value is fixed 1.100V and AMD recommends keeping it at that level. Increasing the VDDG helps with the fabric overclocking in certain scenarios, but not always.
 1800MHz FCLK should be doable at the default 0.9500V value and for pushing the limits it might be beneficial to increase it to =< 1.05V (1.100 - 1.125V SoC, depending on the load-line).  
-  [~ The Stilt](https://www.overclock.net/forum/28031966-post35.html)  
+  ~ The Stilt  
   * On AGESA 1.0.0.4 or newer VDDG is separated into VDDG IOD and VDDG CCD for the I/O die and the chiplets parts, respectively.
 
 * Below are the expected memory frequency ranges for 2 single rank DIMMs, provided your motherboard and ICs are capable:
@@ -576,7 +576,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
         
         ![image](https://user-images.githubusercontent.com/69487009/156914848-edfa7660-efc1-44ee-b8fb-56bb789fdb20.png)
 
-      * For dual rank setups (see [notes on ranks](#a-note-on-ranks-and-density)):
+      * For dual rank setups (see [notes on ranks](#a-note-on-logical-ranks-and-density)):
          * tRDRD_dr/dd can be lowered a step further to 5 for a large bump in read bandwidth.
          * tWRWR_sg 6 can cause write bandwidth regression over tWRWR_sg 7, despite being stable.
     
