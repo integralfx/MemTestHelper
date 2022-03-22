@@ -40,7 +40,7 @@
 ## Memory Testing Software
 You should always test with a variety of stress tests to ensure your overclock is stable.
 ### Avoid
-* I wouldn't recommend the AIDA64 memory test and the [Memtest64](https://forums.anandtech.com/threads/techpowerups-memtest-64-is-it-better-than-hci-memtest-for-determining-stability.2532209/) as they are both not very good at finding memory errors.
+* I wouldn't recommend the AIDA64 memory test and [Memtest64](https://forums.anandtech.com/threads/techpowerups-memtest-64-is-it-better-than-hci-memtest-for-determining-stability.2532209/) as they are both not very good at finding memory errors.
 ### Recommended
 * [TM5](http://testmem.tz.ru/tm5.rar) with any of the configs listed:
   * [Extreme config by anta777](https://drive.google.com/file/d/1uegPn9ZuUoWxOssCP4PjMjGW9eC_1VJA) (recommended). Make sure to load the config. It should say 'Customize: Extreme1 @anta777' if loaded.  
