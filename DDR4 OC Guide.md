@@ -43,10 +43,11 @@ You should always test with various stress tests to ensure your overclock is sta
 * I wouldn't recommend the AIDA64 memory test and [Memtest64](https://forums.anandtech.com/threads/techpowerups-memtest-64-is-it-better-than-hci-memtest-for-determining-stability.2532209/) as they are both not very good at finding memory errors.
 ### Recommended
 * [TM5](http://testmem.tz.ru/tm5.rar) with any of the configs listed:
-  * [Extreme config by anta777](https://drive.google.com/file/d/1uegPn9ZuUoWxOssCP4PjMjGW9eC_1VJA) (recommended). Make sure to load the config. It should say 'Customize: Extreme1 @anta777' if loaded.  
+  * [Extreme config by anta777](CHANGE LINK TO FILE LOCATION IN REPO) (recommended). Make sure to load the config. It should say 'Customize: Extreme1 @anta777' if loaded.  
   Credits: [u/nucl3arlion](https://www.reddit.com/r/overclocking/comments/dlghvs/micron_reve_high_training_voltage_requirement/f4zcs04/).
-  * [Here](https://drive.google.com/drive/folders/1E-5ZsrlKwr1SlEWxK3iLebms2k3EkQc_) is a link to TM5 pre-packaged with many configs.
-  * [LMHz Universal 2 config](https://www.hardwareluxx.de/community/threads/ryzen-ram-oc-m%C3%B6gliche-limitierungen.1216557/page-159#post-27506598)
+  * [Absolut](CHANGE LINK TO FILE LOCATION IN REPO)
+  * [PCBdestroyer](CHANGE LINK TO FILE LOCATION IN REPO)
+  * [LMHz Universal 2 config](CHANGE LINK TO FILE LOCATION IN REPO)
   * If you experience issues with all threads crashing upon launch with the extreme config, it might help to edit the row "Testing Window Size (Mb)=1408". Replace the window size with your total RAM (minus some margin for Windows) divided by your processor's available threads (e.g., 12800/16 = 800 MB per thread).
 * [OCCT](https://www.ocbase.com/) with the dedicated memory test using SSE or AVX instructions.
   * Note that AVX and SSE can vary in error detection speed. On Intel-based systems, SSE appears better for testing IMC voltages, while AVX appears better for DRAM voltage.
