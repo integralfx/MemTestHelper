@@ -43,11 +43,11 @@ You should always test with various stress tests to ensure your overclock is sta
 * I wouldn't recommend the AIDA64 memory test and [Memtest64](https://forums.anandtech.com/threads/techpowerups-memtest-64-is-it-better-than-hci-memtest-for-determining-stability.2532209/) as they are both not very good at finding memory errors.
 ### Recommended
 * [TM5](http://testmem.tz.ru/tm5.rar) with any of the configs listed:
-  * [Extreme config by anta777](CHANGE LINK TO FILE LOCATION IN REPO) (recommended). Make sure to load the config. It should say 'Customize: Extreme1 @anta777' if loaded.  
+  * [Extreme config by anta777](https://github.com/integralfx/MemTestHelper/blob/oc-guide/extreme%40anta777.cfg) (recommended). Make sure to load the config. It should say 'Customize: Extreme1 @anta777' if loaded.  
   Credits: [u/nucl3arlion](https://www.reddit.com/r/overclocking/comments/dlghvs/micron_reve_high_training_voltage_requirement/f4zcs04/).
-  * [Absolut](CHANGE LINK TO FILE LOCATION IN REPO)
-  * [PCBdestroyer](CHANGE LINK TO FILE LOCATION IN REPO)
-  * [LMHz Universal 2 config](CHANGE LINK TO FILE LOCATION IN REPO)
+  * [Absolut](https://github.com/integralfx/MemTestHelper/blob/oc-guide/absolutnew.cfg)
+  * [PCBdestroyer](https://github.com/integralfx/MemTestHelper/blob/oc-guide/PCBdestroyer.cfg)
+  * [LMHz Universal 2 config](https://github.com/integralfx/MemTestHelper/blob/oc-guide/Universal-2%40LMhz.cfg)
   * If you experience issues with all threads crashing upon launch with the extreme config, it might help to edit the row "Testing Window Size (Mb)=1408". Replace the window size with your total RAM (minus some margin for Windows) divided by your processor's available threads (e.g., 12800/16 = 800 MB per thread).
 * [OCCT](https://www.ocbase.com/) with the dedicated memory test using SSE or AVX instructions.
   * Note that AVX and SSE can vary in error detection speed. On Intel-based systems, SSE appears better for testing IMC voltages, while AVX appears better for DRAM voltage.
