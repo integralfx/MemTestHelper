@@ -42,7 +42,7 @@ You should always test with various stress tests to ensure your overclock is sta
 ### Avoid
 * I wouldn't recommend the AIDA64 memory test and [Memtest64](https://forums.anandtech.com/threads/techpowerups-memtest-64-is-it-better-than-hci-memtest-for-determining-stability.2532209/) as they are both not very good at finding memory errors.
 ### Recommended
-* [TM5](http://testmem.tz.ru/tm5.rar) with any of the configs listed:
+* [TM5](https://mega.nz/file/vLhxBahB#WwJIpN3mQOaq_XsJUboSIcaMg3RlVBWvFnVspgJpcLY) with any of the configs listed:
   * [Extreme config by anta777](https://github.com/integralfx/MemTestHelper/blob/oc-guide/extreme%40anta777.cfg) (recommended). Make sure to load the config. It should say 'Customize: Extreme1 @anta777' if loaded.  
   Credits: [u/nucl3arlion](https://www.reddit.com/r/overclocking/comments/dlghvs/micron_reve_high_training_voltage_requirement/f4zcs04/).
   * [Absolut](https://github.com/integralfx/MemTestHelper/blob/oc-guide/absolutnew.cfg)
