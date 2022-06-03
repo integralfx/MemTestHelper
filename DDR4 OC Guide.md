@@ -43,11 +43,11 @@ You should always test with various stress tests to ensure your overclock is sta
 * I wouldn't recommend the AIDA64 memory test and [Memtest64](https://forums.anandtech.com/threads/techpowerups-memtest-64-is-it-better-than-hci-memtest-for-determining-stability.2532209/) as they are both not very good at finding memory errors.
 ### Recommended
 * [TM5](https://mega.nz/file/vLhxBahB#WwJIpN3mQOaq_XsJUboSIcaMg3RlVBWvFnVspgJpcLY) with any of the configs listed:
-  * [Extreme config by anta777](https://github.com/integralfx/MemTestHelper/blob/oc-guide/extreme%40anta777.cfg) (recommended). Make sure to load the config. It should say 'Customize: Extreme1 @anta777' if loaded.  
+  * [Extreme config by anta777](extreme@anta777.cfg) (recommended). Make sure to load the config. It should say 'Customize: Extreme1 @anta777' if loaded.  
   Credits: [u/nucl3arlion](https://www.reddit.com/r/overclocking/comments/dlghvs/micron_reve_high_training_voltage_requirement/f4zcs04/).
-  * [Absolut](https://github.com/integralfx/MemTestHelper/blob/oc-guide/absolutnew.cfg)
-  * [PCBdestroyer](https://github.com/integralfx/MemTestHelper/blob/oc-guide/PCBdestroyer.cfg)
-  * [LMHz Universal 2 config](https://github.com/integralfx/MemTestHelper/blob/oc-guide/Universal-2%40LMhz.cfg)
+  * [Absolut](absolutnew.cfg)
+  * [PCBdestroyer](PCBdestroyer.cfg)
+  * [LMHz Universal 2 config](Universal-2@LMhz.cfg)
   * If you experience issues with all threads crashing upon launch with the extreme config, it might help to edit the row "Testing Window Size (Mb)=1408". Replace the window size with your total RAM (minus some margin for Windows) divided by your processor's available threads (e.g., 12800/16 = 800 MB per thread).
 * [OCCT](https://www.ocbase.com/) with the dedicated memory test using SSE or AVX instructions.
   * Note that AVX and SSE can vary in error detection speed. On Intel-based systems, SSE appears better for testing IMC voltages, while AVX appears better for DRAM voltage.
@@ -280,8 +280,21 @@ As far as I know, tCL, tRCD, tRP, and possibly tRFC can (or can not) see voltage
 * [JEDEC JESD79-4B (p.174)](http://www.softnology.biz/pdf/JESD79-4B.pdf) specifies that the absolute maximum is 1.50V.
   > Stresses greater than those listed under “Absolute Maximum Ratings” may cause permanent damage to the device. This is a stress rating only, and functional operation of the device at these or any other conditions above those indicated in the operational sections of this specification is not implied. Exposure to absolute maximum rating conditions for extended periods may affect reliability.
 * This value is the official maximum of the DDR4 Spec for which all DDR4 are rated. However, numerous ICs cannot remain safe at such high sustained voltages. [Samsung 8Gb C-die](https://www.hardwareluxx.de/community/f13/samsung-8gbit-ddr4-c-die-k4a8g045wc-overclocking-ergebnisse-im-startbeitrag-1198323.html) can degrade with voltages as low as 1.35V under the right thermal and power delivery conditions. Furthermore, other ICs, such as Hynix 8Gb DJR or Samsung 8Gb B-Die, have been observed dailying voltages well over 1.55V. Do your research on what voltages are safe on your IC, or stick to 1.35v or similar if this value is unknown. Due to random chance and silicon variance, YMMV compared to other people, so be safe.
-* One common limiting factor for the maximum safe voltage you can operate is your CPU's architecture. According to [JEDEC](https://www.jedec.org/standards-documents/dictionary/terms/output-stage-drain-power-voltage-vddq), VDDQ, the voltage of data output, is tied to VDD, colloquially referred to as VDIMM or DRAM Voltage. This voltage interacts with the PHY or Physical Layer present on the CPU and may lead to long-term degradation of the IMC if set too high. As a result, daily use of VDIMM voltages above 1.60V on Ryzen 3000 and 5000, 1.65V on Intel Consumer Lake-series Processors is not advisable as CPU degradation of the PHY is difficult to measure or notice until the issue becomes serious.
+* One common limiting factor for the maximum safe voltage you can operate is your CPU's architecture. According to [JEDEC](https://www.jedec.org/standards-documents/dictionary/terms/output-stage-drain-power-voltage-vddq), VDDQ, the voltage of data output, is tied to VDD, colloquially referred to as VDIMM or DRAM Voltage. This voltage interacts with the PHY or Physical Layer present on the CPU and may lead to long-term degradation of the IMC if set too high. As a result, daily use of VDIMM voltages above 1.60V on Ryzen 3000 and 5000 and 1.65V on Intel Consumer Lake-series Processors is not advisable as CPU degradation of the PHY is difficult to measure or notice until the issue becomes serious.
 * It may be safe to daily 1.60V as there are kits on the [B550 Unify-X QVL](https://www.msi.com/Motherboard/support/MEG-B550-UNIFY-X#support-mem-20) rated for 1.60V. B-Die, 8Gb Rev. E, DJR, and 16Gb Rev. B *should* be fine at running 1.60V daily, though it's recommended to have active airflow. Higher voltages lead to higher temperatures, and high temperatures can lower the threshold for what voltages are considered safe.
+* Here is a list of common ICs and commonly used voltages for them:
+   
+   | IC                                | Daily Voltage (V) | Extreme Voltage (V) |
+   | :---:                             | :---------:       | :-----------:       |
+   | 8Gbit Samsung B-Die               | 1.45 - 1.55       | 1.55 - 1.65         |
+   | 8Gbit Hynix DJR/16Gbit AJR        | 1.45 - 1.55       | 1.50 - 1.65         |
+   | 8Gbit Micron Rev. E/16Gbit Rev. B | 1.45 - 1.55       | 1.55 - 1.60         |
+   | 8Gbit Hynix CJR                   | 1.35 - 1.40       | 1.40 - 1.45         |
+   | 16Gbit Hynix CJR                  | 1.40 - 1.50       | 1.50 - 1.55         |
+   | 8Gbit Nanya B-Die                 | 1.35 - 1.40       | 1.40 - 1.45         |
+   | Samsung C-Die                     | 1.30 - 1.35       | Likely Unsafe       |
+* The voltages marked as *Daily Voltage* are voltages that are known to be safe for the corresponding IC, provided temperatures are kept in check.
+* The voltages marked as *Extreme Voltage* will likely not degrade but should be used cautiously. A RAM fan is recommended for these voltages.
   
 ### Ranking
 * Below is how the most common ICs rank in terms of frequency and timings.
@@ -311,7 +324,7 @@ As far as I know, tCL, tRCD, tRP, and possibly tRFC can (or can not) see voltage
 * Gear 1 is preferred because the memory controller clock is synced with the DRAM clock speed.
 * On Alder Lake, non-K CPUs have locked VCCSA and may not work at higher frequencies at gear 1.
 * There are 2 voltages you need to change if overclocking RAM: system agent (VCCSA) and IO (VCCIO).  
-  **DO NOT** leave these on auto, as they can pump dangerous levels of voltage into your IMC, potentially degrading or even killing it. Most of the time, you can keep VCCSA and VCCIO the same, but sometimes too much can harm stability (credits: Silent_Scone).
+  **DO NOT** leave these on auto, as they can pump dangerous voltage levels into your IMC, potentially degrading or even killing it. Most of the time, you can keep VCCSA and VCCIO the same, but sometimes too much can harm stability (credits: Silent_Scone).
   
   ![image](https://user-images.githubusercontent.com/69487009/156914787-b9eba0e9-69a6-4bd6-a5a1-f7d794e64f00.png)
 
@@ -330,7 +343,7 @@ As far as I know, tCL, tRCD, tRP, and possibly tRFC can (or can not) see voltage
   * On Asrock and EVGA UEFIs, they're combined into tRCDtRP. On ASUS UEFIs, tRP is hidden. On MSI and Gigabyte UEFIs, tRCD and tRP are visible but setting them to different values just sets both to the higher value.
 * Expected memory latency range: 40ns - 50ns.
    * Expected memory latency range for Samsung B-Die: 35ns - 45ns.
-   * Overall, latency varies between generations due to a difference in die size (ring bus). As a result, a 9900K will have slightly lower latency than a 10700K at the same settings since the 10700K has the same die as a 10900K.
+   * Overall, latency varies between generations due to a difference in die size (ring bus). As a result, a 9900K will have a slightly lower latency than a 10700K at the same settings since the 10700K has the same die as a 10900K.
    * Latency is affected by the RTLs and IOLs. Generally speaking, higher quality boards and overclocking oriented boards will be more direct in routing the memory traces and will likely have lower RTLs and IOLs. On some motherboards, changing RTLs and IOLs have no effect.
   
 ### AMD - AM4
@@ -340,9 +353,9 @@ Some terminology:
 * UCLK: Unified memory controller clock. Half of MCLK when MCLK and FCLK are not equal (desynchronized, 2:1 mode).
 * On Zen and Zen+, MCLK == FCLK == UCLK. However, on Zen2 and Zen3, you can specify FCLK. If MCLK is 1600MHz (DDR4-3200) and you set FCLK to 1600MHz, UCLK will also be 1600MHz unless you set MCLK:UCLK ratio to 2:1 (also known as UCLK DIV mode, etc.). However, if you set FCLK to 1800MHz, UCLK will run at 800MHz (desynchronized).
 
-* Ryzen 1000 and 2000's IMC can be finicky when overclocking and can't hit as high frequencies as Intel can. On the other hand, Ryzen 3000 and 5000's IMCs are much better and are more or less on par with Intel's newer Skylake based CPUs, i.e., 9th and 10th gen.
+* Ryzen 1000 and 2000's IMC can be finicky when overclocking and can't hit as high frequencies as Intel can. On the other hand, Ryzen 3000 and 5000's IMCs are much better and are more or less on par with Intel's newer Skylake-based CPUs, i.e., 9th and 10th gen.
 * SOC voltage is the voltage to the IMC, and like with Intel, it's not recommended to leave it on auto. Typical ranges for this value range around 1.00V and 1.10V. Higher values are generally acceptable and may be necessary for stabilizing higher capacity memory and may aid in attaining FCLK stability.
-* By contrast, memory instability can occur when SOC voltage is set too high. This negative scaling typically occurs between 1.15V and 1.25V on most Ryzen CPUs.
+* By contrast, memory instability can occur when SOC voltage is too high. This negative scaling typically occurs between 1.15V and 1.25V on most Ryzen CPUs.
   > There are apparent differences in how the memory controller behaves on the different CPU specimens. The majority of the CPUs will do DDR4-3466 or higher at 1.050V SoC voltage, however the difference lies in how the different specimens react to the voltage. Some of the specimens seem scale with the increased SoC voltage, while the others simply refuse to scale at all or in some cases even illustrate negative scaling. All of the tested samples demonstrated negative scaling (i.e. more errors or failures to train) when higher than 1.150V SoC was used. In all cases the maximum memory frequency was achieved at =< 1.100V SoC voltage.  
   [~ The Stilt](https://forums.anandtech.com/threads/ryzen-strictly-technical.2500572/page-72#post-39391302)
 * On Ryzen 3000, there's also CLDO_VDDG (commonly abbreviated to VDDG, not to be confused with CLDO_VDD**P**), which is the voltage to the Infinity Fabric. SOC voltage should be at least 40mV above CLDO_VDDG as CLDO_VDDG is derived from SOC voltage.
@@ -420,18 +433,9 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
      * MSI: CPU NB/SOC.
 3. Set DRAM voltage to 1.40V. If you're using ICs that roll over above 1.35V, set 1.35V.
    * "Roll over" means that the IC becomes more unstable as you increase the voltage, sometimes to the point of not even POSTing.
-   * ICs that are known to roll over above 1.35V include but are not limited to: 8Gb Samsung C-die, older Micron/SpecTek ICs (before 8Gb Rev. E).
-   * Here is a list of common ICs and safe voltages for them:
-   
-   | IC                                | Daily voltage (V) | Extreme voltage |
-   | :---:                             | :---------:       | :-------------: |
-   | 8Gbit Samsung B-Die               | 1.45 - 1.55       | 1.55 - 1.65     |
-   | 8Gbit Hynix DJR/16Gbit AJR        | 1.45 - 1.55       | 1.50 - 1.65     |
-   | 8Gbit Micron Rev. E/16Gbit Rev. B | 1.45 - 1.55       | 1.55 - 1.60     |
-   | 8Gbit Hynix CJR                   | 1.35 - 1.40       | 1.40 - 1.45     |
-   | 16Gbit Hynix CJR                  | 1.40 - 1.50       | 1.50 - 1.55     |
-   | 8Gbit Nanya B-Die                 | 1.35 - 1.40       | 1.40 - 1.45     |
-   | Samsung C-Die                     | 1.30 - 1.35       | Likely Unsafe   |
+   * ICs that are known to roll over above 1.35V include but are not limited to: 8Gb Samsung C-die and older Micron/SpecTek ICs (before 8Gb Rev. E).
+   * To find what voltage to use for your IC, refer to this [list](#maximum-recommended-daily-voltage)
+
 4. Set primary timings to 16-20-20-40 (tCL-tRCD-tRP-tRAS) and tCWL to 16.
    * Most ICs need loose tRCD and/or tRP, so I recommend 20.
    * See [this post](https://redd.it/ahs5a2) for more information on these timings.
@@ -468,7 +472,7 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
   This section is not for those having trouble stabilizing frequencies within the expected range.
      * Note that some boards have auto rules that can stifle your progress, an example being tCWL = tCL - 1, which can lead to uneven values of tCWL. Reading the [Miscellaneous Tips](#miscellaneous-tips) might give you insight into your platform and your motherboard's functionality.
 1. Intel:
-   * Increase VCCSA and VCCIO to 1.25V. For ADL, VCCIO does not exist.
+   * Increase VCCSA and VCCIO to 1.25V. For ADL, VCCIO does not exist. Note that if you have an Alder Lake non-K SKU, VCCSA will be locked and your overclock potential will be limited. 
    * Set command rate (CR) to 2T if it isn't already.
    * Set tCCDL to 8. Asus UEFIs don't expose this timing.
    
@@ -476,9 +480,9 @@ The default value is fixed 1.100V and AMD recommends keeping it at that level. I
    * Desynchronising MCLK and FCLK can incur a massive latency penalty, so you're better off tightening timings to keep your MCLK:FCLK 1:1. See [AMD - AM4](#amd---am4) for more information.
    * Otherwise, set FCLK to whatever is stable (1600MHz if you're unsure).
 2. Loosen primary timings to 18-22-22-42 and set tCWL to 18.
-3. Increase DRAM voltage to 1.45v if it is safe for your IC.
-5. Follow steps 4-7 from [Finding a Baseline](#finding-a-baseline).
-6. Proceed to [Tightening Timings](#tightening-timings).
+3. Increase DRAM voltage to 1.45v if it is safe for your IC. See [Maximum Recommended Daily Voltage](#maximum-recommended-daily-voltage).
+4. Follow steps 4-7 from [Finding a Baseline](#finding-a-baseline).
+5. Proceed to [Tightening Timings](#tightening-timings).
    
 ## Tightening Timings
 * Make sure to run a memory test and benchmark after each change to ensure performance is improving.
