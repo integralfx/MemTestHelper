@@ -23,8 +23,8 @@
       8. [Ranking](#ranking)
       9. [Temperatures and Its Effect on Stability](#temperatures-and-its-effect-on-stability)
    3. [Integrated Memory Controller (IMC)](#integrated-memory-controller-imc)
-      1. [Intel - LGA1151](#intel---lga1151)
-      2. [AMD - AM4](#amd---am4)
+      1. [Intel IMC](#intel-imc)
+      2. [AMD IMC](#amd-imc)
 4. [Overclocking](#overclocking)
    1. [Finding a Baseline](#finding-a-baseline)
    2. [Trying Higher Frequencies](#trying-higher-frequencies)
@@ -163,7 +163,8 @@ You should always test with various stress tests to ensure your overclock is sta
 * Dual rank 8 Gb Samsung B-die.
 
    ![image](https://user-images.githubusercontent.com/69487009/156914678-6eed4b9c-5874-4c71-89d3-dd77fba51b5f.png)
-
+   
+* The performance impact of RAM overclocking on Intel can be found [here](https://kingfaris.co.uk/blog/intel-ram-oc-impact)
 
 ### Label on Sticks
 
@@ -317,7 +318,7 @@ As far as I know, tCL, tRCD, tRP, and possibly tRFC can (or can not) see voltage
 * You might find that you're stable when running a memory test yet crash while gaming. This is because your CPU and/or GPU dump heat in the case, raising the RAM temperatures in the process. Thus, it is good to stress test your GPU while running a memory test to simulate stability while gaming.
  
 ## Integrated Memory Controller (IMC)
-### Intel - LGA1151
+### Intel IMC
 * Intel's Skylake IMC is pretty strong, so it shouldn't be the bottleneck when overclocking.  
   What would you expect from 14+++++?
 * The Rocket Lake IMC, aside from the limitations regarding Gear 1 and Gear 2 memory support, has the strongest memory controller of all Intel consumer CPUs by a fair margin.
@@ -346,7 +347,7 @@ As far as I know, tCL, tRCD, tRP, and possibly tRFC can (or can not) see voltage
    * Overall, latency varies between generations due to a difference in die size (ring bus). As a result, a 9900K will have a slightly lower latency than a 10700K at the same settings since the 10700K has the same die as a 10900K.
    * Latency is affected by the RTLs and IOLs. Generally speaking, higher quality boards and overclocking oriented boards will be more direct in routing the memory traces and will likely have lower RTLs and IOLs. On some motherboards, changing RTLs and IOLs have no effect.
   
-### AMD - AM4
+### AMD IMC
 Some terminology:
 * MCLK: Real memory clock (half of the effective RAM speed). For example, for DDR4-3200, the MCLK is 1600 MHz.
 * FCLK: Infinity Fabric clock.
@@ -354,7 +355,7 @@ Some terminology:
 * On Zen and Zen+, MCLK == FCLK == UCLK. However, on Zen2 and Zen3, you can specify FCLK. If MCLK is 1600 MHz (DDR4-3200) and you set FCLK to 1600 MHz, UCLK will also be 1600 MHz unless you set MCLK:UCLK ratio to 2:1 (also known as UCLK DIV mode, etc.). However, if you set FCLK to 1800 MHz, UCLK will run at 800 MHz (desynchronized).
 
 * Ryzen 1000 and 2000's IMC can be finicky when overclocking and can't hit as high frequencies as Intel can. On the other hand, Ryzen 3000 and 5000's IMCs are much better and are more or less on par with Intel's newer Skylake-based CPUs, i.e., 9th and 10th gen.
-* SOC voltage is the voltage to the IMC, and like with Intel, it's not recommended to leave it on auto. Typical ranges for this value range around 1.00V and 1.10V. Higher values are generally acceptable and may be necessary for stabilizing higher capacity memory and may aid in attaining FCLK stability.
+* SOC voltage is the voltage to the IMC, and like with Intel, it's not recommended to leave it on auto. Typical ranges for this value range around 1.00V and 1.125V. Higher values are generally acceptable and may be necessary for stabilizing higher capacity memory and may aid in attaining FCLK stability.
 * By contrast, memory instability can occur when SOC voltage is too high. This negative scaling typically occurs between 1.15 V and 1.25 V on most Ryzen CPUs.
   > There are apparent differences in how the memory controller behaves on the different CPU specimens. The majority of the CPUs will do DDR4-3466 or higher at 1.050V SoC voltage, however the difference lies in how the different specimens react to the voltage. Some of the specimens seem scale with the increased SoC voltage, while the others simply refuse to scale at all or in some cases even illustrate negative scaling. All of the tested samples demonstrated negative scaling (i.e. more errors or failures to train) when higher than 1.150V SoC was used. In all cases the maximum memory frequency was achieved at =< 1.100V SoC voltage.  
   [~ The Stilt](https://forums.anandtech.com/threads/ryzen-strictly-technical.2500572/page-72#post-39391302)
@@ -423,7 +424,7 @@ The default value is fixed 1.100 V and AMD recommends keeping it at that level. 
    * Make sure your UEFI/BIOS is up to date.
 
 2. On Intel, start with 1.15 V VCCSA and VCCIO.  
-   On AMD, start with 1.10 V SOC.
+   On AMD, start with 1.10 V SOC, 0.95 V VDDP, 0.95 V VDDG CCD, and 1.05 V VDDG IOD.
    * SOC voltage might be named differently depending on the manufacturer.
      * Asrock: CPU VDDCR_SOC Voltage. If you can't find that, you can use SOC Overclock VID hidden in the AMD CBS menu.
        * [VID values](https://www.reddit.com/r/Amd/comments/842ehb/asrock_ab350_pro4_guide_bios_overclocking_raven/).
@@ -477,12 +478,13 @@ The default value is fixed 1.100 V and AMD recommends keeping it at that level. 
    * Set tCCDL to 8. Asus UEFIs don't expose this timing.
    
    Ryzen 3000/5000:
-   * Desynchronising MCLK and FCLK can incur a massive latency penalty, so you're better off tightening timings to keep your MCLK:FCLK 1:1. See [AMD - AM4](#amd---am4) for more information.
+   * Desynchronising MCLK and FCLK can incur a massive latency penalty, so you're better off tightening timings to keep your MCLK:FCLK 1:1. See [AMD - AM4](#amd-imc) for more information.
    * Otherwise, set FCLK to whatever is stable (1600 MHz if you're unsure).
 2. Loosen primary timings to 18-22-22-42 and set tCWL to 18.
 3. Increase DRAM voltage to 1.45 V if it is safe for your IC. See [Maximum Recommended Daily Voltage](#maximum-recommended-daily-voltage).
-4. Follow steps 4-7 from [Finding a Baseline](#finding-a-baseline).
-5. Proceed to [Tightening Timings](#tightening-timings).
+4. Increase SOC to 1.125 V, VDDP to 1.00 V, and VDDG CCD to 1.00 V.
+5. Follow steps 4-7 from [Finding a Baseline](#finding-a-baseline).
+6. Proceed to [Tightening Timings](#tightening-timings).
    
 ## Tightening Timings
 * Make sure to run a memory test and benchmark after each change to ensure performance is improving.
