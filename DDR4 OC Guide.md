@@ -368,7 +368,7 @@ Some terminology:
   > I don't have the exact figure, but you can assume that the minimum drop-out voltage (Vin-Vout) is around 40 mV. Meaning you ACTUAL SoC voltage has to be at least by this much higher, than the requested VDDG for it to take effect as it is requested. Adjusting the SoC voltage alone, unlike on previous gen. parts doesn't do much if anything at all. The default value is fixed 1.100 V and AMD recommends keeping it at that level. Increasing the VDDG helps with the fabric overclocking in certain scenarios, but not always.  
   > 1800 MHz FCLK should be doable at the default 0.950 V value and for pushing the limits it might be beneficial to increase it to =< 1.05 V (1.100 - 1.125 V SoC, depending on the load-line).  
 
-  ~ The Stilt  
+  [~ The Stilt](https://www.overclock.net/threads/strictly-technical-matisse-not-really.1728758/page-2#post-28031966)
   * On AGESA 1.0.0.4 or newer, VDDG is separated into VDDG IOD and VDDG CCD for the I/O die and the chiplets parts, respectively.
 
 * Below are the expected memory frequency ranges for 2 single rank DIMMs, provided your motherboard and ICs are capable:
