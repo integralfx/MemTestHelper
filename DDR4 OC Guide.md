@@ -359,16 +359,15 @@ Some terminology:
 * Ryzen 1000 and 2000's IMC can be finicky when overclocking and can't hit as high frequencies as Intel can. On the other hand, Ryzen 3000 and 5000's IMCs are much better and are more or less on par with Intel's newer Skylake-based CPUs, i.e., 9th and 10th gen.
 * SOC voltage is the voltage to the IMC, and like with Intel, it's not recommended to leave it on auto. Typical ranges for this value range around 1.00V and 1.125V. Higher values are generally acceptable and may be necessary for stabilizing higher capacity memory and may aid in attaining FCLK stability.
 * By contrast, memory instability can occur when SOC voltage is too high. This negative scaling typically occurs between 1.15 V and 1.25 V on most Ryzen CPUs.
-  > There are apparent differences in how the memory controller behaves on the different CPU specimens. The majority of the CPUs will do DDR4-3466 or higher at 1.050V SoC voltage, however the difference lies in how the different specimens react to the voltage. Some of the specimens seem scale with the increased SoC voltage, while the others simply refuse to scale at all or in some cases even illustrate negative scaling. All of the tested samples demonstrated negative scaling (i.e. more errors or failures to train) when higher than 1.150V SoC was used. In all cases the maximum memory frequency was achieved at =< 1.100V SoC voltage.  
+  > There are apparent differences in how the memory controller behaves on the different CPU specimens. The majority of the CPUs will do DDR4-3466 or higher at 1.050V SoC voltage, however the difference lies in how the different specimens react to the voltage. Some of the specimens seem scale with the increased SoC voltage, while the others simply refuse to scale at all or in some cases even illustrate negative scaling. All of the tested samples demonstrated negative scaling (i.e. more errors or failures to train) when higher than 1.150V SoC was used. In all cases the maximum memory frequency was achieved at =< 1.100V SoC voltage.
+
   [~ The Stilt](https://forums.anandtech.com/threads/ryzen-strictly-technical.2500572/page-72#post-39391302)
 * On Ryzen 3000, there's also CLDO_VDDG (commonly abbreviated to VDDG, not to be confused with CLDO_VDD**P**), which is the voltage to the Infinity Fabric. SOC voltage should be at least 40 mV above CLDO_VDDG as CLDO_VDDG is derived from SOC voltage.
-  > Most cLDO voltages are regulated from the two main power rails of the CPU. In case of cLDO_VDDG and cLDO_VDDP, they are regulated from the VDDCR_SoC plane.
-Because of this, there are couple rules. For example, if you set the VDDG to 1.10 V, while your actual SoC voltage under load is 1.05 V the VDDG will stay roughly at 1.01V max.
-Likewise if you have VDDG set to 1.100 V and start increasing the SoC voltage, your VDDG will raise as well. I don't have the exact figure, but you can assume that the minimum drop-out voltage (Vin-Vout) is around 40 mV.
-Meaning you ACTUAL SoC voltage has to be at least by this much higher, than the requested VDDG for it to take effect as it is requested.
-Adjusting the SoC voltage alone, unlike on previous gen. parts doesn't do much if anything at all.
-The default value is fixed 1.100 V and AMD recommends keeping it at that level. Increasing the VDDG helps with the fabric overclocking in certain scenarios, but not always.
-1800 MHz FCLK should be doable at the default 0.950 V value and for pushing the limits it might be beneficial to increase it to =< 1.05 V (1.100 - 1.125 V SoC, depending on the load-line).  
+  > Most cLDO voltages are regulated from the two main power rails of the CPU. In case of cLDO_VDDG and cLDO_VDDP, they are regulated from the VDDCR_SoC plane. Because of this, there are couple rules.  
+  > For example, if you set the VDDG to 1.10 V, while your actual SoC voltage under load is 1.05 V the VDDG will stay roughly at 1.01V max. Likewise if you have VDDG set to 1.100 V and start increasing the SoC voltage, your VDDG will raise as well.  
+  > I don't have the exact figure, but you can assume that the minimum drop-out voltage (Vin-Vout) is around 40 mV. Meaning you ACTUAL SoC voltage has to be at least by this much higher, than the requested VDDG for it to take effect as it is requested. Adjusting the SoC voltage alone, unlike on previous gen. parts doesn't do much if anything at all. The default value is fixed 1.100 V and AMD recommends keeping it at that level. Increasing the VDDG helps with the fabric overclocking in certain scenarios, but not always.  
+  > 1800 MHz FCLK should be doable at the default 0.950 V value and for pushing the limits it might be beneficial to increase it to =< 1.05 V (1.100 - 1.125 V SoC, depending on the load-line).  
+
   ~ The Stilt  
   * On AGESA 1.0.0.4 or newer, VDDG is separated into VDDG IOD and VDDG CCD for the I/O die and the chiplets parts, respectively.
 
@@ -386,19 +385,22 @@ The default value is fixed 1.100 V and AMD recommends keeping it at that level. 
     > On the tested samples, the distribution of the maximum achievable memory frequency was following:  
     > DDR4-3400 – 12.5 % of the samples   
     > DDR4-3466 – 25.0 % of the samples  
-    > DDR4-3533 – 62.5 % of the samples  
+    > DDR4-3533 – 62.5 % of the samples
+    
     [~ The Stilt](https://forums.anandtech.com/threads/ryzen-strictly-technical.2500572/page-72#post-39391302)
   * 2 CCD Ryzen 3000 CPUs (3900X and 3950X) seem to prefer 4 single rank sticks over 2 dual rank sticks.
-    > For 2 CCD SKUs, 2 DPC SR configuration seems to be the way to go.
-    > Both the 3600 and 3700X did 1800 MHz UCLK on 1 DPC DR config, but most likely due to the discrepancy of the two CCDs in 3900X, it barely does 1733 MHz on those DIMMs.
-    > Meanwhile, with the 2 DPC SR config, there is no issue in reaching 1866 MHz FCLK/UCLK.  
-[~ The Stilt](https://www.overclock.net/forum/10-amd-cpus/1728758-strictly-technical-matisse-not-really-26.html#post28052342)
+    > For 2 CCD SKUs, 2 DPC SR configuration seems to be the way to go.  
+    > Both the 3600 and 3700X did 1800 MHz UCLK on 1 DPC DR config, but most likely due to the discrepancy of the two CCDs in 3900X, it barely does 1733 MHz on those DIMMs.  
+    > Meanwhile, with the 2 DPC SR config, there is no issue in reaching 1866 MHz FCLK/UCLK. 
+
+    [~ The Stilt](https://www.overclock.net/forum/10-amd-cpus/1728758-strictly-technical-matisse-not-really-26.html#post28052342)
 * tRCD is split into tRCDRD (read) and tRCDWR (write). Usually, tRCDWR can go lower than tRCDRD, but I haven't noticed any performance improvements from lowering tRCDWR. It's best to keep them the same.
 * Geardown mode (GDM) is automatically enabled above DDR4-2666, forcing even tCL, tCWL, tRTP, tWR, and CR 1T. If you want to run odd tCL, disable GDM. If you're unstable, try running CR 2T, but that may negate the performance gain from dropping tCL and may even be less stable than GDM enabled.
   * For example, if you try to run DDR4-3000 CL15 with GDM enabled, CL will be rounded up to 16.
   * In terms of performance: GDM disabled CR 1T > GDM enabled CR 1T > GDM disabled CR 2T.
 * On single CCD Ryzen 3000 CPUs below 3900X, write bandwidth is halved.
   > In memory bandwidth, we see something odd, the write speed of AMD's 3700X, and that's because of the CDD to IOD connection, where the writes are 16 B/cycle on the 3700X, but it's double that on the 3900X. AMD said this let them conserve power, which accounts for part of the lower TDP AMD aimed for. AMD says applications rarely do pure writes, but it did hurt the 3700X's performance in one of our benchmarks on the next page.  
+  
   [~ TweakTown](https://www.tweaktown.com/reviews/9051/amd-ryzen-3900x-3700x-zen2-review/index3.html)
 * Expected memory latency range:
 
@@ -431,13 +433,13 @@ The default value is fixed 1.100 V and AMD recommends keeping it at that level. 
      * Asrock: CPU VDDCR_SOC Voltage. If you can't find that, you can use SOC Overclock VID hidden in the AMD CBS menu.
        * [VID values](https://www.reddit.com/r/Amd/comments/842ehb/asrock_ab350_pro4_guide_bios_overclocking_raven/).
      * Asus: VDDCR SOC.
-     * Gigabyte: (Dynamic) Vcore SOC.
-       * Note that dynamic Vcore SOC is an offset voltage. Therefore, the base voltage can change automatically when increasing DRAM frequency. For example, +0.100 V at DDR4-3000 might result in 1.10 V actual, but +0.100V at DDR4-3400 might result in 1.20v actual.
+     * Gigabyte: (Dynamic<sup>1</sup>) Vcore SOC.
+       * <sup>1</sup>Dynamic Vcore SOC is found on certain Gigabyte motherboards and is an offset voltage. Therefore, the base voltage can change automatically when increasing DRAM frequency. For example, +0.100 V at DDR4-3000 might result in 1.10 V actual, but +0.100V at DDR4-3400 might result in 1.20v actual.
      * MSI: CPU NB/SOC.
 3. Set DRAM voltage to 1.40 V. If you're using ICs that roll over above 1.35 V, set 1.35 V.
    * "Roll over" means that the IC becomes more unstable as you increase the voltage, sometimes to the point of not even POSTing.
    * ICs that are known to roll over above 1.35 V include but are not limited to: 8 Gb Samsung C-die and older Micron/SpecTek ICs (before M8E).
-   * To find what voltage to use for your IC, refer to this [list](#maximum-recommended-daily-voltage)
+   * To find what voltage to use for your IC, refer to the [maximum recommended daily voltage section](#maximum-recommended-daily-voltage).
 
 4. Set primary timings to 16-20-20-40 (tCL-tRCD-tRP-tRAS) and tCWL to 16.
    * Most ICs need loose tRCD and/or tRP, so I recommend 20.
@@ -544,7 +546,7 @@ The default value is fixed 1.100 V and AMD recommends keeping it at that level. 
      
    * For all other ICs, I would recommend doing a binary search to find the lowest stable tRFC.  
    For example, say your tRFC is 630. The next tRFC you should try is half of that (315). If that is unstable, you know that your lowest tRFC is between 315 and 630, so you try the midpoint (`(315 + 630) / 2 = 472.5, round down to 472`). If that is stable, you know that your lowest tRFC is between 315 and 472, so you try the midpoint and so on.
-   * [tRFC table by Reous](https://www.hardwareluxx.de/community/threads/hynix-8gbit-ddr4-cjr-c-die-h5an8g8ncjr-djr-2020-update.1206340/)(bottom of page).
+   * [tRFC table by Reous](https://www.hardwareluxx.de/community/threads/hynix-8gbit-ddr4-cjr-c-die-h5an8g8ncjr-djr-2020-update.1206340/) (bottom of page).
 3. Here are my suggestions for the rest of the secondaries:
 
    | Timing | Safe | Tight | Extreme |
@@ -683,9 +685,13 @@ This seems to line up with [The Stilt's](https://www.overclock.net/forum/10-amd-
   > Phy at AGESA defaults, except ProcODT of 40.0Ohm, an ASUS auto-rule for Optimem III.
 * Lower SOC voltage and/or VDDG IOD may help with stability.
 * On Ryzen 3000 and 5000, higher CLDO_VDDP can help with stability above DDR4-3600.
-  > Increasing cLDO_VDDP seems beneficial > 3600MHz MEMCLKs, as increasing it seems to improve the margins and help with potential training issues. Source: [The Stilt](https://www.overclock.net/forum/10-amd-cpus/1728758-strictly-technical-matisse-not-really-26.html).
+  > Increasing cLDO_VDDP seems beneficial > 3600MHz MEMCLKs, as increasing it seems to improve the margins and help with potential training issues. 
+  
+  Source: [The Stilt](https://www.overclock.net/forum/10-amd-cpus/1728758-strictly-technical-matisse-not-really-26.html).
  
-  > This value is not to exceed 1.10V on Ryzen 3000 and 5000, and should always be restricted to at least 0.10V less than DRAM Voltage. Source: [AMD](https://community.amd.com/t5/blogs/community-update-4-let-s-talk-dram/ba-p/415902)
+  > This value is not to exceed 1.10V on Ryzen 3000 and 5000, and should always be restricted to at least 0.10V less than DRAM Voltage. 
+  
+  Source: [AMD](https://community.amd.com/t5/blogs/community-update-4-let-s-talk-dram/ba-p/415902)
 * When pushing FCLK around 1800 MHz, intermittent RAM training errors may be alleviated or eliminated by increasing VDDG CCD.
 
 # Useful Links
