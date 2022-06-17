@@ -244,7 +244,7 @@ As far as I know, tCL, tRCD, tRP, and possibly tRFC can (or can not) see voltage
 ![B-die tRFC Voltage Scaling](Images/b-die-trfc-voltage-scaling.png)
   * Here you can see that tRFC scales pretty well on B-die.
 
-* Some older Micron ICs (before 8 Gb Rev. E) are known to scale negatively with voltage. That is, they become unstable at the same frequency and timings just by increasing the voltage (usually above 1.35 V).
+* Some older Micron ICs (before M8E) are known to scale negatively with voltage. That is, they become unstable at the same frequency and timings just by increasing the voltage (usually above 1.35 V).
 * Here is a table of ICs I have tested and if the timing scales with voltage:
 
   | IC  | tCL | tRCD | tRP | tRFC |
@@ -284,16 +284,15 @@ As far as I know, tCL, tRCD, tRP, and possibly tRFC can (or can not) see voltage
 ### Maximum Recommended Daily Voltage
 * [JEDEC JESD79-4B (p.174)](http://www.softnology.biz/pdf/JESD79-4B.pdf) specifies that the absolute maximum is 1.50 V.
   > Stresses greater than those listed under “Absolute Maximum Ratings” may cause permanent damage to the device. This is a stress rating only, and functional operation of the device at these or any other conditions above those indicated in the operational sections of this specification is not implied. Exposure to absolute maximum rating conditions for extended periods may affect reliability.
-* This value is the official maximum of the DDR4 Spec for which all DDR4 are rated. However, numerous ICs cannot remain safe at such high sustained voltages. [Samsung 8 Gb C-die](https://www.hardwareluxx.de/community/f13/samsung-8gbit-ddr4-c-die-k4a8g045wc-overclocking-ergebnisse-im-startbeitrag-1198323.html) can degrade with voltages as low as 1.35 V under the right thermal and power delivery conditions. Furthermore, other ICs, such as Hynix 8 Gb DJR or Samsung 8 Gb B-Die, have been observed dailying voltages well over 1.55 V. Do your research on what voltages are safe on your IC, or stick to 1.35 V or similar if this value is unknown. Due to random chance and silicon variance, YMMV compared to other people, so be safe.
+* This value is the official maximum of the DDR4 Spec for which all DDR4 are rated. However, numerous ICs cannot remain safe at such high sustained voltages. [S8C](https://www.hardwareluxx.de/community/f13/samsung-8gbit-ddr4-c-die-k4a8g045wc-overclocking-ergebnisse-im-startbeitrag-1198323.html) can degrade with voltages as low as 1.35 V under the right thermal and power delivery conditions. Furthermore, other ICs, such as H8D or S8B, have been observed dailying voltages well over 1.55 V. Do your research on what voltages are safe on your IC, or stick to 1.35 V or similar if this value is unknown. Due to random chance and silicon variance, YMMV compared to other people, so be safe.
 * One common limiting factor for the maximum safe voltage you can operate is your CPU's architecture. According to [JEDEC](https://www.jedec.org/standards-documents/dictionary/terms/output-stage-drain-power-voltage-vddq), VDDQ, the voltage of data output, is tied to VDD, colloquially referred to as VDIMM or DRAM Voltage. This voltage interacts with the PHY or Physical Layer present on the CPU and may lead to long-term degradation of the IMC if set too high. As a result, daily use of VDIMM voltages above 1.60 V on Ryzen 3000 and 5000 and 1.65 V on Intel Consumer Lake-series Processors is not advisable as CPU degradation of the PHY is difficult to measure or notice until the issue becomes serious.
-* It may be safe to daily 1.60 V as there are kits on the [B550 Unify-X QVL](https://www.msi.com/Motherboard/support/MEG-B550-UNIFY-X#support-mem-20) rated for 1.60 V. B-Die, 8 Gb Rev. E, DJR, and 16 Gb Rev. B *should* be fine at running 1.60 V daily, though it's recommended to have active airflow. Higher voltages lead to higher temperatures, and high temperatures can lower the threshold for what voltages are considered safe.
+* It may be safe to daily 1.60 V as there are kits on the [B550 Unify-X QVL](https://www.msi.com/Motherboard/support/MEG-B550-UNIFY-X#support-mem-20) rated for 1.60 V. H8D, M8E, M16B and S8B *should* be fine at running 1.60 V daily, though it's recommended to have active airflow. Higher voltages lead to higher temperatures, and high temperatures can lower the threshold for what voltages are considered safe.
 * Here is a list of common ICs and commonly used voltages for them:
    
    | IC  | Daily Voltage (V) | Extreme Voltage (V) |
    | :-: | :---------------: | :-----------------: |
    | H8D, H16A, M8E, M16B, S4D, S4E, S8B | Up to 1.55 | Above 1.55 |
-   | H4A, H8A, N8B | Up to 1.45 | Above 1.45 |
-   | H8C, H16C | Up to 1.45 | Above 1.45<sup>1</sup> |
+   | H4A, H8A, H8C<sup>1</sup> , H16C, N8B | Up to 1.45 | Above 1.45 |
    | S8C | Up to 1.35 | N/A<sup>2</sup>        |
 * The voltages marked as *Daily Voltage* are voltages that are known to be safe for the corresponding IC, provided temperatures are kept in check.
 * The voltages marked as *Extreme Voltage* will likely not degrade but should be used cautiously. A RAM fan is recommended for these voltages.
@@ -317,7 +316,7 @@ As far as I know, tCL, tRCD, tRP, and possibly tRFC can (or can not) see voltage
 * Generally, the hotter your RAM is, the less stability it will have at higher frequencies and/or tighter timings.
 * The tRFC timings are very dependent on temperatures, as they are related to capacitor leakage, which is affected by temperature. Therefore, higher temperatures will need higher tRFC values. tRFC2 and tRFC4 are timings that activate when the operating temperature of DRAM hits 85 °C. Below these temperatures, these timings don't do anything.
 * B-Die is temperature sensitive, and its ideal range is ~30-40 °C. However, some may be able to withstand higher temperatures, so YMMV.
-* Rev. E, on the other hand, doesn't seem to be as strongly temperature sensitive, demonstrated by [buildzoid](https://www.youtube.com/watch?v=OeHEtULQg3Q).
+* M8E, on the other hand, doesn't seem to be as strongly temperature sensitive, demonstrated by [buildzoid](https://www.youtube.com/watch?v=OeHEtULQg3Q).
 * You might find that you're stable when running a memory test yet crash while gaming. This is because your CPU and/or GPU dump heat in the case, raising the RAM temperatures in the process. Thus, it is good to stress test your GPU while running a memory test to simulate stability while gaming.
  
 ## Integrated Memory Controller (IMC)
@@ -437,7 +436,7 @@ The default value is fixed 1.100 V and AMD recommends keeping it at that level. 
      * MSI: CPU NB/SOC.
 3. Set DRAM voltage to 1.40 V. If you're using ICs that roll over above 1.35 V, set 1.35 V.
    * "Roll over" means that the IC becomes more unstable as you increase the voltage, sometimes to the point of not even POSTing.
-   * ICs that are known to roll over above 1.35 V include but are not limited to: 8 Gb Samsung C-die and older Micron/SpecTek ICs (before 8 Gb Rev. E).
+   * ICs that are known to roll over above 1.35 V include but are not limited to: 8 Gb Samsung C-die and older Micron/SpecTek ICs (before M8E).
    * To find what voltage to use for your IC, refer to this [list](#maximum-recommended-daily-voltage)
 
 4. Set primary timings to 16-20-20-40 (tCL-tRCD-tRP-tRAS) and tCWL to 16.
