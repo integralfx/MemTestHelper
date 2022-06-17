@@ -550,7 +550,7 @@ Some terminology:
      | S8C | 300 - 340 |
      
    * For all other ICs, I would recommend doing a binary search to find the lowest stable tRFC.  
-   For example, say your tRFC is 630. The next tRFC you should try is half of that (315). If that is unstable, you know that your lowest tRFC is between 315 and 630, so you try the midpoint (`(315 + 630) / 2 = 472.5, round down to 472`). If that is stable, you know that your lowest tRFC is between 315 and 472, so you try the midpoint and so on.
+   For example, say your tRFC is 630. The next tRFC you should try is half of that (315). If that is unstable, you know that your lowest tRFC is between 315 and 630, so you try the midpoint (`(315 + 630) / 2 = 472.5`, round down to 472). If that is stable, you know that your lowest tRFC is between 315 and 472, so you try the midpoint and so on.
    * [tRFC table by Reous](https://www.hardwareluxx.de/community/threads/hynix-8gbit-ddr4-cjr-c-die-h5an8g8ncjr-djr-2020-update.1206340/) (bottom of page).
 3. Here are my suggestions for the rest of the secondaries:
 
