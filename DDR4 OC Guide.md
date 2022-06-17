@@ -521,7 +521,7 @@ Some terminology:
    
    | Timing | Safe | Tight | Extreme |
    | ------ | ---- | ----- | ------- |
-   | tRRDS tRRDL tFAW | 6, 6, 24 | 4, 6, 16 | 4, 4, 16 |
+   | tRRDS tRRDL tFAW | 6 6 24 | 4 6 16 | 4 4 16 |
 
    * The minimum value for which lowering tFAW will affect the performance of RAM is `tRRDS * 4` or `tRRDL * 4`, whichever is lower.
    * You don't have to run all of the timings at one preset. For example, you might only be able to run tRRDS tRRDL tFAW at the tight preset, but you may be able to run a different timing at the extreme preset.
