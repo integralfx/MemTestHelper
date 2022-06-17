@@ -363,9 +363,14 @@ Some terminology:
 
   [~ The Stilt](https://forums.anandtech.com/threads/ryzen-strictly-technical.2500572/page-72#post-39391302)
 * On Ryzen 3000, there's also CLDO_VDDG (commonly abbreviated to VDDG, not to be confused with CLDO_VDD**P**), which is the voltage to the Infinity Fabric. SOC voltage should be at least 40 mV above CLDO_VDDG as CLDO_VDDG is derived from SOC voltage.
-  > Most cLDO voltages are regulated from the two main power rails of the CPU. In case of cLDO_VDDG and cLDO_VDDP, they are regulated from the VDDCR_SoC plane. Because of this, there are couple rules.  
-  > For example, if you set the VDDG to 1.10 V, while your actual SoC voltage under load is 1.05 V the VDDG will stay roughly at 1.01V max. Likewise if you have VDDG set to 1.100 V and start increasing the SoC voltage, your VDDG will raise as well.  
-  > I don't have the exact figure, but you can assume that the minimum drop-out voltage (Vin-Vout) is around 40 mV. Meaning you ACTUAL SoC voltage has to be at least by this much higher, than the requested VDDG for it to take effect as it is requested. Adjusting the SoC voltage alone, unlike on previous gen. parts doesn't do much if anything at all. The default value is fixed 1.100 V and AMD recommends keeping it at that level. Increasing the VDDG helps with the fabric overclocking in certain scenarios, but not always.  
+  > Most cLDO voltages are regulated from the two main power rails of the CPU. In case of cLDO_VDDG and cLDO_VDDP, they are regulated from the VDDCR_SoC plane.  
+  > Because of this, there are couple rules. For example, if you set the VDDG to 1.10 V, while your actual SoC voltage under load is 1.05 V the VDDG will stay roughly at 1.01V max.  
+  > Likewise if you have VDDG set to 1.100 V and start increasing the SoC voltage, your VDDG will raise as well.  
+  > I don't have the exact figure, but you can assume that the minimum drop-out voltage (Vin-Vout) is around 40 mV.  
+  > Meaning you ACTUAL SoC voltage has to be at least by this much higher, than the requested VDDG for it to take effect as it is requested.  
+  > 
+  > Adjusting the SoC voltage alone, unlike on previous gen. parts doesn't do much if anything at all.  
+  > The default value is fixed 1.100 V and AMD recommends keeping it at that level. Increasing the VDDG helps with the fabric overclocking in certain scenarios, but not always.  
   > 1800 MHz FCLK should be doable at the default 0.950 V value and for pushing the limits it might be beneficial to increase it to =< 1.05 V (1.100 - 1.125 V SoC, depending on the load-line).  
 
   [~ The Stilt](https://www.overclock.net/threads/strictly-technical-matisse-not-really.1728758/page-2#post-28031966)
