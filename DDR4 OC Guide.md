@@ -1,40 +1,45 @@
 # Table of Contents
-1. [Setup](#setup)
-   1. [Memory Testing Software](#memory-testing-software)
-      1. [Avoid](#avoid)
-      2. [Recommended](#recommended)
-      3. [Alternatives](#alternatives)
-      4. [Comparison](#comparison)
-   2. [Timings Software](#timings-software)
-   3. [Benchmarks](#benchmarks)
-2. [General RAM Info](#general-ram-info)
-   1. [Frequency and Timings Relation](#frequency-and-timings-relation)
-   2. [Primary, Secondary and Tertiary Timings](#primary-secondary-and-tertiary-timings)
-3. [Expectations/Limitations](#expectationslimitations)
-   1. [Motherboard](#motherboard)
-   2. [ICs](#integrated-circuits-ics)
-      1. [Thaiphoon Report](#thaiphoon-report)
-      2. [Label on Sticks](#label-on-sticks)
-      3. [A Note on Logical Ranks and Density](#a-note-on-logical-ranks-and-density)
-      4. [Voltage Scaling](#voltage-scaling)
-      5. [Expected Max Frequency](#expected-max-frequency)
-      6. [Binning](#binning)
-      7. [Maximum Recommended Daily Voltage](#maximum-recommended-daily-voltage)
-      8. [Ranking](#ranking)
-      9. [Temperatures and Its Effect on Stability](#temperatures-and-its-effect-on-stability)
-   3. [Integrated Memory Controller (IMC)](#integrated-memory-controller-imc)
-      1. [Intel IMC](#intel-imc)
-      2. [AMD IMC](#amd-imc)
-4. [Overclocking](#overclocking)
-   1. [Finding a Baseline](#finding-a-baseline)
-   2. [Trying Higher Frequencies](#trying-higher-frequencies)
-   3. [Tightening Timings](#tightening-timings)
-   4. [Miscellaneous Tips](#miscellaneous-tips)
-      1. [Intel](#intel)
-      2. [AMD](#amd)
-5. [Useful Links](#useful-links)
-   1. [Benchmarks](#benchmarks-1)
-   2. [Information](#information)
+- [Table of Contents](#table-of-contents)
+- [Setup](#setup)
+  - [Memory Testing Software](#memory-testing-software)
+    - [Avoid](#avoid)
+    - [Recommended](#recommended)
+    - [Alternatives](#alternatives)
+    - [Comparison](#comparison)
+  - [Timings Software](#timings-software)
+  - [Benchmarks](#benchmarks)
+- [General RAM Info](#general-ram-info)
+  - [Frequency and Timings Relation](#frequency-and-timings-relation)
+  - [Primary, Secondary and Tertiary Timings](#primary-secondary-and-tertiary-timings)
+- [Expectations/Limitations](#expectationslimitations)
+  - [Motherboard](#motherboard)
+  - [Integrated Circuits (ICs)](#integrated-circuits-ics)
+    - [Shorthand Notation](#shorthand-notation)
+    - [Thaiphoon Report](#thaiphoon-report)
+    - [Label on Sticks](#label-on-sticks)
+      - [Corsair Version Number](#corsair-version-number)
+      - [G.Skill 042 Code](#gskill-042-code)
+      - [Kingston Code](#kingston-code)
+    - [A Note on Logical Ranks and Density](#a-note-on-logical-ranks-and-density)
+    - [Voltage Scaling](#voltage-scaling)
+    - [Expected Max Frequency](#expected-max-frequency)
+    - [Binning](#binning)
+    - [Maximum Recommended Daily Voltage](#maximum-recommended-daily-voltage)
+    - [Ranking](#ranking)
+    - [Temperatures and Its Effect on Stability](#temperatures-and-its-effect-on-stability)
+  - [Integrated Memory Controller (IMC)](#integrated-memory-controller-imc)
+    - [Intel IMC](#intel-imc)
+    - [AMD IMC](#amd-imc)
+- [Overclocking](#overclocking)
+  - [Finding a Baseline](#finding-a-baseline)
+  - [Trying Higher Frequencies](#trying-higher-frequencies)
+  - [Tightening Timings](#tightening-timings)
+  - [Miscellaneous Tips](#miscellaneous-tips)
+    - [Intel](#intel)
+    - [AMD](#amd)
+- [Useful Links](#useful-links)
+  - [Benchmarks](#benchmarks-1)
+  - [Information](#information)
 
 # Setup
 ## Memory Testing Software
@@ -121,11 +126,11 @@ You should always test with various stress tests to ensure your overclock is sta
 ## Primary, Secondary and Tertiary Timings
 * Intel
 
-  ![image](https://user-images.githubusercontent.com/69487009/156914502-104b0cbd-bbc4-4c94-a583-426e84f732eb.png)
+  ![](Images/intel-primary-secondary-tertiary.png)
 
 * AMD
 
-  ![image](https://user-images.githubusercontent.com/69487009/156914518-5510c6a2-6187-41ee-8acd-a8f76a5590c4.png)
+  ![](Images/amd-primary-secondary-tertiary.png)
 
 * RAM timings are split into 3 categories: primary, secondary, and tertiary. These are indicated by 'P', 'S', and 'T', respectively.
   * Primary and secondary timings affect latency and bandwidth.
@@ -147,28 +152,39 @@ You should always test with various stress tests to ensure your overclock is sta
 ## Integrated Circuits (ICs)
 * Knowing what ICs (sometimes referred to as "dies") are in your RAM will give you an idea of what to expect. Even if you don't know them, you can still overclock your RAM.
 
+### Shorthand Notation
+
+To make it easier to type ICs quickly, a shorthand notation will be used.
+
+XYZ where:
+* X is the first letter of the manufacturer (S for Samsung, H for Hynix, M for Micron, N for Nanya, etc.).
+* Y is the density (8 for 8 Gb, 16 for 16 Gb).
+* Z is the die revision.
+
+For example, the shorthand for Samsung 8 Gb B-die is S8B.
+
 ### Thaiphoon Report
 * Note: Thaiphoon is known to guess ICs, so it shouldn't be fully trusted. It's highly recommended to check the label on the sticks if possible.
   * See [here](https://www.reddit.com/r/overclocking/comments/ig9d76/thaiphoon_burner_cluelessly_guessing_memory_ics/) for more info.
-* Single rank 8 Gb Hynix CJR.
+* Single rank 8 Gb Hynix CJR (H8C).
 
-   ![image](https://user-images.githubusercontent.com/69487009/156914589-ad2f0410-f66f-4fa1-8fb5-1c4461c6beb5.png)
+   ![](Images/thaiphoon-h8c.png)
 
-* Single rank 8Gb Micron Revision E (source: Coleh#4297).
+* Single rank 8 Gb Micron Revision E (M8E) (source: Coleh#4297).
 
-   ![image](https://user-images.githubusercontent.com/69487009/156914627-fa8f1938-abd1-4401-b9cc-13310ef3877a.png)
+   ![](Images/thaiphoon-m8e.png)
 
   * [SpecTek](https://www.micron.com/support/spectek-support) ICs are lower binned Micron ICs.
-  * Esoteric note: Many people have started calling this Micron E-die or E-die. The former is fine, but the latter can cause confusion as letter-die is typically used for Samsung ICs, i.e., 4 Gb Samsung E-die. Samsung is implied when you say E-die, but as people are calling Micron Rev. E E-die, it'd probably be a good idea to prefix the manufacturer.
-* Dual rank 8 Gb Samsung B-die.
+  * Esoteric note: Many people have started calling this Micron E-die or E-die. The former is fine, but the latter can cause confusion as letter-die is typically used for Samsung ICs, i.e., Samsung 4 Gb E-die. Samsung is implied when you say E-die, but as people are calling Micron Rev. E E-die, it'd probably be a good idea to prefix the manufacturer.
+* Dual rank Samsung 8 Gb B-die (S8B).
 
-   ![image](https://user-images.githubusercontent.com/69487009/156914678-6eed4b9c-5874-4c71-89d3-dd77fba51b5f.png)
-   
-* The performance impact of RAM overclocking on Intel can be found [here](https://kingfaris.co.uk/blog/intel-ram-oc-impact)
+   ![](Images/thaiphoon-s8b-dr.png)
 
 ### Label on Sticks
 
 Sometimes the Thaiphoon report won't tell you the IC, or it may misidentify the IC. To confirm/deny this, you can check the label on the sticks. Currently, only Corsair, G.Skill, and Kingston have a label to identify the IC.
+
+See [HardwareLuxx](https://www.hardwareluxx.de/community/threads/ryzen-ram-oc-m%C3%B6gliche-limitierungen.1216557/) for a neat infographic that summarises the following information.
 
 #### Corsair Version Number
 * Corsair has a 3 digit version number on the sticks' label, indicating what ICs are on the stick.
@@ -190,7 +206,7 @@ Sometimes the Thaiphoon report won't tell you the IC, or it may misidentify the 
   * The first bolded character is the density. 4 for 4 Gb, 8 for 8 Gb, and S for 16 Gb.
   * The second bolded number is the manufacturer. 1 for Samsung, 2 for Hynix, 3 for Micron, 4 for PSC (powerchip), 5 for Nanya, and 9 for JHICC.
   * The last character is the revision.
-  * This is the code for Samsung 8Gb B-die.
+  * This is the code for Samsung 8 Gb B-die.
 * See the [r/overclocking wiki](https://www.reddit.com/r/overclocking/wiki/ram/ddr4#wiki_new_markings_-_.22042_code.22_table) for a full list.
 #### Kingston Code
 * Example: DPM**M**16A1823
@@ -210,7 +226,7 @@ Sometimes the Thaiphoon report won't tell you the IC, or it may misidentify the 
 You won't have to close row A, open row B, and then close B to open A again as often.
 You're held up by operations like RAS/RC/RCD (when waiting for a row to open because it was closed) and RP (when waiting for a row to close to open another one) less often.
    * x16 configurations will have half as many banks and bank groups as the traditional x8 configurations, which means less performance. See [buildzoid's video](https://www.youtube.com/watch?v=k6SIdxq2yxE) for more information.
-* Density matters when determining how far your ICs can go. For example, 4 Gb AFR and 8 Gb AFR will not overclock the same despite sharing the same name. The same can be said for Micron Rev. B, which exists as 8Gb and 16 Gb. The 16 Gb ICs overclock better and are sold in 16 GB and 8 GB capacities despite the DIMMs using 8 chips. The 8 GB sticks have their SPD modified and can be found in higher-end Crucial kits (BLM2K8G51C19U4B).
+* Density matters when determining how far your ICs can go. For example, 4 Gb AFR and 8 Gb AFR will not overclock the same despite sharing the same name. The same can be said for Micron Rev. B, which exists as 8 Gb and 16 Gb. The 16 Gb ICs overclock better and are sold in 16 GB and 8 GB capacities despite the DIMMs using 8 chips. The 8 GB sticks have their SPD modified and can be found in higher-end Crucial kits (BLM2K8G51C19U4B).
 * As the total count of ranks in a system increases, so does the load on the memory controller. This usually means that more memory ranks will require higher voltage, especially VCCSA on Intel and SOC voltage on AMD.
 
 ### Voltage Scaling
@@ -218,49 +234,37 @@ You're held up by operations like RAS/RC/RCD (when waiting for a row to open bec
 * On many ICs, tCL scales with voltage, meaning giving it more voltage can allow you to drop tCL. Conversely, tRCD and/or tRP typically do not scale with voltage on many ICs, meaning no matter how much voltage you pump into it, it will not budge.  
 As far as I know, tCL, tRCD, tRP, and possibly tRFC can (or can not) see voltage scaling.
 * Similarly, if a timing scales with voltage, you can increase the voltage to run the same timing at a higher frequency.
-![CL11 Voltage Scaling](https://i.imgur.com/66GrCz3.png)
-  * You can see that tCL scales almost linearly up to DDR4-2533 with voltage on 8 Gb CJR.
-  * tCL on Samsung B-Die has perfect linear scaling with voltage.
-  * tCL on Micron Rev. E also has perfect linear scaling with voltage.
+![CL11 Voltage Scaling](Images/cl-voltage-scaling.png)
+  * You can see that tCL scales almost linearly up to DDR4-2533 with voltage on H8C.
+  * tCL on S8B has perfect linear scaling with voltage.
+  * tCL on M8E also has perfect linear scaling with voltage.
   * I've adapted this data into a [calculator](https://www.desmos.com/calculator/psisrpx3oh). Change the *f* and *v* sliders to the frequency and voltage you want, and it will output the frequencies and voltages achievable for a given CL (assuming that CL scales linearly up to 1.50 V). For example, DDR4-3200 CL14 at 1.35 V should do ~DDR4-3333 CL14 at 1.40 V, ~DDR4-3533 CL14 at 1.45 V, and DDR4-3733 CL14 at 1.50 V.
 
 * B-die tRFC Voltage Scaling
-![B-die tRFC Voltage Scaling](https://i.imgur.com/Wngug1M.png)
+![B-die tRFC Voltage Scaling](Images/b-die-trfc-voltage-scaling.png)
   * Here you can see that tRFC scales pretty well on B-die.
 
 * Some older Micron ICs (before 8 Gb Rev. E) are known to scale negatively with voltage. That is, they become unstable at the same frequency and timings just by increasing the voltage (usually above 1.35 V).
 * Here is a table of ICs I have tested and if the timing scales with voltage:
 
-  | IC                 | tCL | tRCD | tRP | tRFC |
-  | :-:                | :-: | :--: | :-: | :--: |
-  | Hynix 8Gb AFR      | Y   | N    | N   | ?    |
-  | Hynix 8Gb CJR      | Y   | N    | N   | Y    |
-  | Hynix 8Gb DJR      | Y   | N    | N   | Y    |
-  | Micron 8Gb Rev. B  | Y   | N    | N   | N    |
-  | Micron 8Gb Rev. E  | Y   | N    | N   | N    |
-  | Micron 16Gb Rev. B  | Y   | N    | N   | N    |
-  | Nanya 8Gb B-die    | Y   | N    | N   | N    |
-  | Samsung 4Gb E-die  | Y   | N    | N   | N    |
-  | Samsung 8Gb B-die  | Y   | Y    | Y   | Y    |
-  | Samsung 8Gb D-die  | Y   | N    | N   | N    |
+  | IC  | tCL | tRCD | tRP | tRFC |
+  | :-: | :-: | :--: | :-: | :--: |
+  | S8B | Y | Y | Y | Y |
+  | H8C, H8D | Y | N | N | Y |
+  | H8A | Y | N | N | ? |
+  | M8B, M8E, M16B, N8B, S4E, S8D | Y | N | N | N |
   * The timings that don't scale with voltage usually need to be increased as you increase frequency.
   
 ### Expected Max Frequency
 * Below are the expected max frequency for some of the common ICs:
 
-  | IC | Expected Max Effective Speed (MT/s) |
-  | :-: | :------------: |
-  | Hynix 8Gb AFR | 3600 |
-  | Hynix 8Gb CJR | 4133<sup>1</sup> |
-  | Hynix 8Gb DJR | 5000+ |
-  | Nanya 8Gb B-die | 4000+ |
-  | Micron 8Gb Rev. B | 3600 |
-  | Micron 8Gb Rev. E | 5000+ |
-  | Micron 16Gb Rev. B | 5000+ |
-  | Samsung 4Gb E-die | 4200+ |
-  | Samsung 8Gb B-die | 5000+ |
-  | Samsung 8Gb D-die | 4200+ |
-  * <sup>1</sup>CJR is a bit inconsistent in my testing. I've tested 3 RipJaws V 3600 CL19 8 GB sticks. One was stuck at DDR4-3600, another at DDR4-3800, but the last could do DDR4-4000, all at CL16 with 1.45 V.
+  | IC  | Expected Max Effective Speed (MT/s) |
+  | :-: | :-: |
+  | H8D, M8E, M16B, S8B, S8D | 5000+ |
+  | N8B, S4E | 4000+ |
+  | H8C | 4133<sup>1</sup> |
+  | H8A, M8B | 3600 |
+  * <sup>1</sup>H8C is a bit inconsistent in my testing. I've tested 3 RipJaws V 3600 CL19 8 GB sticks. One was stuck at DDR4-3600, another at DDR4-3800, but the last could do DDR4-4000, all at CL16 with 1.45 V.
   * Don't expect lower binned ICs to overclock nearly as well as higher binned ICs. This is especially true for [B-die](https://www.youtube.com/watch?v=rmrap-Jrfww).
   * These values are simply referring to the IC's average capabilities; however, other factors, such as the motherboard and CPU, substantially impact whether or not said values are attainable.
   
@@ -280,35 +284,34 @@ As far as I know, tCL, tRCD, tRP, and possibly tRFC can (or can not) see voltage
 ### Maximum Recommended Daily Voltage
 * [JEDEC JESD79-4B (p.174)](http://www.softnology.biz/pdf/JESD79-4B.pdf) specifies that the absolute maximum is 1.50 V.
   > Stresses greater than those listed under “Absolute Maximum Ratings” may cause permanent damage to the device. This is a stress rating only, and functional operation of the device at these or any other conditions above those indicated in the operational sections of this specification is not implied. Exposure to absolute maximum rating conditions for extended periods may affect reliability.
-* This value is the official maximum of the DDR4 Spec for which all DDR4 are rated. However, numerous ICs cannot remain safe at such high sustained voltages. [Samsung 8Gb C-die](https://www.hardwareluxx.de/community/f13/samsung-8gbit-ddr4-c-die-k4a8g045wc-overclocking-ergebnisse-im-startbeitrag-1198323.html) can degrade with voltages as low as 1.35 V under the right thermal and power delivery conditions. Furthermore, other ICs, such as Hynix 8Gb DJR or Samsung 8Gb B-Die, have been observed dailying voltages well over 1.55 V. Do your research on what voltages are safe on your IC, or stick to 1.35 V or similar if this value is unknown. Due to random chance and silicon variance, YMMV compared to other people, so be safe.
+* This value is the official maximum of the DDR4 Spec for which all DDR4 are rated. However, numerous ICs cannot remain safe at such high sustained voltages. [Samsung 8 Gb C-die](https://www.hardwareluxx.de/community/f13/samsung-8gbit-ddr4-c-die-k4a8g045wc-overclocking-ergebnisse-im-startbeitrag-1198323.html) can degrade with voltages as low as 1.35 V under the right thermal and power delivery conditions. Furthermore, other ICs, such as Hynix 8 Gb DJR or Samsung 8 Gb B-Die, have been observed dailying voltages well over 1.55 V. Do your research on what voltages are safe on your IC, or stick to 1.35 V or similar if this value is unknown. Due to random chance and silicon variance, YMMV compared to other people, so be safe.
 * One common limiting factor for the maximum safe voltage you can operate is your CPU's architecture. According to [JEDEC](https://www.jedec.org/standards-documents/dictionary/terms/output-stage-drain-power-voltage-vddq), VDDQ, the voltage of data output, is tied to VDD, colloquially referred to as VDIMM or DRAM Voltage. This voltage interacts with the PHY or Physical Layer present on the CPU and may lead to long-term degradation of the IMC if set too high. As a result, daily use of VDIMM voltages above 1.60 V on Ryzen 3000 and 5000 and 1.65 V on Intel Consumer Lake-series Processors is not advisable as CPU degradation of the PHY is difficult to measure or notice until the issue becomes serious.
 * It may be safe to daily 1.60 V as there are kits on the [B550 Unify-X QVL](https://www.msi.com/Motherboard/support/MEG-B550-UNIFY-X#support-mem-20) rated for 1.60 V. B-Die, 8 Gb Rev. E, DJR, and 16 Gb Rev. B *should* be fine at running 1.60 V daily, though it's recommended to have active airflow. Higher voltages lead to higher temperatures, and high temperatures can lower the threshold for what voltages are considered safe.
 * Here is a list of common ICs and commonly used voltages for them:
    
-   | IC                                | Daily Voltage (V) | Extreme Voltage (V) |
-   | :---:                             | :---------:       | :-----------:       |
-   | 8Gbit Samsung B-Die               | 1.45 - 1.55       | 1.55 - 1.65         |
-   | 8Gbit Hynix DJR/16Gbit AJR        | 1.45 - 1.55       | 1.50 - 1.65         |
-   | 8Gbit Micron Rev. E/16Gbit Rev. B | 1.45 - 1.55       | 1.55 - 1.60         |
-   | 8Gbit Hynix CJR                   | 1.35 - 1.40       | 1.40 - 1.45         |
-   | 16Gbit Hynix CJR                  | 1.40 - 1.50       | 1.50 - 1.55         |
-   | 8Gbit Nanya B-Die                 | 1.35 - 1.40       | 1.40 - 1.45         |
-   | Samsung C-Die                     | 1.30 - 1.35       | Likely Unsafe       |
+   | IC  | Daily Voltage (V) | Extreme Voltage (V) |
+   | :-: | :---------------: | :-----------------: |
+   | H8D, H16A, M8E, M16B, S4D, S4E, S8B | Up to 1.55 | Above 1.55 |
+   | H4A, H8A, N8B | Up to 1.45 | Above 1.45 |
+   | H8C, H16C | Up to 1.45 | Above 1.45<sup>1</sup> |
+   | S8C | Up to 1.35 | N/A<sup>2</sup>        |
 * The voltages marked as *Daily Voltage* are voltages that are known to be safe for the corresponding IC, provided temperatures are kept in check.
 * The voltages marked as *Extreme Voltage* will likely not degrade but should be used cautiously. A RAM fan is recommended for these voltages.
+* <sup>1</sup>Above 1.45 V has been reported to degrade on H8C. Use with caution.
+* <sup>2</sup>S8C is known to scale negatively with voltage. It's recommended to stay at or below the maximum daily voltage.
   
 ### Ranking
 * Below is how the most common ICs rank in terms of frequency and timings.
   | Tier | ICs | Description |
   | :-:  | :-: | :--:        |
-  | S | Samsung 8Gb B-Die | Best DDR4 IC for all-around performance |
-  | A | Hynix 8Gb DJR, Micron 8Gb Rev. E<sup>1</sup>, Micron 16Gb Rev. B | Top Performing ICs. Known not to clock wall and generally scale with voltage. |
-  | B | Hynix 8Gb CJR, Samsung 4Gb E-Die, Nanya 8Gb B-Die | High-end ICs with the ability to run high frequencies with good timings. |
-  | C | Hynix 8Gb JJR, Hynix 16Gb MJR, Hynix 16Gb CJR, Micron 16Gb Rev. E, Samsung 8Gb D-Die | Decent ICs with good performance and decent frequency scaling.|
-  | D | Hynix 8Gb AFR, Micron 8Gb Rev. B, Samsung 8Gb C-Die, Samsung 4Gb D-Die | Low-end ICs commonly found in average cheap kits. Most are EOL and no longer relevant. 
-  | F | Hynix 8Gb MFR, Micron 4Gb Rev. A, Samsung 4Gb S-Die, Nanya 8Gb C-Die | Terrible ICs unable to reliably attain even the highest standard of the base JEDEC Specification.|
+  | S | S8B | Best DDR4 IC for all-around performance |
+  | A | H8D, M8E<sup>1</sup>, M16B | Top Performing ICs. Known not to clock wall and generally scale with voltage. |
+  | B | H8C, N8B, S4E | High-end ICs with the ability to run high frequencies with good timings. |
+  | C | H8J, H16M, H16C, M16E, S8D | Decent ICs with good performance and decent frequency scaling. |
+  | D | H8A, M8B, S8C, S4D | Low-end ICs commonly found in average cheap kits. Most are EOL and no longer relevant. |
+  | F | H8M, M4A, S4S, N8C | Terrible ICs unable to reliably attain even the highest standard of the base JEDEC Specification. |
   * Partially based on [Buildzoid's older ranking](https://www.reddit.com/r/overclocking/comments/8cjla5/the_best_manufacturerdie_of_ddr_ram_in_order/dxfgd4x/). Some ICs are not included in this list due to the age of the post.
-  * <sup>1</sup>Revisions of 8 Gb Rev. E mainly differ in the minimum tRCD achievable and how high they can clock without modification of VTT while maintaining stability. Generally, newer revisions of 8 Gb Rev. E (C9BKV, C9BLL, etc.) do tighter tRCD and clock higher without modification of VTT.
+  * <sup>1</sup>Revisions of M8E mainly differ in the minimum tRCD achievable and how high they can clock without modification of VTT while maintaining stability. Generally, newer revisions of M8E (C9BKV, C9BLL, etc.) do tighter tRCD and clock higher without modification of VTT.
  
 ### Temperatures and Its Effect on Stability
 * Generally, the hotter your RAM is, the less stability it will have at higher frequencies and/or tighter timings.
@@ -327,7 +330,7 @@ As far as I know, tCL, tRCD, tRP, and possibly tRFC can (or can not) see voltage
 * There are 2 voltages you need to change if overclocking RAM: system agent (VCCSA) and IO (VCCIO).  
   **DO NOT** leave these on auto, as they can pump dangerous voltage levels into your IMC, potentially degrading or even killing it. Most of the time, you can keep VCCSA and VCCIO the same, but sometimes too much can harm stability (credits: Silent_Scone).
   
-  ![image](https://user-images.githubusercontent.com/69487009/156914787-b9eba0e9-69a6-4bd6-a5a1-f7d794e64f00.png)
+  ![](Images/vccsa-vccio-sweet-spot.png)
 
   Below are my suggested VCCSA and VCCIO for 2 single rank DIMMs:
 
@@ -343,7 +346,7 @@ As far as I know, tCL, tRCD, tRP, and possibly tRFC can (or can not) see voltage
 * tRCD and tRP are linked, meaning if you set tRCD 16 but tRP 17, both will run at the higher timing (17). This limitation is why many ICs don't do as well on Intel and why B-die is a good match for Intel.
   * On Asrock and EVGA UEFIs, they're combined into tRCDtRP. On ASUS UEFIs, tRP is hidden. On MSI and Gigabyte UEFIs, tRCD and tRP are visible but setting them to different values just sets both to the higher value.
 * Expected memory latency range: 40 ns - 50 ns.
-   * Expected memory latency range for Samsung B-Die: 35 ns - 45 ns.
+   * Expected memory latency range for B-Die: 35 ns - 45 ns.
    * Overall, latency varies between generations due to a difference in die size (ring bus). As a result, a 9900K will have a slightly lower latency than a 10700K at the same settings since the 10700K has the same die as a 10900K.
    * Latency is affected by the RTLs and IOLs. Generally speaking, higher quality boards and overclocking oriented boards will be more direct in routing the memory traces and will likely have lower RTLs and IOLs. On some motherboards, changing RTLs and IOLs have no effect.
   
@@ -407,7 +410,7 @@ The default value is fixed 1.100 V and AMD recommends keeping it at that level. 
   | 3000 | 65 - 75 (1:1 MCLK:FCLK) <br/> 75+ (2:1 MCLK:FCLK) |
 * On Ryzen 3000 and 5000, high enough FCLK can overcome the penalties from desynchronising MCLK and FCLK, provided that you can lock your UCLK to MCLK.
   
-  ![Chart](https://i.imgur.com/F9HpkO2.png) 
+  ![Chart](Images/optimal-fclk-vs-mclk.png) 
   * (Credits: [Buildzoid](https://www.youtube.com/watch?v=10pYf9wqFFY))
   
 # Overclocking
@@ -444,7 +447,7 @@ The default value is fixed 1.100 V and AMD recommends keeping it at that level. 
    * If you're on Intel, a quick way of knowing if you're unstable is to examine the RTLs and IOLs. Each group of RTLs and IOLs correspond to a channel. Within each group, 2 values correspond to each DIMM.  
    Asrock Timing Configurator:
    
-   ![image](https://user-images.githubusercontent.com/69487009/156914822-7443c639-1e4a-41d1-a282-5b0022af9154.png)
+   ![](Images/intel-rtl-iol-difference-stable.png)
 
    As I have my sticks installed in channel A slot 2 and channel B slot 2, I need to look at D1 within each group of RTLs and IOLs.  
    RTLs should be no more than 2 apart, and IOLs should be no more than 1 apart.  
@@ -464,8 +467,8 @@ The default value is fixed 1.100 V and AMD recommends keeping it at that level. 
      * OCCT Memory: 30 minutes each for SSE and AVX.
      * **You can run more tests like other TM5 configs to ensure stability. It is recommended to run various tests for maximum error coverage.**
 7. If you crash/freeze/BSOD or get an error, drop the DRAM frequency by a notch and test again.
-9. Save your overclock profile in your UEFI.
-10. From this point on, you can either: try to go for a higher frequency or work on tightening the timings.
+8. Save your overclock profile in your UEFI.
+9.  From this point on, you can either: try to go for a higher frequency or work on tightening the timings.
    * Keep in mind the expectations detailed above. If you're at the limit of your ICs and/or IMC, it's best to tighten the timings.
    
 ## Trying Higher Frequencies
@@ -533,13 +536,12 @@ The default value is fixed 1.100 V and AMD recommends keeping it at that level. 
    
      | IC | tRFC (ns) |
      | :-: | :-------: |
-     | Hynix 8Gb AFR | 260 - 280 |
-     | Hynix 8Gb CJR | 260 - 280 |
-     | 8Gb DJR | 260 - 280 |
-     | Micron 8Gb Rev. E | 280 - 310 |
-     | Micron 16Gb Rev. B | 290 - 310 |
-     | Samsung 8Gb B-Die | 120 - 180 |
-     | Samsung 8Gb C-Die | 300 - 340 |
+     | S8B | 120 - 180 |
+     | N8B | 150 - 170 |
+     | H8D | 240 - 260 |
+     | H8A, H8C | 260 - 280 |
+     | M8E, M16B | 280 - 310 |
+     | S8C | 300 - 340 |
      
    * For all other ICs, I would recommend doing a binary search to find the lowest stable tRFC.  
    For example, say your tRFC is 630. The next tRFC you should try is half of that (315). If that is unstable, you know that your lowest tRFC is between 315 and 630, so you try the midpoint (`(315 + 630) / 2 = 472.5, round down to 472`). If that is stable, you know that your lowest tRFC is between 315 and 472, so you try the midpoint and so on.
@@ -565,7 +567,7 @@ The default value is fixed 1.100 V and AMD recommends keeping it at that level. 
        | ------ | ---- | ----- | ------- |
        | tRDRDSCL tWRWRSCL | 4 4 | 3 3 | 2 2 |
      
-        * A lot of ICs are known to have issues with low SCLs. Values such as 2 are extremely difficult for all but ICs such as Samsung 8Gb B-Die. These values are not necessarily linked, and values such as 5 are acceptable. Mixing and matching is possible, and more often than not, tRDRDSCL will be the one that needs to be run 1 or even 2 values higher. Values above 5 greatly hurt bandwidth, so their use is not advised.
+        * A lot of ICs are known to have issues with low SCLs. Values such as 2 are extremely difficult for all but ICs such as Samsung 8 Gb B-Die. These values are not necessarily linked, and values such as 5 are acceptable. Mixing and matching is possible, and more often than not, tRDRDSCL will be the one that needs to be run 1 or even 2 values higher. Values above 5 greatly hurt bandwidth, so their use is not advised.
      
     * If you're on Intel, tune the tertiaries one group at a time.  
       My suggestions:
@@ -578,9 +580,6 @@ The default value is fixed 1.100 V and AMD recommends keeping it at that level. 
       * For tRDWR_sg/dg/dr/dd, drop them all by 1 until you get instability or performance degrades. You can usually run them all the same, e.g., 9/9/9/9.
         * Setting these too tight can cause system freezes.
       * Note that dr only affects dual rank sticks, so you can ignore this timing if you have single rank sticks. In the same way, dd only needs to be considered when you run two DIMMs per channel. You can also set them to 0 or 1 if you really want to.  
-        These are my timings on B-die for reference.
-        
-        ![image](https://user-images.githubusercontent.com/69487009/156914848-edfa7660-efc1-44ee-b8fb-56bb789fdb20.png)
 
       * For dual rank setups (see [notes on ranks](#a-note-on-logical-ranks-and-density)):
          * tRDRD_dr/dd can be lowered a step further to 5 for a large bump in read bandwidth.
@@ -596,7 +595,7 @@ The default value is fixed 1.100 V and AMD recommends keeping it at that level. 
    
 7. Set `tRAS = tRCD(RD) + tRTP`. Increase if unstable.
    * This is the absolute minimum tRAS can be.  
-   ![tRAS](https://user-images.githubusercontent.com/16512539/118769121-298a6000-b8c3-11eb-8793-7d90e885ca67.png)
+   ![tRAS](Images/tras-datasheet-diagram.png)
    Here, tRAS is the time between ACT and PRE commands.
      * ACT to READ = tRCD
      * READ to PRE = tRTP
@@ -606,9 +605,9 @@ The default value is fixed 1.100 V and AMD recommends keeping it at that level. 
 8. Set `tRC = tRP + tRAS`. Increase if unstable.
    * tRC is only available on AMD and some Intel UEFIs.
    * On Intel UEFIs, tRC does seem to be affected by tRP and tRAS, even if it is hidden.
-     * (1) [tRP 19 tRAS 42](https://i.imgur.com/gz1YDcO.png) - fully stable.
-     * (2) [tRP 19 tRAS 36](https://i.imgur.com/lHjbLjC.png) - instant error.
-     * (3) [tRP 25 tRAS 36](https://i.imgur.com/7c46Qes.png) - stable up to 500 %.
+     * (1) [tRP 19 tRAS 42](Images/tRC-tRP19-tRAS42.png) - fully stable.
+     * (2) [tRP 19 tRAS 36](Images/tRC-tRP19-tRAS36.png) - instant error.
+     * (3) [tRP 25 tRAS 36](Images/tRC-tRP25-tRAS42.png) - stable up to 500 %.
      * In (1) and (3), tRC is 61 and isn't completely unstable. However, in (2) tRC is 55 and RAMTest finds an error instantly. This indicates that my RAM can do low tRAS, but not low tRC. Since tRC is hidden, I need higher tRAS to get higher tRC to ensure stability.
 
 9. Increase tREFI until it's unstable. The binary search method for finding the lowest tRFC can also be applied here.  
@@ -642,7 +641,7 @@ The default value is fixed 1.100 V and AMD recommends keeping it at that level. 
     4. Adjust setup times, then drive strengths if unstable.
     * My stable GDM off CR 1 settings
 
-      ![image](https://user-images.githubusercontent.com/69487009/156914875-ce4d1d15-edf1-464f-be7a-62315ed20a1d.png)
+      ![](Images/gdm-off-cr-1t-stable.png)
 
     5. Often, a drive strength above 24 ohms may hurt stability. Furthermore, running non-zero setup times is rarely needed; however, it may aid in the stabilization of CR 1.
    
@@ -664,7 +663,7 @@ The default value is fixed 1.100 V and AMD recommends keeping it at that level. 
 * After tightening the timings, you can increase IOL offsets to reduce IOLs. Make sure to run a memory test after. More info [here](https://hwbot.org/newsflash/3058_advanced_skylake_overclocking_tune_ddr4_memory_rtlio_on_maximus_viii_with_alexaros_guide).
   * In general, RTL and IOL values impact memory performance. Therefore, lowering them will increase bandwidth and decrease latency quite significantly.
   
-    ![image](https://user-images.githubusercontent.com/69487009/156914900-da840c47-c4bb-4cad-8a0e-227e4e482024.png)
+    ![](Images/rtl-iol-aida-impact.png)
 
   * Lower values will, in some cases, also help with stability and lower memory controller voltage requirements. Some boards train them very well on their own. Some boards allow for easy tuning, while other boards simply ignore any user input.
   * If all else fails, you can try manually decreasing the RTL and IOL pair.
@@ -692,7 +691,7 @@ This seems to line up with [The Stilt's](https://www.overclock.net/forum/10-amd-
 
 # Useful Links
 ## Benchmarks
-* [Impact of RAM on Intel's Skylake desktop architecture by KingFaris](https://kingfaris.co.uk/ram)
+* [Impact of RAM on Intel's Skylake desktop architecture by KingFaris](https://kingfaris.co.uk/intel-ram-oc-impact)
 * [RAM timings and their influence on games and applications (AMD) by Reous](https://www.hardwareluxx.de/community/threads/ram-timings-und-deren-einfluss-auf-spiele-und-anwendungen-amd-update-23-05-2020.1269156/)
 ## Information
 * [r/overclocking Wiki - DDR4](https://www.reddit.com/r/overclocking/wiki/ram/ddr4)
