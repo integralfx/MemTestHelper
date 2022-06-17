@@ -43,11 +43,11 @@ You should always test with various stress tests to ensure your overclock is sta
 * I wouldn't recommend the AIDA64 memory test and [Memtest64](https://forums.anandtech.com/threads/techpowerups-memtest-64-is-it-better-than-hci-memtest-for-determining-stability.2532209/) as they are both not very good at finding memory errors.
 ### Recommended
 * [TM5](https://mega.nz/file/vLhxBahB#WwJIpN3mQOaq_XsJUboSIcaMg3RlVBWvFnVspgJpcLY) with any of the configs listed:
-  * [Extreme config by anta777](extreme@anta777.cfg) (recommended). Make sure to load the config. It should say 'Customize: Extreme1 @anta777' if loaded.  
+  * [Extreme by anta777](TM5-Configs/extreme@anta777.cfg) (recommended). Make sure to load the config. It should say 'Customize: Extreme1 @anta777' if loaded.  
   Credits: [u/nucl3arlion](https://www.reddit.com/r/overclocking/comments/dlghvs/micron_reve_high_training_voltage_requirement/f4zcs04/).
-  * [Absolut](absolutnew.cfg)
-  * [PCBdestroyer](PCBdestroyer.cfg)
-  * [LMHz Universal 2 config](Universal-2@LMhz.cfg)
+  * [Absolut](TM5-Configs/absolutnew.cfg)
+  * [PCBdestroyer](TM5-Configs/PCBdestroyer.cfg)
+  * [LMHz Universal 2](TM5-Configs/Universal-2@LMhz.cfg)
   * If you experience issues with all threads crashing upon launch with the extreme config, it might help to edit the row "Testing Window Size (Mb)=1408". Replace the window size with your total RAM (minus some margin for Windows) divided by your processor's available threads (e.g., 12800/16 = 800 MB per thread).
 * [OCCT](https://www.ocbase.com/) with the dedicated memory test using SSE or AVX instructions.
   * Note that AVX and SSE can vary in error detection speed. On Intel-based systems, SSE appears better for testing IMC voltages, while AVX appears better for DRAM voltage.
