@@ -325,8 +325,8 @@ As far as I know, tCL, tRCD, tRP, and possibly tRFC can (or can not) see voltage
 * Intel's Skylake IMC is pretty strong, so it shouldn't be the bottleneck when overclocking.  
   What would you expect from 14+++++?
 * The Rocket Lake IMC, aside from the limitations regarding Gear 1 and Gear 2 memory support, has the strongest memory controller of all Intel consumer CPUs by a fair margin.
-* Gear 1 is preferred because the memory controller clock is synced with the DRAM clock speed.
-* On Alder Lake, non-K CPUs have locked VCCSA and may not work at higher frequencies at gear 1.
+* Gear 1 is preferred because the memory controller clock is synced with the DRAM clock speed. Desync incurs a latency penalty.
+* Non-K Alder Lake CPUs have locked VCCSA and may not work at higher frequencies at gear 1. You can expect 3200 - 3466 at gear 1.
 * There are 2 voltages you need to change if overclocking RAM: system agent (VCCSA) and IO (VCCIO).  
   **DO NOT** leave these on auto, as they can pump dangerous voltage levels into your IMC, potentially degrading or even killing it. Most of the time, you can keep VCCSA and VCCIO the same, but sometimes too much can harm stability (credits: Silent_Scone).
   
@@ -341,10 +341,12 @@ As far as I know, tCL, tRCD, tRP, and possibly tRFC can (or can not) see voltage
   | 4000 - 4200 | 1.25 - 1.30 |
   | 4200 - 4400 | 1.30 - 1.35 |
   * VCCIO should generally be 50 mV lower than VCCSA, and running 1.4 V VCCSA + 1.35 V VCCIO is acceptable as an upper limit.
-  * Safe voltages on ADL are not known because it is relatively new. 1.25-1.35 V VCCSA has not been proven to show considerable degradation.
-  * With more DIMMs and/or dual-rank DIMMs, you may need higher VCCSA and VCCIO than suggested (1.4 V daily max unless extreme overclocking).
-* tRCD and tRP are linked, meaning if you set tRCD 16 but tRP 17, both will run at the higher timing (17). This limitation is why many ICs don't do as well on Intel and why B-die is a good match for Intel.
+  * Safe voltages on Alder Lake are not known because it is relatively new. 1.25-1.35 V VCCSA and VDDQ has not been proven to show considerable degradation.
+    * For more information see [Information](#information).
+  * With more DIMMs and/or dual-rank DIMMs, you may need higher VCCSA and VCCIO than suggested.
+* On Skylake to Rocket Lake (inclusive) CPUs, tRCD and tRP are linked, meaning if you set tRCD 16 but tRP 17, both will run at the higher timing (17). This limitation is why many ICs don't do as well on Intel and why B-die is a good match for Intel.
   * On Asrock and EVGA UEFIs, they're combined into tRCDtRP. On ASUS UEFIs, tRP is hidden. On MSI and Gigabyte UEFIs, tRCD and tRP are visible but setting them to different values just sets both to the higher value.
+* On Alder Lake CPUs, tRD and tRP are no longer linked as long as you are not using a Gigabyte motherboard.
 * Expected memory latency range: 40 ns - 50 ns.
    * Expected memory latency range for B-Die: 35 ns - 45 ns.
    * Overall, latency varies between generations due to a difference in die size (ring bus). As a result, a 9900K will have a slightly lower latency than a 10700K at the same settings since the 10700K has the same die as a 10900K.
@@ -707,6 +709,8 @@ This seems to line up with [The Stilt's](https://www.overclock.net/forum/10-amd-
 ## Information
 * [r/overclocking Wiki - DDR4](https://www.reddit.com/r/overclocking/wiki/ram/ddr4)
 * [Demystifying Memory Overclocking on Ryzen: OC Guidelines and Explaining Subtimings, Resistances, Voltages, and More! by varexos717](https://redd.it/ahs5a2)
+* [Maximus Z690 and Alder Lake: Modern CPU’s require Modern Overclocking Solutions](https://rog.asus.com/forum/showthread.php?126369-Maximus-Z690-and-Alder-Lake-Modern-CPU%92s-require-Modern-Overclocking-Solutions)
+* [12th Gen Intel Memory Overclocking Voltages - buildzoid](http://buildzoid.blogspot.com/2022/03/12th-gen-intel-memory-overclocking.html)
 * [DDR4 OC Rankings](https://docs.google.com/spreadsheets/d/1NN3-m-mvqxoebSUO_22efkMrnGog2y1atWUgiZSZTOc/edit?usp=sharing)
 * [HardwareLUXX Ryzen RAM OC Thread](https://www.hardwareluxx.de/community/f13/ryzen-ram-oc-thread-moegliche-limitierungen-1216557.html)
 * [Ryzen 3000 Memory / Fabric (X370/X470/X570) by elmor](https://www.overclock.net/forum/13-amd-general/1728878-ryzen-3000-memory-fabric-x370-x470-x570.html)
