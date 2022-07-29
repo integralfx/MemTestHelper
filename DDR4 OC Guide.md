@@ -532,7 +532,8 @@ Some terminology:
    | tRRDS tRRDL tFAW | 6 6 24 | 4 6 16 | 4 4 16 |
 
    * The minimum value for which lowering tFAW will affect the performance of RAM is `tRRDS * 4` or `tRRDL * 4`, whichever is lower.
-   * You don't have to run all of the timings at one preset. For example, you might only be able to run tRRDS tRRDL tFAW at the tight preset, but you may be able to run a different timing at the extreme preset.
+   * You don't have to run all of the timings at one preset. For example, you might only be able to run tRRDS tRRDL tFAW at the tight preset, but you may be able to run tWR at the extreme preset.
+   * On some Intel motherboards, tWR in the UEFI does nothing and instead needs to be controlled through tWRPRE (sometimes tWRPDEN). Dropping tWRPRE by 1 will drop tWR by 1, following the rule tWR = tWRPRE - tCWL - 4.
      
 2. Next is tRFC. Default for 8 Gb ICs is 350 **ns** (note the units).
    * Note: Tightening tRFC too much can result in system freezes/lock-ups.
@@ -621,20 +622,13 @@ Some terminology:
 
 9. Increase tREFI until it's unstable. The binary search method for finding the lowest tRFC can also be applied here.  
    Otherwise, here are my suggestions:
-   | Timing | Safe  | Tight | Extreme |
-   | ------ | ----- | ----- | ------- |
-   | tREFI  | 32768 | 40000 | Max (65535 or 65534) |
+   | Timing | Safe | Tight | Extreme |
+   | ------ | ---- | ----- | ------- |
+   | tREFI | 32768 | 40000 | Max (65535 or 65534) |
    * It's typically not good to increase tREFI too much as ambient temperature changes (e.g., winter to summer) can be enough to cause instability.
    * Keep in mind that running max tREFI can corrupt files, so tread with caution.
-          
-10. The last timing is tWR. This timing is saved for last due to its nature to error randomly and because it takes a long time for it to error.
 
-     | Timing | Safe | Tight | Extreme |
-     | ------ | ---- | ----- | ------- |
-     | tWR    | 16   | 12    | 10      |
-   * On some Intel motherboards, tWR in the UEFI does nothing and instead needs to be controlled through tWRPRE (sometimes tWRPDEN). Dropping tWRPRE by 1 will drop tWR by 1, following the rule tWR = tWRPRE - tCWL - 4.
-
-11. Finally, onto command rate.
+10. Finally, onto command rate.
 
     AMD:
     * Getting GDM disabled and CR 1 stable can be pretty difficult, but it's worth a shot if you've come this far down the rabbit hole.
@@ -658,7 +652,7 @@ Some terminology:
     * If below DDR4-4400, try setting CR to 1T. If that doesn't work, leave CR on 2T.
     * On Asus Maximus boards, enabling Trace Centering can help greatly with pushing CR 1T to higher frequencies.
 
-12. You can also increase DRAM voltage to drop timings even more. Keep in mind the [voltage scaling characteristics of your ICs](#voltage-scaling) and the [maximum recommended daily voltage](#maximum-recommended-daily-voltage).
+11. You can also increase DRAM voltage to drop timings even more. Keep in mind the [voltage scaling characteristics of your ICs](#voltage-scaling) and the [maximum recommended daily voltage](#maximum-recommended-daily-voltage).
     
 ## Miscellaneous Tips
 * Usually, a 200 MHz increase in effective DRAM frequency negates the latency penalty of loosening tCL, tRCD, and tRP by 1 but has the benefit of higher bandwidth.  
