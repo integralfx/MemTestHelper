@@ -530,10 +530,14 @@ Some terminology:
    | Timing | Safe | Tight | Extreme |
    | ------ | ---- | ----- | ------- |
    | tRRDS tRRDL tFAW | 6 6 24 | 4 6 16 | 4 4 16 |
+   | tWR tRTP<sup>1</sup> | 20 10 | 16 8 | 12 6 |
 
    * The minimum value for which lowering tFAW will affect the performance of RAM is `tRRDS * 4` or `tRRDL * 4`, whichever is lower.
    * You don't have to run all of the timings at one preset. For example, you might only be able to run tRRDS tRRDL tFAW at the tight preset, but you may be able to run tWR at the extreme preset.
    * On some Intel motherboards, tWR in the UEFI does nothing and instead needs to be controlled through tWRPRE (sometimes tWRPDEN). Dropping tWRPRE by 1 will drop tWR by 1, following the rule tWR = tWRPRE - tCWL - 4.
+   * <sup>1</sup>tWR is 2*tRTP as per the Micron DDR4 datasheet. This relationship is also stated in the JEDEC DDR4 datasheet. 
+   ![tWR tRTP relationship](Images/tWR-tRTP-relationship.png)  
+   Thanks to [junkmann](https://github.com/integralfx/MemTestHelper/issues/55) for pointing this out.
      
 2. Next is tRFC. Default for 8 Gb ICs is 350 **ns** (note the units).
    * Note: Tightening tRFC too much can result in system freezes/lock-ups.
@@ -561,7 +565,6 @@ Some terminology:
    | Timing | Safe | Tight | Extreme |
    | :----: | :--: | :---: | :-----: |
    | tWTRS tWTRL | 4 12 | 4 10 | 4 8 |
-   | tRTP | 12 | 10 | 8 |
    | tCWL<sup>1</sup> | tCL | tCL - 1 | tCL - 2 |
    * On Intel, tWTRS/L should be left on auto and controlled with tWRRD_dg/sg, respectively. Dropping tWRRD_dg by 1 will drop tWTRS by 1. Likewise, with tWRRD_sg. Once they're as low as you can go, manually set tWTRS/L.
    * On Intel, changing tCWL will affect tWRRD_dg/sg and thus tWTR_S/L. If you lower tCWL by 1, you need to lower tWRRD_dg/sg by 1 to keep the same tWTR values. Note that this might also affect tWR per the relationship described earlier.
@@ -646,7 +649,7 @@ Some terminology:
 
       ![](Images/gdm-off-cr-1t-stable.png)
 
-    5. Often, a drive strength above 24 ohms may hurt stability. Furthermore, running non-zero setup times is rarely needed; however, it may aid in the stabilization of CR 1.
+    1. Often, a drive strength above 24 ohms may hurt stability. Furthermore, running non-zero setup times is rarely needed; however, it may aid in the stabilization of CR 1.
    
     Intel:
     * If below DDR4-4400, try setting CR to 1T. If that doesn't work, leave CR on 2T.
