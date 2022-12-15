@@ -70,7 +70,9 @@ You should always test with various stress tests to ensure your overclock is sta
 * [Karhu RAM Test](https://www.karhusoftware.com/ramtest/) (paid).
 * [y-cruncher](http://www.numberworld.org/y-cruncher/) with [this config](https://pastebin.com/dJQgFtDH).
   * Paste this in a new file called `memtest.cfg` in the same folder as `y-cruncher.exe`.
-  * Adjust the `LogicalCores` and `TotalMemory` fields if necessary.
+  * Adjust the following fields if necessary:
+    * `LogicalCores`: CPU threads, e.g. `[0 1 2 3 4 5]` on 6C**6**T or `[0 1 2 3 4 5 6 7]` on 4C**8**T
+    * `TotalMemory`: Memory (bytes) used by y-cruncher
   * Create a shortcut to `y-cruncher.exe` and add `pause:1 config memtest.cfg` to the target field.
     Your target field should look something like this: `"path\to\y-cruncher\y-cruncher.exe" pause:1 config memtest.cfg`
   * Credits: [u/Nerdsinc](https://www.reddit.com/r/overclocking/comments/iyp1n7/ycruncher_is_a_really_effective_tool_for_testing/)
