@@ -349,7 +349,7 @@ As far as I know, tCL, tRCD, tRP, and possibly tRFC can (or can not) see voltage
   * With more DIMMs and/or dual-rank DIMMs, you may need higher VCCSA and VCCIO than suggested.
 * On Skylake to Rocket Lake (inclusive) CPUs, tRCD and tRP are linked, meaning if you set tRCD 16 but tRP 17, both will run at the higher timing (17). This limitation is why many ICs don't do as well on Intel and why B-die is a good match for Intel.
   * On Asrock and EVGA UEFIs, they're combined into tRCDtRP. On ASUS UEFIs, tRP is hidden. On MSI and Gigabyte UEFIs, tRCD and tRP are visible but setting them to different values just sets both to the higher value.
-* On Alder Lake CPUs, tRD and tRP are no longer linked as long as you are not using a Gigabyte motherboard.
+* On Alder Lake CPUs, tRD and tRP are no longer linked
 * Expected memory latency range: 40 ns - 50 ns.
    * Expected memory latency range for B-Die: 35 ns - 45 ns.
    * Overall, latency varies between generations due to a difference in die size (ring bus). As a result, a 9900K will have a slightly lower latency than a 10700K at the same settings since the 10700K has the same die as a 10900K.
