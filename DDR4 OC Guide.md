@@ -211,7 +211,7 @@ See [HardwareLuxx](https://www.hardwareluxx.de/community/threads/ryzen-ram-oc-m%
   * The second bolded number is the manufacturer. 1 for Samsung, 2 for Hynix, 3 for Micron, 4 for PSC (powerchip), 5 for Nanya, and 9 for JHICC.
   * The last character is the revision.
   * This is the code for Samsung 8 Gb B-die.
-* See the [r/overclocking wiki](https://www.reddit.com/r/overclocking/wiki/ram/ddr4#wiki_new_markings_-_.22042_code.22_table) for a full list.
+* See the [r/overclocking wiki](https://www.reddit.com/r/overclocking/wiki/ram/ddr4#wiki_g.skill_sn_table) for a full list.
 #### Kingston Code
 * Example: DPM**M**16A1823
   * The bolded letter indicates the manufacturer. H for Hynix, M for Micron, and S for Samsung.
@@ -680,7 +680,7 @@ Some terminology:
    * Play around with the Maximus Tweak Modes; sometimes, one will post where the other does not.
    * You can enable Round Trip Latency under Memory Training Algorithms to let the board attempt to train RTL and IOL values.
    * If you can't boot, you can try tweaking the skew control values.  
-     More info [here](https://rog.asus.com/forum/showthread.php?47670-Maximus-7-Gene-The-road-to-overclocking-memory-without-increasing-voltage).
+     More info [here](https://rog.asus.com/forum/showthread.php?47670-Maximus-7-Gene-The-road-to-overclocking-memory-without-increasing-voltage) (images broken).
 * tXP (and subsequently PPD) has a major impact on AIDA64 memory latency.
 * RTT Wr, Park, and Nom can have a massive impact on overclocking. The ideal values may depend on your board, memory IC and density. The "optimal" values will let you clock higher with less memory controller voltage. Some boards reveal the auto values (MSI) while others don't (Asus). Finding the perfect combination is time-consuming but very helpful for advanced tuning.
 * On some motherboards, enabling XMP can allow for better overclocking.
@@ -688,7 +688,7 @@ Some terminology:
 
 ### AMD
 * Try playing around with ProcODT if you can't boot. This setting determines the processor's on-die termination impedance. According to [Micron](https://www.micron.com/support/~/media/D546161C2C6140BCB0BAEE954AA53433.pdf), higher settings of ProcODT can lead to more stable RAM, but the trade-off is potentially needing higher voltages. On Ryzen 1000 and 2000, you should try values between 40Ω and 68.6Ω due to the considerably weaker memory controller. 
-On Ryzen 3000 and 5000, [1usmus](https://www.overclock.net/forum/13-amd-general/1640919-new-dram-calculator-ryzena-1-5-1-overclocking-dram-am4-membench-0-7-dram-bench-480.html#post28049664) suggests 28Ω - 40Ω. Lower settings may be harder to run but potentially helps with voltage requirements. Higher values may aid with stability, according to [Micron](https://media-www.micron.com/-/media/client/global/documents/products/technical-note/dram/tn4040_ddr4_point_to_point_design_guide.pdf?la=en&rev=d58bc222192d411aae066b2577a12677), values of ODT above 60Ω are only suitable for extremely weak memory controllers and lower power solutions.
+On Ryzen 3000 and 5000, [1usmus](https://www.overclock.net/threads/new-dram-calculator-for-ryzen%E2%84%A2-1-7-3-overclocking-dram-on-am4-membench-0-8-dram-bench.1640919/page-240#post-28049664) suggests 28Ω - 40Ω. Lower settings may be harder to run but potentially helps with voltage requirements. Higher values may aid with stability, according to [Micron](https://media-www.micron.com/-/media/client/global/documents/products/technical-note/dram/tn4040_ddr4_point_to_point_design_guide.pdf?la=en&rev=d58bc222192d411aae066b2577a12677), values of ODT above 60Ω are only suitable for extremely weak memory controllers and lower power solutions.
 This seems to line up with [The Stilt's](https://www.overclock.net/forum/10-amd-cpus/1728758-strictly-technical-matisse-not-really-26.html) settings.
   > Phy at AGESA defaults, except ProcODT of 40.0Ohm, an ASUS auto-rule for Optimem III.
 * Lower SOC voltage and/or VDDG IOD may help with stability.
@@ -697,14 +697,14 @@ This seems to line up with [The Stilt's](https://www.overclock.net/forum/10-amd-
   
   Source: [The Stilt](https://www.overclock.net/forum/10-amd-cpus/1728758-strictly-technical-matisse-not-really-26.html).
  
-  > This value is not to exceed 1.10V on Ryzen 3000 and 5000, and should always be restricted to at least 0.10V less than DRAM Voltage. 
+  > Small changes to VDDP can have a big effect, and VDDP cannot not be set to a value greater than VDIMM-0.1V (**not to exceed 1.05V**).
   
-  Source: [AMD](https://community.amd.com/t5/blogs/community-update-4-let-s-talk-dram/ba-p/415902)
+  Source: [AMD](https://web.archive.org/web/20210520115124/https://community.amd.com/t5/blogs/community-update-4-let-s-talk-dram/ba-p/415902)
 * When pushing FCLK around 1800 MHz, intermittent RAM training errors may be alleviated or eliminated by increasing VDDG CCD.
 
 # Useful Links
 ## Benchmarks
-* [Impact of RAM on Intel's Skylake desktop architecture by KingFaris](https://kingfaris.co.uk/intel-ram-oc-impact)
+* [Impact of RAM on Intel's Skylake desktop architecture by KingFaris](https://kingfaris.co.uk/blog/intel-ram-oc-impact)
 * [RAM timings and their influence on games and applications (AMD) by Reous](https://www.hardwareluxx.de/community/threads/ram-timings-und-deren-einfluss-auf-spiele-und-anwendungen-amd-update-23-05-2020.1269156/)
 ## Information
 * [r/overclocking Wiki - DDR4](https://www.reddit.com/r/overclocking/wiki/ram/ddr4)
@@ -714,7 +714,7 @@ This seems to line up with [The Stilt's](https://www.overclock.net/forum/10-amd-
 * [DDR4 OC Rankings](https://docs.google.com/spreadsheets/d/1NN3-m-mvqxoebSUO_22efkMrnGog2y1atWUgiZSZTOc/edit?usp=sharing)
 * [HardwareLUXX Ryzen RAM OC Thread](https://www.hardwareluxx.de/community/f13/ryzen-ram-oc-thread-moegliche-limitierungen-1216557.html)
 * [Ryzen 3000 Memory / Fabric (X370/X470/X570) by elmor](https://www.overclock.net/forum/13-amd-general/1728878-ryzen-3000-memory-fabric-x370-x470-x570.html)
-* [Intel Memory Overclocking Quick Reference by sdch](https://www.overclock.net/forum/27784556-post7836.html)
-* [The road to overclocking memory without increasing voltage by Raja@ASUS](https://rog.asus.com/forum/showthread.php?47670-Maximus-7-Gene-The-road-to-overclocking-memory-without-increasing-voltage)
+* [Intel Memory Overclocking Quick Reference by sdch](https://www.overclock.net/threads/official-intel-ddr4-24-7-memory-stability-thread.1569364/page-392#post-27784556)
+* [The road to overclocking memory without increasing voltage by Raja@ASUS](https://rog.asus.com/forum/showthread.php?47670-Maximus-7-Gene-The-road-to-overclocking-memory-without-increasing-voltage) (images broken)
 * [Advanced Skylake Overclocking: Tune DDR4 Memory RTL/IO on Maximus VIII with Alex@ro's Guide](https://hwbot.org/newsflash/3058_advanced_skylake_overclocking_tune_ddr4_memory_rtlio_on_maximus_viii_with_alexaros_guide)
 * [BSOD codes when OC'ing and possible actions](https://www.reddit.com/r/overclocking/comments/atwtt5/psa_bsod_codes_when_ocing_and_possible_actions/)
