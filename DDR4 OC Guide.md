@@ -100,8 +100,8 @@ You should always test with various stress tests to ensure your overclock is sta
     * X99: [Asrock Timing Configurator v3.0.6](https://www.asrock.com/mb/Intel/X99%20OC%20Formula3.1/#Download).
     * Z370(?)/Z390: [Asrock Timing Configurator v4.0.4](https://www.asrock.com/MB/Intel/X299%20OC%20Formula/index.asp#Download) (don't need an Asrock motherboard).
     * EVGA motherboards and Z170/Z270(?)/Z490: [Asrock Timing Configurator v4.0.3](https://www.asrock.com/mb/Intel/Z170%20OC%20Formula/#Download).
-    * For Rocket Lake: [ASRock Timing Configurator v4.0.10](http://picx.xfastest.com/nickshih/asrock/AsrTCSetup(v4.0.10).rar).
-    * For Alder Lake: [ASRock Timing Configuator v4.0.13](https://drive.google.com/file/d/11A2CCcXbvAFLVNHPVP9EtZ4hwmsn2yFt/edit) or [MSI Dragon Ball](https://drive.google.com/file/d/1XmKv13D0MgC9fPaA91535wCe9ztoeaHV/view?usp=sharing).
+    * For Rocket Lake: [ASRock Timing Configurator v4.0.10](https://web.archive.org/web/20211010085116/http://picx.xfastest.com/nickshih/asrock/AsrTCSetup(v4.0.10).rar).
+    * For Alder Lake: [ASRock Timing Configuator v4.0.14](https://picx.xfastest.com/nickshih/asrock/AsrTCSetup(v4.0.14).rar) or [MSI Dragon Ball](https://drive.google.com/file/d/1XmKv13D0MgC9fPaA91535wCe9ztoeaHV/view?usp=sharing).
   * AMD: 
     * [ZenTimings](https://zentimings.protonrom.com/).
     
