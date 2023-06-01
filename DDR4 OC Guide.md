@@ -498,7 +498,7 @@ Some terminology:
 2. Loosen primary timings to 18-22-22-42 and set tCWL to 18.
 3. Increase DRAM voltage to 1.45 V if it is safe for your IC. See [Maximum Recommended Daily Voltage](#maximum-recommended-daily-voltage).
 4. Increase SOC to 1.125 V, VDDP to 1.00 V, and VDDG CCD to 1.00 V.
-5. Follow steps 4-7 from [Finding a Baseline](#finding-a-baseline).
+5. Follow steps 5-7 from [Finding a Baseline](#finding-a-baseline).
 6. Proceed to [Tightening Timings](#tightening-timings).
    
 ## Tightening Timings
