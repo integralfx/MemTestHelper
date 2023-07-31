@@ -711,7 +711,6 @@ This seems to line up with [The Stilt's](https://www.overclock.net/forum/10-amd-
 * [Demystifying Memory Overclocking on Ryzen: OC Guidelines and Explaining Subtimings, Resistances, Voltages, and More! by varexos717](https://redd.it/ahs5a2)
 * [Maximus Z690 and Alder Lake: Modern CPU’s require Modern Overclocking Solutions](https://rog.asus.com/forum/showthread.php?126369-Maximus-Z690-and-Alder-Lake-Modern-CPU%92s-require-Modern-Overclocking-Solutions)
 * [12th Gen Intel Memory Overclocking Voltages - buildzoid](http://buildzoid.blogspot.com/2022/03/12th-gen-intel-memory-overclocking.html)
-* [DDR4 OC Rankings](https://docs.google.com/spreadsheets/d/1NN3-m-mvqxoebSUO_22efkMrnGog2y1atWUgiZSZTOc/edit?usp=sharing)
 * [HardwareLUXX Ryzen RAM OC Thread](https://www.hardwareluxx.de/community/f13/ryzen-ram-oc-thread-moegliche-limitierungen-1216557.html)
 * [Ryzen 3000 Memory / Fabric (X370/X470/X570) by elmor](https://www.overclock.net/forum/13-amd-general/1728878-ryzen-3000-memory-fabric-x370-x470-x570.html)
 * [Intel Memory Overclocking Quick Reference by sdch](https://www.overclock.net/threads/official-intel-ddr4-24-7-memory-stability-thread.1569364/page-392#post-27784556)
