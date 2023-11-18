@@ -421,7 +421,7 @@ Some terminology:
   | 2000 | 60 - 70 |
   | 3000 | 65 - 75 (1:1 MCLK:FCLK) <br/> 75+ (2:1 MCLK:FCLK) |
   | 4000/5000G | ??? |
-  | 5000 | 60 - 70 (1:1 MCLK:FCLK) <br/> 70+ (desynchronised FCLK)
+  | 5000 | 60 - 70 (1:1 MCLK:FCLK) <br/> 70+ (desynchronised FCLK) |
 * On Ryzen 3000 and 5000, high enough FCLK can overcome the penalties from desynchronising MCLK and FCLK, provided that you can lock your UCLK to MCLK.
   
   ![Chart](Images/optimal-fclk-vs-mclk.png) 
