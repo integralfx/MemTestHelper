@@ -470,11 +470,12 @@ Some terminology:
    * See [this post](https://redd.it/ahs5a2) for more information on these timings.
   
 6. Increase the DRAM frequency until it doesn't boot into Windows anymore. Keep in mind the expectations detailed above including the timings for each frequency range.
-   * If you're on Intel, a quick way of knowing if you're unstable is to examine the RTLs and IOLs. Each group of RTLs and IOLs correspond to a channel. Within each group, 2 values correspond to each DIMM.
    * Ryzen 3000/5000:
      * Desynchronising MCLK and FCLK can incur a massive latency penalty, so you're better off tightening timings to keep your MCLK:FCLK 1:1. See [AMD - AM4](#amd-imc) for more information.
      * Otherwise, set FCLK to whatever is stable (1600 MHz if you're unsure).
-   Asrock Timing Configurator:
+   * If you're on Intel, a quick way of knowing if you're unstable is to examine the RTLs and IOLs. Each group of RTLs and IOLs correspond to a channel. Within each group, 2 values correspond to each DIMM.
+
+   RTLs and IOLs in Asrock Timing Configurator:
    
    ![](Images/intel-rtl-iol-difference-stable.png)
 
