@@ -438,7 +438,7 @@ Some terminology:
    * Make sure your CPU overclock is disabled when tuning RAM, as an unstable CPU can lead to memory errors. Likewise, when pushing high frequency with tight timings, your CPU may become unstable and may need to be re-done.
    * Make sure your UEFI/BIOS is up to date.
 
-2. On Intel, set command rate (CR) to 2T if it isn't already and set tCCDL to 8 (Asus UEFIs don't expose this timing).
+2. On Intel, set command rate (CR) to 2T if it isn't already and set tCCDL to 8
    On AMD, set Gear Down Mode to Enabled if it isn't already.
 
 3. On Intel, start with 1.15 V VCCSA and VCCIO. For ADL, VCCIO does not exist. Note that if you have an Alder Lake non-K SKU, VCCSA will be locked and your overclock potential will be limited.
