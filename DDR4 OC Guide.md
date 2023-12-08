@@ -465,14 +465,13 @@ Some terminology:
     |4001-4400|22|26|26|52|22|
     |4400+|24|28|28|56|24|
 
-   * Some ICs may not boot with very loose primary timings to begin with so it is recommended to loosen timings before the frequency range is met while increasing the frequency in the next step as detailed in the table above. 
+   * Some ICs may not boot with very loose primary timings to begin with. It is recommended to loosen timings as the frequency is increases with the suggestions in the table above.
    * Note that some boards have auto rules that can stifle your progress, an example being tCWL = tCL - 1, which can lead to uneven values of tCWL. Reading the [Miscellaneous Tips](#miscellaneous-tips) might give you insight into your platform and your motherboard's functionality.
    * See [this post](https://redd.it/ahs5a2) for more information on these timings.
   
 6. Increase the DRAM frequency until it doesn't boot into Windows anymore. Keep in mind the expectations detailed above including the timings for each frequency range.
    * Ryzen 3000/5000:
      * Desynchronising MCLK and FCLK can incur a massive latency penalty, so you're better off tightening timings to keep your MCLK:FCLK 1:1. See [AMD - AM4](#amd-imc) for more information.
-     * Otherwise, set FCLK to whatever is stable (1600 MHz if you're unsure).
    * If you're on Intel, a quick way of knowing if you're unstable is to examine the RTLs and IOLs. Each group of RTLs and IOLs correspond to a channel. Within each group, 2 values correspond to each DIMM.
 
    RTLs and IOLs in Asrock Timing Configurator:
