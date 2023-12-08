@@ -360,7 +360,7 @@ Some terminology:
 * MCLK: Real memory clock (half of the effective RAM speed). For example, for DDR4-3200, the MCLK is 1600 MHz.
 * FCLK: Infinity Fabric clock.
 * UCLK: Unified memory controller clock. Half of MCLK when MCLK and FCLK are not equal (desynchronized, 2:1 mode).
-* On Zen and Zen+, MCLK == FCLK == UCLK. However, on Zen2 and Zen3, you can specify FCLK. If MCLK is 1600 MHz (DDR4-3200) and you set FCLK to 1600 MHz, UCLK will also be 1600 MHz unless you set MCLK:UCLK ratio to 2:1 (also known as UCLK DIV mode, etc.). However, if you set FCLK to 1800 MHz, UCLK will run at 800 MHz (desynchronized).
+* On Zen and Zen+, MCLK == FCLK == UCLK. However, on Zen2 and Zen3, you can specify FCLK. If MCLK is 1600 MHz (DDR4-3200) and you set FCLK to 1600 MHz, UCLK will also be 1600 MHz unless you set MCLK:UCLK ratio to 2:1 (also known as UCLK DIV mode, etc.). However, if you set FCLK to 1800 MHz or higher, UCLK will run at 800 MHz (desynchronized).
 
 * Ryzen 1000 and 2000's IMC can be finicky when overclocking and can't hit as high frequencies as Intel can. On the other hand, Ryzen 3000 and 5000's IMCs are much better and are more or less on par with Intel's newer Skylake-based CPUs, i.e., 9th and 10th gen.
 * SOC voltage is the voltage to the IMC, and like with Intel, it's not recommended to leave it on auto. Typical ranges for this value range around 1.00V and 1.125V. Higher values are generally acceptable and may be necessary for stabilizing higher capacity memory and may aid in attaining FCLK stability.
@@ -420,6 +420,8 @@ Some terminology:
   | 1000 | 65 - 75 |
   | 2000 | 60 - 70 |
   | 3000 | 65 - 75 (1:1 MCLK:FCLK) <br/> 75+ (2:1 MCLK:FCLK) |
+  | 4000/5000G | 55 - 65 |
+  | 5000 | 60 - 70 (1:1 MCLK:FCLK) <br/> 70+ (desynchronised FCLK) |
 * On Ryzen 3000 and 5000, high enough FCLK can overcome the penalties from desynchronising MCLK and FCLK, provided that you can lock your UCLK to MCLK.
   
   ![Chart](Images/optimal-fclk-vs-mclk.png) 
