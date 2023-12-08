@@ -535,6 +535,7 @@ Some terminology:
    | tRRDS tRRDL tFAW | 6 6 24 | 4 6 16 | 4 4 16 |
    | tWR tRTP<sup>1</sup> | 20 10 | 16 8 | 12 6 |
 
+   * On AMD, if GDM is enabled, tWR and tRTP get rounded so drop them by 2 or keep them even.   
    * The minimum value for which lowering tFAW will affect the performance of RAM is `tRRDS * 4` or `tRRDL * 4`, whichever is lower.
    * You don't have to run all of the timings at one preset. For example, you might only be able to run tRRDS tRRDL tFAW at the tight preset, but you may be able to run tWR at the extreme preset.
    * On some Intel motherboards, tWR in the UEFI does nothing and instead needs to be controlled through tWRPRE (sometimes tWRPDEN). Dropping tWRPRE by 1 will drop tWR by 1, following the rule tWR = tWRPRE - tCWL - 4.
@@ -569,6 +570,8 @@ Some terminology:
    | :----: | :--: | :---: | :-----: |
    | tWTRS tWTRL | 4 12 | 4 10 | 4 8 |
    | tCWL<sup>1</sup> | tCL | tCL - 1 | tCL - 2 |
+   
+   * On AMD, if GDM is enabled, tCWL gets rounded so drop tCWL by 2 or keep it even.
    * On Intel, tWTRS/L should be left on auto and controlled with tWRRD_dg/sg, respectively. Dropping tWRRD_dg by 1 will drop tWTRS by 1. Likewise, with tWRRD_sg. Once they're as low as you can go, manually set tWTRS/L.
    * On Intel, changing tCWL will affect tWRRD_dg/sg and thus tWTR_S/L. If you lower tCWL by 1, you need to lower tWRRD_dg/sg by 1 to keep the same tWTR values. Note that this might also affect tWR per the relationship described earlier.
    * <sup>1</sup>Some motherboards don't play nice with odd tCWL. For example, I'm stable at 4000 15-19-19 tCWL 14, yet tCWL 15 doesn't even POST. Another user has had similar experiences. Some motherboards may seem fine but have issues with it at higher frequencies (Asus). Manually setting tCWL equal to tCL if tCL is even or one below if tCL is uneven should alleviate this (eg. if tCL = 18 try tCWL = 18 or 16, if tCL = 17 try tCWL = 16).
@@ -602,7 +605,7 @@ Some terminology:
          * tWRWR_sg 6 can cause write bandwidth regression over tWRWR_sg 7, despite being stable.
     
 5. Drop tCL by 1 until it's unstable.
-   * On AMD, if GDM is enabled, drop tCL by 2.   
+   * On AMD, if GDM is enabled, tCL gets rounded so drop tCL by 2 or keep it even.   
  
 6. On Intel, drop tRCD and tRP by 1 until unstable.  
 
