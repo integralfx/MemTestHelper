@@ -15,7 +15,6 @@
   - [Motherboard](#motherboard)
   - [Integrated Circuits (ICs)](#integrated-circuits-ics)
     - [Shorthand Notation](#shorthand-notation)
-    - [Thaiphoon Report](#thaiphoon-report)
     - [Label on Sticks](#label-on-sticks)
       - [Corsair Version Number](#corsair-version-number)
       - [G.Skill 042 Code](#gskill-042-code)
@@ -167,28 +166,14 @@ XYZ where:
 
 For example, the shorthand for Samsung 8 Gb B-die is S8B.
 
-### Thaiphoon Report
-* Note: Thaiphoon is known to guess ICs, so it shouldn't be fully trusted. It's highly recommended to check the label on the sticks if possible.
-  * See [here](https://www.reddit.com/r/overclocking/comments/ig9d76/thaiphoon_burner_cluelessly_guessing_memory_ics/) for more info.
-* Single rank 8 Gb Hynix CJR (H8C).
-
-   ![](Images/thaiphoon-h8c.png)
-
-* Single rank 8 Gb Micron Revision E (M8E) (source: Coleh#4297).
-
-   ![](Images/thaiphoon-m8e.png)
-
-  * [SpecTek](https://www.micron.com/support/spectek-support) ICs are lower binned Micron ICs.
-  * Esoteric note: Many people have started calling this Micron E-die or E-die. The former is fine, but the latter can cause confusion as letter-die is typically used for Samsung ICs, i.e., Samsung 4 Gb E-die. Samsung is implied when you say E-die, but as people are calling Micron Rev. E E-die, it'd probably be a good idea to prefix the manufacturer.
-* Dual rank Samsung 8 Gb B-die (S8B).
-
-   ![](Images/thaiphoon-s8b-dr.png)
-
 ### Label on Sticks
 
-Sometimes the Thaiphoon report won't tell you the IC, or it may misidentify the IC. To confirm/deny this, you can check the label on the sticks. Currently, only Corsair, G.Skill, and Kingston have a label to identify the IC.
+Sometimes Thaiphoon Burner won't tell you the IC, or it may misidentify the IC so it is recommended to use the label on the sticks to identify the IC instead. See [here](https://www.reddit.com/r/overclocking/comments/ig9d76/thaiphoon_burner_cluelessly_guessing_memory_ics/) for more info. Currently, only Corsair, G.Skill, and Kingston have a label to identify the IC.
 
 See [HardwareLuxx](https://www.hardwareluxx.de/community/threads/ryzen-ram-oc-m%C3%B6gliche-limitierungen.1216557/) for a neat infographic that summarises the following information.
+
+* [SpecTek](https://www.micron.com/support/spectek-support) ICs are lower binned Micron ICs.
+* Esoteric note: Many people have started calling this Micron E-die or E-die. The former is fine, but the latter can cause confusion as letter-die is typically used for Samsung ICs, i.e., Samsung 4 Gb E-die. Samsung is implied when you say E-die, but as people are calling Micron Rev. E E-die, it'd probably be a good idea to prefix the manufacturer.
 
 #### Corsair Version Number
 * Corsair has a 3 digit version number on the sticks' label, indicating what ICs are on the stick.
