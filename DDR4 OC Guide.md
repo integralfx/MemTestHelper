@@ -443,7 +443,7 @@ Some terminology:
 
 3. On Intel, start with 1.15 V VCCSA and VCCIO. For ADL, VCCIO does not exist. Note that if you have an Alder Lake non-K SKU, VCCSA will be locked and your overclock potential will be limited.
    On AMD, start with 1.10 V SOC, 0.95 V VDDP, 0.95 V VDDG CCD, and 1.05 V VDDG IOD.
-   * These voltgages will need to be increased as you raise frequency or tighten timings. Refer to [Integrated Memory Controller (IMC)](#integrated-memory-controller-imc) for recommended voltages.
+   * If you are unable to boot or encounter errors while raising frequency or tightening timings, then these voltages may need to be increased. Refer to [Integrated Memory Controller (IMC)](#integrated-memory-controller-imc) for recommended voltages and more information. Be careful not to raise them too much as negative scaling can occur.
    * SOC voltage might be named differently depending on the manufacturer.
      * Asrock: CPU VDDCR_SOC Voltage. If you can't find that, you can use SOC Overclock VID hidden in the AMD CBS menu.
        * [VID values](https://www.reddit.com/r/Amd/comments/842ehb/asrock_ab350_pro4_guide_bios_overclocking_raven/).
