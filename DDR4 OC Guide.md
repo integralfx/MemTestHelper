@@ -441,7 +441,7 @@ Some terminology:
 2. On Intel, set command rate (CR) to 2T if it isn't already and set tCCDL to 8
    On AMD, set Gear Down Mode to Enabled if it isn't already.
 
-3. On Intel, start with 1.15 V VCCSA and 1.1 V VCCIO. For ADL, VCCIO does not exist. Note that if you have an Alder Lake non-K SKU, VCCSA will be locked and your overclock potential will be limited.
+3. On Intel, start with 1.2 V VCCSA and 1.15 V VCCIO. For ADL, VCCIO does not exist. Note that if you have an Alder Lake non-K SKU, VCCSA will be locked and your overclock potential will be limited.
    On AMD, start with 1.10 V SOC, 0.95 V VDDP, 0.95 V VDDG CCD, and 1.05 V VDDG IOD.
    * If you are unable to boot or encounter errors while raising frequency or tightening timings, then these voltages may need to be increased. Refer to [Integrated Memory Controller (IMC)](#integrated-memory-controller-imc) for recommended voltages and more information. Be careful not to raise them too much as negative scaling can occur.
    * SOC voltage might be named differently depending on the manufacturer.
