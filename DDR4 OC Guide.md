@@ -543,7 +543,9 @@ Some terminology:
    * <sup>1</sup>Some motherboards don't play nice with odd tCWL. For example, I'm stable at 4000 15-19-19 tCWL 14, yet tCWL 15 doesn't even POST. Another user has had similar experiences. Some motherboards may seem fine but have issues with it at higher frequencies (Asus). Manually setting tCWL equal to tCL if tCL is even or one below if tCL is uneven should alleviate this (eg. if tCL = 18 try tCWL = 18 or 16, if tCL = 17 try tCWL = 16).
    * The extreme preset is not the minimum floor in this case. tRTP can go as low as 5 (6 with Gear Down Mode on), while tWTRS/L can go as low as 1/6. Some boards are fine doing tCWL as low as tCL - 6. Keep in mind that this *will* increase the load on your memory controller.
    * On AMD, tCWL can often be set to tCL - 2 but is known to require higher tWRRD.
-   
+  
+2. Next is tRRD, tFAW, tWR and tRTP.
+
    | Timing | Safe | Tight | Extreme |
    | ------ | ---- | ----- | ------- |
    | tRRDS tRRDL tFAW | 6 6 24 | 4 6 16 | 4 4 16 |
@@ -596,7 +598,7 @@ Some terminology:
       | ------ | ---- | ----- | ------- |
       | tRDRD_sg/dg/dr/dd | 8/4/8/8 | 7/4/7/7 | 6/4/6/6 |
       | tWRWR_sg/dg/dr/dd | 8/4/8/8 | 7/4/7/7 | 6/4/6/6 |
-      * For tWRRD_sg/dg, see step 3. For tWRRD_dr/dd, drop them both by 1 until you get instability or performance degrades.
+      * For tWRRD_sg/dg, see step 2. For tWRRD_dr/dd, drop them both by 1 until you get instability or performance degrades.
       * For tRDWR_sg/dg/dr/dd, drop them all by 1 until you get instability or performance degrades. You can usually run them all the same, e.g., 9/9/9/9.
         * Setting these too tight can cause system freezes.
       * Note that dr only affects dual rank sticks, so you can ignore this timing if you have single rank sticks. In the same way, dd only needs to be considered when you run two DIMMs per channel. You can also set them to 0 or 1 if you really want to.  
