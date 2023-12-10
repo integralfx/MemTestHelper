@@ -354,6 +354,7 @@ As far as I know, tCL, tRCD, tRP, and possibly tRFC can (or can not) see voltage
    * Expected memory latency range for B-Die: 35 ns - 45 ns.
    * Overall, latency varies between generations due to a difference in die size (ring bus). As a result, a 9900K will have a slightly lower latency than a 10700K at the same settings since the 10700K has the same die as a 10900K.
    * Latency is affected by the RTLs and IOLs. Generally speaking, higher quality boards and overclocking oriented boards will be more direct in routing the memory traces and will likely have lower RTLs and IOLs. On some motherboards, changing RTLs and IOLs have no effect.
+* The _dr and _dd timings only matter if running more than 1 rank per channel
   
 ### AMD IMC
 Some terminology:
