@@ -527,8 +527,22 @@ Some terminology:
         It is possible to hit half of the theoretical maximum write bandwidth. See [here](https://redd.it/cgc9bh).
       * Percentage of theoretically max bandwidth is inversely proportional to most memory timings. Generally speaking, as RAM timings are tightened, this value will increase.
 
-1. I would recommend tightening some of the secondary timings first, as they can speed up memory testing.  
-   My suggestions:
+1. Drop tCL by 1 until it's unstable.
+   * On AMD, if GDM is enabled, tCL gets rounded so drop tCL by 2 or keep it even.   
+
+2. I would recommend tightening some of the secondary timings before others, as they can speed up memory testing.
+
+   | Timing | Safe | Tight | Extreme |
+   | :----: | :--: | :---: | :-----: |
+   | tWTRS tWTRL | 4 12 | 4 10 | 4 8 |
+   | tCWL<sup>1</sup> | tCL | tCL - 1 | tCL - 2 |
+   
+   * On AMD, if GDM is enabled, tCWL gets rounded so drop tCWL by 2 or keep it even.
+   * On Intel, tWTRS/L should be left on auto and controlled with tWRRD_dg/sg, respectively. Dropping tWRRD_dg by 1 will drop tWTRS by 1. Likewise, with tWRRD_sg. Once they're as low as you can go, manually set tWTRS/L.
+   * On Intel, changing tCWL will affect tWRRD_dg/sg and thus tWTR_S/L. If you lower tCWL by 1, you need to lower tWRRD_dg/sg by 1 to keep the same tWTR values. Note that this might also affect tWR per the relationship described earlier.
+   * <sup>1</sup>Some motherboards don't play nice with odd tCWL. For example, I'm stable at 4000 15-19-19 tCWL 14, yet tCWL 15 doesn't even POST. Another user has had similar experiences. Some motherboards may seem fine but have issues with it at higher frequencies (Asus). Manually setting tCWL equal to tCL if tCL is even or one below if tCL is uneven should alleviate this (eg. if tCL = 18 try tCWL = 18 or 16, if tCL = 17 try tCWL = 16).
+   * The extreme preset is not the minimum floor in this case. tRTP can go as low as 5 (6 with Gear Down Mode on), while tWTRS/L can go as low as 1/6. Some boards are fine doing tCWL as low as tCL - 6. Keep in mind that this *will* increase the load on your memory controller.
+   * On AMD, tCWL can often be set to tCL - 2 but is known to require higher tWRRD.
    
    | Timing | Safe | Tight | Extreme |
    | ------ | ---- | ----- | ------- |
@@ -543,7 +557,7 @@ Some terminology:
    ![tWR tRTP relationship](Images/tWR-tRTP-relationship.png)  
    Thanks to [junkmann](https://github.com/integralfx/MemTestHelper/issues/55) for pointing this out.
      
-2. Next is tRFC. Default for 8 Gb ICs is 350 **ns** (note the units).
+3. Next is tRFC. Default for 8 Gb ICs is 350 **ns** (note the units).
    * Note: Tightening tRFC too much can result in system freezes/lock-ups.
    * tRFC is the number of cycles for which the DRAM capacitors are "recharged" or refreshed. Because capacitor charge loss is proportional to temperature, RAM operating at higher temperatures may need substantially higher tRFC values.
    * To convert to ns: `2000 * timing / ddr_freq`.  
@@ -564,19 +578,6 @@ Some terminology:
    * For all other ICs, I would recommend doing a binary search to find the lowest stable tRFC.  
    For example, say your tRFC is 630. The next tRFC you should try is half of that (315). If that is unstable, you know that your lowest tRFC is between 315 and 630, so you try the midpoint (`(315 + 630) / 2 = 472.5`, round down to 472). If that is stable, you know that your lowest tRFC is between 315 and 472, so you try the midpoint and so on.
    * [tRFC table by Reous](https://www.hardwareluxx.de/community/threads/hynix-8gbit-ddr4-cjr-c-die-h5an8g8ncjr-djr-2020-update.1206340/) (bottom of page).
-3. Here are my suggestions for the rest of the secondaries:
-
-   | Timing | Safe | Tight | Extreme |
-   | :----: | :--: | :---: | :-----: |
-   | tWTRS tWTRL | 4 12 | 4 10 | 4 8 |
-   | tCWL<sup>1</sup> | tCL | tCL - 1 | tCL - 2 |
-   
-   * On AMD, if GDM is enabled, tCWL gets rounded so drop tCWL by 2 or keep it even.
-   * On Intel, tWTRS/L should be left on auto and controlled with tWRRD_dg/sg, respectively. Dropping tWRRD_dg by 1 will drop tWTRS by 1. Likewise, with tWRRD_sg. Once they're as low as you can go, manually set tWTRS/L.
-   * On Intel, changing tCWL will affect tWRRD_dg/sg and thus tWTR_S/L. If you lower tCWL by 1, you need to lower tWRRD_dg/sg by 1 to keep the same tWTR values. Note that this might also affect tWR per the relationship described earlier.
-   * <sup>1</sup>Some motherboards don't play nice with odd tCWL. For example, I'm stable at 4000 15-19-19 tCWL 14, yet tCWL 15 doesn't even POST. Another user has had similar experiences. Some motherboards may seem fine but have issues with it at higher frequencies (Asus). Manually setting tCWL equal to tCL if tCL is even or one below if tCL is uneven should alleviate this (eg. if tCL = 18 try tCWL = 18 or 16, if tCL = 17 try tCWL = 16).
-   * The extreme preset is not the minimum floor in this case. tRTP can go as low as 5 (6 with Gear Down Mode on), while tWTRS/L can go as low as 1/6. Some boards are fine doing tCWL as low as tCL - 6. Keep in mind that this *will* increase the load on your memory controller.
-   * On AMD, tCWL can often be set to tCL - 2 but is known to require higher tWRRD.
    
 4. Now for the tertiaries:
     * If you're on AMD, refer to [this post](https://redd.it/ahs5a2).  
@@ -603,16 +604,13 @@ Some terminology:
       * For dual rank setups (see [notes on ranks](#a-note-on-logical-ranks-and-density)):
          * tRDRD_dr/dd can be lowered a step further to 5 for a large bump in read bandwidth.
          * tWRWR_sg 6 can cause write bandwidth regression over tWRWR_sg 7, despite being stable.
-    
-5. Drop tCL by 1 until it's unstable.
-   * On AMD, if GDM is enabled, tCL gets rounded so drop tCL by 2 or keep it even.   
  
-6. On Intel, drop tRCD and tRP by 1 until unstable.  
+5. On Intel, drop tRCD and tRP by 1 until unstable.  
 
    On AMD, drop tRCD by 1 until unstable. Repeat with tRP.
    * Note: More IMC voltage may be necessary to stabilize tighter tRCD.
    
-7. Set `tRAS = tRCD(RD) + tRTP`. Increase if unstable.
+6. Set `tRAS = tRCD(RD) + tRTP`. Increase if unstable.
    * This is the absolute minimum tRAS can be.  
    ![tRAS](Images/tras-datasheet-diagram.png)
    Here, tRAS is the time between ACT and PRE commands.
@@ -621,7 +619,7 @@ Some terminology:
      * Hence, tRAS = tRCD + tRTP.
 
 
-8. Set `tRC = tRP + tRAS`. Increase if unstable.
+7. Set `tRC = tRP + tRAS`. Increase if unstable.
    * tRC is only available on AMD and some Intel UEFIs.
    * On Intel UEFIs, tRC does seem to be affected by tRP and tRAS, even if it is hidden.
      * (1) [tRP 19 tRAS 42](Images/tRC-tRP19-tRAS42.png) - fully stable.
@@ -629,7 +627,7 @@ Some terminology:
      * (3) [tRP 25 tRAS 36](Images/tRC-tRP25-tRAS42.png) - stable up to 500 %.
      * In (1) and (3), tRC is 61 and isn't completely unstable. However, in (2) tRC is 55 and RAMTest finds an error instantly. This indicates that my RAM can do low tRAS, but not low tRC. Since tRC is hidden, I need higher tRAS to get higher tRC to ensure stability.
 
-9. Increase tREFI until it's unstable. The binary search method for finding the lowest tRFC can also be applied here.  
+8. Increase tREFI until it's unstable. The binary search method for finding the lowest tRFC can also be applied here.  
    Otherwise, here are my suggestions:
    | Timing | Safe | Tight | Extreme |
    | ------ | ---- | ----- | ------- |
@@ -637,7 +635,7 @@ Some terminology:
    * It's typically not good to increase tREFI too much as ambient temperature changes (e.g., winter to summer) can be enough to cause instability.
    * Keep in mind that running max tREFI can corrupt files, so tread with caution.
 
-10. Finally, onto command rate.
+9. Finally, onto command rate.
 
     AMD:
     * Getting GDM disabled and CR 1 stable can be pretty difficult, but it's worth a shot if you've come this far down the rabbit hole.
@@ -661,7 +659,7 @@ Some terminology:
     * If below DDR4-4400, try setting CR to 1T. If that doesn't work, leave CR on 2T.
     * On Asus Maximus boards, enabling Trace Centering can help greatly with pushing CR 1T to higher frequencies.
 
-11. You can also increase DRAM voltage to drop timings even more. Keep in mind the [voltage scaling characteristics of your ICs](#voltage-scaling) and the [maximum recommended daily voltage](#maximum-recommended-daily-voltage).
+10. You can also increase DRAM voltage to drop timings even more. Keep in mind the [voltage scaling characteristics of your ICs](#voltage-scaling) and the [maximum recommended daily voltage](#maximum-recommended-daily-voltage).
     
 ## Miscellaneous Tips
 * Usually, a 200 MHz increase in effective DRAM frequency negates the latency penalty of loosening tCL, tRCD, and tRP by 1 but has the benefit of higher bandwidth.  
