@@ -30,7 +30,7 @@
   - [Integrated Memory Controller (IMC)](#integrated-memory-controller-imc)
     - [Intel IMC](#intel-imc)
     - [AMD IMC](#amd-imc)
-- [Overclocking](#overclocking)#
+- [Overclocking](#overclocking)
   - [Miscellaneous Tips](#miscellaneous-tips)
     - [Intel](#intel)
     - [AMD](#amd)
