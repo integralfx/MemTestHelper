@@ -168,7 +168,7 @@ For example, the shorthand for Samsung 8 Gb B-die is S8B.
 
 ### Label on Sticks
 
-Sometimes Thaiphoon Burner won't tell you the IC, or it may misidentify the IC so it is recommended to use the label on the sticks to identify the IC instead. See [here](https://www.reddit.com/r/overclocking/comments/ig9d76/thaiphoon_burner_cluelessly_guessing_memory_ics/) for more info. Currently, only Corsair, G.Skill, and Kingston have a label to identify the IC.
+Using the label on the sticks is the most accurate way to identify the IC. However, currently only Corsair, G.Skill, and Kingston labels have been decoded.
 
 See [HardwareLuxx](https://www.hardwareluxx.de/community/threads/ryzen-ram-oc-m%C3%B6gliche-limitierungen.1216557/) for a neat infographic that summarises the following information.
 
