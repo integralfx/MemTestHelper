@@ -319,7 +319,7 @@ As far as I know, tCL, tRCD, tRP, and possibly tRFC can (or can not) see voltage
 ### Temperatures and Its Effect on Stability
 * Generally, the hotter your RAM is, the less stability it will have at higher frequencies and/or tighter timings.
 * The tRFC timings are very dependent on temperatures, as they are related to capacitor leakage, which is affected by temperature. Therefore, higher temperatures will need higher tRFC values. tRFC2 and tRFC4 are timings that activate when the operating temperature of DRAM hits 85 °C. Below these temperatures, these timings don't do anything.
-* B-Die is temperature sensitive, and its ideal range is ~30-40 °C. However, some may be able to withstand higher temperatures, so YMMV.
+* Generally speaking, RAM is temperature sensitive and its ideal range is ~30-40 °C. However, some ICs may be able to withstand higher temperatures, so YMMV.
 * M8E, on the other hand, doesn't seem to be as strongly temperature sensitive, demonstrated by [buildzoid](https://www.youtube.com/watch?v=OeHEtULQg3Q).
 * You might find that you're stable when running a memory test yet crash while gaming. This is because your CPU and/or GPU dump heat in the case, raising the RAM temperatures in the process. Thus, it is good to stress test your GPU while running a memory test to simulate stability while gaming.
  
