@@ -15,7 +15,6 @@
   - [Motherboard](#motherboard)
   - [Integrated Circuits (ICs)](#integrated-circuits-ics)
     - [Shorthand Notation](#shorthand-notation)
-    - [Thaiphoon Report](#thaiphoon-report)
     - [Label on Sticks](#label-on-sticks)
       - [Corsair Version Number](#corsair-version-number)
       - [G.Skill 042 Code](#gskill-042-code)
@@ -32,7 +31,6 @@
     - [AMD IMC](#amd-imc)
 - [Overclocking](#overclocking)
   - [Finding a Baseline](#finding-a-baseline)
-  - [Trying Higher Frequencies](#trying-higher-frequencies)
   - [Tightening Timings](#tightening-timings)
   - [Miscellaneous Tips](#miscellaneous-tips)
     - [Intel](#intel)
@@ -149,6 +147,7 @@ You should always test with various stress tests to ensure your overclock is sta
 * For motherboards with 4 DIMM slots, the number of sticks installed will affect your maximum memory frequency. 
   * On motherboards that use a daisy chain [memory trace layout](https://www.youtube.com/watch?v=3vQwGGbW1AE), 2 sticks are preferred. Using 4 sticks may significantly impact your maximum memory frequency.
   * On the other hand, motherboards that use T-topology will overclock the best with 4 sticks. Using 2 sticks won't impact your maximum memory frequency as much as using 4 sticks on a daisy chain motherboard (?).
+  * There are some T-topology motherboards that overclock as well or better with just one DIMM per channel.
   * Most vendors don't advertise their memory trace layout, but you can make an educated guess based on the QVL. For example, the Z390 Aorus Master uses a T-Topology layout as its highest validated frequency is with 4 DIMMs. However, if the highest validated frequency were done with 2 DIMMs, it *probably* uses a daisy chain layout.
   * According to Buildzoid, Daisy Chain vs. T-Topology only matters above DDR4-4000. Following Buildzoid's logic, if you're on Ryzen 3000 or 5000, this doesn't matter as DDR4-3800 is the typical max memory frequency when running MCLK:FCLK 1:1.
 * Lower end motherboards may not overclock as well, possibly due to the lower PCB quality and the number of layers (?).
@@ -167,28 +166,14 @@ XYZ where:
 
 For example, the shorthand for Samsung 8 Gb B-die is S8B.
 
-### Thaiphoon Report
-* Note: Thaiphoon is known to guess ICs, so it shouldn't be fully trusted. It's highly recommended to check the label on the sticks if possible.
-  * See [here](https://www.reddit.com/r/overclocking/comments/ig9d76/thaiphoon_burner_cluelessly_guessing_memory_ics/) for more info.
-* Single rank 8 Gb Hynix CJR (H8C).
-
-   ![](Images/thaiphoon-h8c.png)
-
-* Single rank 8 Gb Micron Revision E (M8E) (source: Coleh#4297).
-
-   ![](Images/thaiphoon-m8e.png)
-
-  * [SpecTek](https://www.micron.com/support/spectek-support) ICs are lower binned Micron ICs.
-  * Esoteric note: Many people have started calling this Micron E-die or E-die. The former is fine, but the latter can cause confusion as letter-die is typically used for Samsung ICs, i.e., Samsung 4 Gb E-die. Samsung is implied when you say E-die, but as people are calling Micron Rev. E E-die, it'd probably be a good idea to prefix the manufacturer.
-* Dual rank Samsung 8 Gb B-die (S8B).
-
-   ![](Images/thaiphoon-s8b-dr.png)
-
 ### Label on Sticks
 
-Sometimes the Thaiphoon report won't tell you the IC, or it may misidentify the IC. To confirm/deny this, you can check the label on the sticks. Currently, only Corsair, G.Skill, and Kingston have a label to identify the IC.
+Using the label on the sticks is the most accurate way to identify the IC. However, currently only Corsair, G.Skill, and Kingston labels have been decoded.
 
 See [HardwareLuxx](https://www.hardwareluxx.de/community/threads/ryzen-ram-oc-m%C3%B6gliche-limitierungen.1216557/) for a neat infographic that summarises the following information.
+
+* [SpecTek](https://www.micron.com/support/spectek-support) ICs are lower binned Micron ICs.
+* Esoteric note: Many people have started calling this Micron E-die or E-die. The former is fine, but the latter can cause confusion as letter-die is typically used for Samsung ICs, i.e., Samsung 4 Gb E-die. Samsung is implied when you say E-die, but as people are calling Micron Rev. E E-die, it'd probably be a good idea to prefix the manufacturer.
 
 #### Corsair Version Number
 * Corsair has a 3 digit version number on the sticks' label, indicating what ICs are on the stick.
@@ -319,7 +304,7 @@ As far as I know, tCL, tRCD, tRP, and possibly tRFC can (or can not) see voltage
 ### Temperatures and Its Effect on Stability
 * Generally, the hotter your RAM is, the less stability it will have at higher frequencies and/or tighter timings.
 * The tRFC timings are very dependent on temperatures, as they are related to capacitor leakage, which is affected by temperature. Therefore, higher temperatures will need higher tRFC values. tRFC2 and tRFC4 are timings that activate when the operating temperature of DRAM hits 85 °C. Below these temperatures, these timings don't do anything.
-* B-Die is temperature sensitive, and its ideal range is ~30-40 °C. However, some may be able to withstand higher temperatures, so YMMV.
+* Generally speaking, RAM is temperature sensitive and its ideal range is ~30-40 °C. However, some ICs may be able to withstand higher temperatures, so YMMV.
 * M8E, on the other hand, doesn't seem to be as strongly temperature sensitive, demonstrated by [buildzoid](https://www.youtube.com/watch?v=OeHEtULQg3Q).
 * You might find that you're stable when running a memory test yet crash while gaming. This is because your CPU and/or GPU dump heat in the case, raising the RAM temperatures in the process. Thus, it is good to stress test your GPU while running a memory test to simulate stability while gaming.
  
@@ -360,7 +345,7 @@ Some terminology:
 * MCLK: Real memory clock (half of the effective RAM speed). For example, for DDR4-3200, the MCLK is 1600 MHz.
 * FCLK: Infinity Fabric clock.
 * UCLK: Unified memory controller clock. Half of MCLK when MCLK and FCLK are not equal (desynchronized, 2:1 mode).
-* On Zen and Zen+, MCLK == FCLK == UCLK. However, on Zen2 and Zen3, you can specify FCLK. If MCLK is 1600 MHz (DDR4-3200) and you set FCLK to 1600 MHz, UCLK will also be 1600 MHz unless you set MCLK:UCLK ratio to 2:1 (also known as UCLK DIV mode, etc.). However, if you set FCLK to 1800 MHz, UCLK will run at 800 MHz (desynchronized).
+* On Zen and Zen+, MCLK == FCLK == UCLK. However, on Zen2 and Zen3, you can specify FCLK. If MCLK is 1600 MHz (DDR4-3200) and you set FCLK to 1600 MHz, UCLK will also be 1600 MHz unless you set MCLK:UCLK ratio to 2:1 (also known as UCLK DIV mode, etc.). However, if you set FCLK to 1800 MHz or higher, UCLK will run at 800 MHz (desynchronized).
 
 * Ryzen 1000 and 2000's IMC can be finicky when overclocking and can't hit as high frequencies as Intel can. On the other hand, Ryzen 3000 and 5000's IMCs are much better and are more or less on par with Intel's newer Skylake-based CPUs, i.e., 9th and 10th gen.
 * SOC voltage is the voltage to the IMC, and like with Intel, it's not recommended to leave it on auto. Typical ranges for this value range around 1.00V and 1.125V. Higher values are generally acceptable and may be necessary for stabilizing higher capacity memory and may aid in attaining FCLK stability.
@@ -420,6 +405,8 @@ Some terminology:
   | 1000 | 65 - 75 |
   | 2000 | 60 - 70 |
   | 3000 | 65 - 75 (1:1 MCLK:FCLK) <br/> 75+ (2:1 MCLK:FCLK) |
+  | 4000/5000G | 55 - 65 |
+  | 5000 | 60 - 70 (1:1 MCLK:FCLK) <br/> 70+ (desynchronised FCLK) |
 * On Ryzen 3000 and 5000, high enough FCLK can overcome the penalties from desynchronising MCLK and FCLK, provided that you can lock your UCLK to MCLK.
   
   ![Chart](Images/optimal-fclk-vs-mclk.png) 
@@ -435,11 +422,19 @@ Some terminology:
 
 ## Finding a Baseline
 1. * Ensure your sticks are in the recommended DIMM slots (usually 2 and 4).
+
    * Make sure your CPU overclock is disabled when tuning RAM, as an unstable CPU can lead to memory errors. Likewise, when pushing high frequency with tight timings, your CPU may become unstable and may need to be re-done.
+
    * Make sure your UEFI/BIOS is up to date.
 
-2. On Intel, start with 1.15 V VCCSA and VCCIO.  
+2. On Intel, set command rate (CR) to 2T if it isn't already and set tCCDL to 8
+
+   On AMD, set Gear Down Mode to Enabled if it isn't already.
+
+4. On Intel, start with 1.2 V VCCSA and 1.15 V VCCIO. For ADL, VCCIO does not exist. Note that if you have an Alder Lake non-K SKU, VCCSA will be locked and your overclock potential will be limited.
+
    On AMD, start with 1.10 V SOC, 0.95 V VDDP, 0.95 V VDDG CCD, and 1.05 V VDDG IOD.
+   * If you are unable to boot or encounter errors while raising frequency or tightening timings, then these voltages may need to be increased. Refer to [Integrated Memory Controller (IMC)](#integrated-memory-controller-imc) for maximum recommended voltages and more information. Be careful not to raise them too much as negative scaling can occur. VCCSA/VCCIO or SOC voltage are the ones likely required to be raised, they can be incremented in steps of 25-50 mV.
    * SOC voltage might be named differently depending on the manufacturer.
      * Asrock: CPU VDDCR_SOC Voltage. If you can't find that, you can use SOC Overclock VID hidden in the AMD CBS menu.
        * [VID values](https://www.reddit.com/r/Amd/comments/842ehb/asrock_ab350_pro4_guide_bios_overclocking_raven/).
@@ -447,17 +442,30 @@ Some terminology:
      * Gigabyte: (Dynamic<sup>1</sup>) Vcore SOC.
        * <sup>1</sup>Dynamic Vcore SOC is found on certain Gigabyte motherboards and is an offset voltage. Therefore, the base voltage can change automatically when increasing DRAM frequency. For example, +0.100 V at DDR4-3000 might result in 1.10 V actual, but +0.100V at DDR4-3400 might result in 1.20v actual.
      * MSI: CPU NB/SOC.
-3. Set DRAM voltage to 1.40 V. If you're using ICs that roll over above 1.35 V, set 1.35 V.
+6. To find what voltage to use for your IC, refer to the [maximum recommended daily voltage section](#maximum-recommended-daily-voltage).
    * "Roll over" means that the IC becomes more unstable as you increase the voltage, sometimes to the point of not even POSTing.
    * ICs that are known to roll over above 1.35 V include but are not limited to: 8 Gb Samsung C-die and older Micron/SpecTek ICs (before M8E).
-   * To find what voltage to use for your IC, refer to the [maximum recommended daily voltage section](#maximum-recommended-daily-voltage).
 
-4. Set primary timings to 16-20-20-40 (tCL-tRCD-tRP-tRAS) and tCWL to 16.
-   * Most ICs need loose tRCD and/or tRP, so I recommend 20.
+7. Set loose primary timings. See the table below.
+
+    |Frequency|tCL|tRCD|tRP|tRAS|tCWL|
+    |---|---|---|---|---|---|
+    |<=3200|16|20|20|40|16|
+    |3201-3600|18|22|22|44|18|
+    |3601-4000|20|24|24|48|20|
+    |4001-4400|22|26|26|52|22|
+    |4400+|24|28|28|56|24|
+
+   * Some ICs may not boot with very loose primary timings to begin with. It is recommended to loosen timings as the frequency is increases with the suggestions in the table above.
+   * Note that some boards have auto rules that can stifle your progress, an example being tCWL = tCL - 1, which can lead to uneven values of tCWL. Reading the [Miscellaneous Tips](#miscellaneous-tips) might give you insight into your platform and your motherboard's functionality.
    * See [this post](https://redd.it/ahs5a2) for more information on these timings.
-5. Increase the DRAM frequency until it doesn't boot into Windows anymore. Keep in mind the expectations detailed above.
-   * If you're on Intel, a quick way of knowing if you're unstable is to examine the RTLs and IOLs. Each group of RTLs and IOLs correspond to a channel. Within each group, 2 values correspond to each DIMM.  
-   Asrock Timing Configurator:
+  
+8. Increase the DRAM frequency until it doesn't boot into Windows anymore. Keep in mind the expectations detailed above including the timings for each frequency range.
+   * Ryzen 3000/5000:
+     * Desynchronising MCLK and FCLK can incur a massive latency penalty, so you're better off tightening timings to keep your MCLK:FCLK 1:1. See [AMD - AM4](#amd-imc) for more information.
+   * If you're on Intel, a quick way of knowing if you're unstable is to examine the RTLs and IOLs. Each group of RTLs and IOLs correspond to a channel. Within each group, 2 values correspond to each DIMM.
+
+   RTLs and IOLs in Asrock Timing Configurator:
    
    ![](Images/intel-rtl-iol-difference-stable.png)
 
@@ -466,7 +474,7 @@ Some terminology:
    In my case, RTLs are 53 and 55, which are exactly 2 apart, and IOLs are both 7.
    Note that having RTLs and IOLs within those ranges doesn't mean you're stable.
    * If you're on Ryzen 3000 or 5000, ensure that the Infinity Fabric frequency (FCLK) is set to half your effective DRAM frequency. Confirm this in ZenTimings by ensuring that FCLK matches UCLK and MCLK.
-6. Run a memory tester of your choice.
+9. Run a memory tester of your choice.
    * Windows will use ~2000 MB, so make sure to account for that when entering the amount of RAM to test if the test has manual input. For example, I have 16 GB of RAM and usually test 14000 MB.
    * Minimum recommended coverage/runtime:
      * **For AMD, run Prime95 Large FFTs and OCCT VRAM with max utilization simultaneously to stress the FCLK and ensure FCLK stability. This should be run after any frequency/FCLK change.**
@@ -478,28 +486,10 @@ Some terminology:
        * Runtime varies with density. For 16 GB RAM, it usually takes between 1.5-2 hours. If you run 32 GB RAM, you can set the 12th row of the config (Time (%)) to half, and you'll get roughly the same runtime as 16 GB.
      * OCCT Memory: 30 minutes each for SSE and AVX.
      * **You can run more tests like other TM5 configs to ensure stability. It is recommended to run various tests for maximum error coverage.**
-7. If you crash/freeze/BSOD or get an error, drop the DRAM frequency by a notch and test again.
-8. Save your overclock profile in your UEFI.
-9.  From this point on, you can either: try to go for a higher frequency or work on tightening the timings.
+10. If you crash/freeze/BSOD or get an error, drop the DRAM frequency by a notch and test again.
+11. Save your overclock profile in your UEFI.
+12.  From this point on, you can either: try to go for a higher frequency or work on tightening the timings.
    * Keep in mind the expectations detailed above. If you're at the limit of your ICs and/or IMC, it's best to tighten the timings.
-   
-## Trying Higher Frequencies
-* This section is applicable if you're not at the limit of your motherboard, ICs, and IMC.  
-  This section is not for those having trouble stabilizing frequencies within the expected range.
-     * Note that some boards have auto rules that can stifle your progress, an example being tCWL = tCL - 1, which can lead to uneven values of tCWL. Reading the [Miscellaneous Tips](#miscellaneous-tips) might give you insight into your platform and your motherboard's functionality.
-1. Intel:
-   * Increase VCCSA and VCCIO to 1.25 V. For ADL, VCCIO does not exist. Note that if you have an Alder Lake non-K SKU, VCCSA will be locked and your overclock potential will be limited. 
-   * Set command rate (CR) to 2T if it isn't already.
-   * Set tCCDL to 8. Asus UEFIs don't expose this timing.
-   
-   Ryzen 3000/5000:
-   * Desynchronising MCLK and FCLK can incur a massive latency penalty, so you're better off tightening timings to keep your MCLK:FCLK 1:1. See [AMD - AM4](#amd-imc) for more information.
-   * Otherwise, set FCLK to whatever is stable (1600 MHz if you're unsure).
-2. Loosen primary timings to 18-22-22-42 and set tCWL to 18.
-3. Increase DRAM voltage to 1.45 V if it is safe for your IC. See [Maximum Recommended Daily Voltage](#maximum-recommended-daily-voltage).
-4. Increase SOC to 1.125 V, VDDP to 1.00 V, and VDDG CCD to 1.00 V.
-5. Follow steps 5-7 from [Finding a Baseline](#finding-a-baseline).
-6. Proceed to [Tightening Timings](#tightening-timings).
    
 ## Tightening Timings
 * Make sure to run a memory test and benchmark after each change to ensure performance is improving.
