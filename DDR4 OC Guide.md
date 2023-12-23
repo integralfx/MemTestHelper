@@ -427,7 +427,7 @@ Some terminology:
 
    * Make sure your UEFI/BIOS is up to date.
   
-2. Disable PowerDown in UEFI. This also eliminates the need to tune related timings such as tCKE and tXP.
+2. Disable DRAM PowerDown Mode in UEFI. This also eliminates the need to tune related timings such as tCKE and tXP.
 
 3. On Intel, set command rate (CR) to 2T if it isn't already and set tCCDL to 8
 
