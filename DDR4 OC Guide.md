@@ -448,13 +448,13 @@ Some terminology:
 
 7. Set loose primary timings. See the table below.
 
-    |Frequency|tCL|tRCD|tRP|tRAS|
-    |---|---|---|---|---|
-    |<=3200|16|20|20|40|
-    |3201-3600|18|22|22|44|
-    |3601-4000|20|24|24|48|
-    |4001-4400|22|26|26|52|
-    |4400+|24|28|28|56|
+   |Frequency|tCL|tRCD|tRP|tRAS|
+   |---|---|---|---|---|
+   |<=3200|16|20|20|40|
+   |3201-3600|18|22|22|44|
+   |3601-4000|20|24|24|48|
+   |4001-4400|22|26|26|52|
+   |4400+|24|28|28|56|
 
    Source: Eden from [Overclocking Discord](discord.gg/overclock)
 
@@ -463,7 +463,7 @@ Some terminology:
      * tCWL higher than 18 or 20 may not work, though it is not necessary to set such high values of tCWL.
    * See [this post](https://redd.it/ahs5a2) for more information on these timings.
   
-9. Increase the DRAM frequency until it doesn't boot into Windows anymore. Keep in mind the expectations detailed above including the timings for each frequency range.
+8. Increase the DRAM frequency until it doesn't boot into Windows anymore. Keep in mind the expectations detailed above including the timings for each frequency range.
    * Ryzen 3000/5000:
      * Desynchronising MCLK and FCLK can incur a massive latency penalty, so you're better off tightening timings to keep your MCLK:FCLK 1:1. See [AMD - AM4](#amd-imc) for more information.
    * If you're on Intel, a quick way of knowing if you're unstable is to examine the RTLs and IOLs. Each group of RTLs and IOLs correspond to a channel. Within each group, 2 values correspond to each DIMM.
@@ -477,7 +477,7 @@ Some terminology:
    In my case, RTLs are 53 and 55, which are exactly 2 apart, and IOLs are both 7.
    Note that having RTLs and IOLs within those ranges doesn't mean you're stable.
    * If you're on Ryzen 3000 or 5000, ensure that the Infinity Fabric frequency (FCLK) is set to half your effective DRAM frequency. Confirm this in ZenTimings by ensuring that FCLK matches UCLK and MCLK.
-10. Run a memory tester of your choice.
+9. Run a memory tester of your choice.
    * Windows will use ~2000 MB, so make sure to account for that when entering the amount of RAM to test if the test has manual input. For example, I have 16 GB of RAM and usually test 14000 MB.
    * Minimum recommended coverage/runtime:
      * **For AMD, run Prime95 Large FFTs and OCCT VRAM with max utilization simultaneously to stress the FCLK and ensure FCLK stability. This should be run after any frequency/FCLK change.**
@@ -489,9 +489,9 @@ Some terminology:
        * Runtime varies with density. For 16 GB RAM, it usually takes between 1.5-2 hours. If you run 32 GB RAM, you can set the 12th row of the config (Time (%)) to half, and you'll get roughly the same runtime as 16 GB.
      * OCCT Memory: 30 minutes each for SSE and AVX.
      * **You can run more tests like other TM5 configs to ensure stability. It is recommended to run various tests for maximum error coverage.**
-11. If you crash/freeze/BSOD or get an error, drop the DRAM frequency by a notch and test again.
-12. Save your overclock profile in your UEFI.
-13.  From this point on, you can either: try to go for a higher frequency or work on tightening the timings.
+10. If you crash/freeze/BSOD or get an error, drop the DRAM frequency by a notch and test again.
+11. Save your overclock profile in your UEFI.
+12.  From this point on, you can either: try to go for a higher frequency or work on tightening the timings.
    * Keep in mind the expectations detailed above. If you're at the limit of your ICs and/or IMC, it's best to tighten the timings.
    
 ## Tightening Timings
