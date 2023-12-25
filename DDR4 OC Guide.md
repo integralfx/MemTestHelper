@@ -448,13 +448,13 @@ Some terminology:
 
 7. Set loose primary timings. See the table below.
 
-    |Frequency|tCL|tRCD|tRP|tRAS|tCWL|
-    |---|---|---|---|---|---|
-    |<=3200|16|20|20|40|16|
-    |3201-3600|18|22|22|44|18|
-    |3601-4000|20|24|24|48|20|
-    |4001-4400|22|26|26|52|22|
-    |4400+|24|28|28|56|24|
+    |Frequency|tCL|tRCD|tRP|tRAS|
+    |---|---|---|---|---|
+    |<=3200|16|20|20|40|
+    |3201-3600|18|22|22|44|
+    |3601-4000|20|24|24|48|
+    |4001-4400|22|26|26|52|
+    |4400+|24|28|28|56|
 
    * Some ICs may not boot with very loose primary timings to begin with. It is recommended to loosen timings as the frequency is increases with the suggestions in the table above.
    * Note that some boards have auto rules that can stifle your progress, an example being tCWL = tCL - 1, which can lead to uneven values of tCWL. Reading the [Miscellaneous Tips](#miscellaneous-tips) might give you insight into your platform and your motherboard's functionality.
