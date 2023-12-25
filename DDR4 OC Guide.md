@@ -446,7 +446,7 @@ Some terminology:
    * "Roll over" means that the IC becomes more unstable as you increase the voltage, sometimes to the point of not even POSTing.
    * ICs that are known to roll over above 1.35 V include but are not limited to: 8 Gb Samsung C-die and older Micron/SpecTek ICs (before M8E).
 
-7. Set loose primary timings. See the table below.
+7. Set loose primary timings. See recommendations from Eden in the table below.
 
     |Frequency|tCL|tRCD|tRP|tRAS|tCWL|
     |---|---|---|---|---|---|
