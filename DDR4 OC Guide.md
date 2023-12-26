@@ -483,16 +483,19 @@ This seems to line up with [The Stilt's](https://www.overclock.net/forum/10-amd-
 
 7. Set loose primary timings. See the table below.
 
-    |Frequency|tCL|tRCD|tRP|tRAS|tCWL|
-    |---|---|---|---|---|---|
-    |<=3200|16|20|20|40|16|
-    |3201-3600|18|22|22|44|18|
-    |3601-4000|20|24|24|48|20|
-    |4001-4400|22|26|26|52|22|
-    |4400+|24|28|28|56|24|
+   |Frequency|tCL|tRCD|tRP|tRAS|
+   |---|---|---|---|---|
+   |<=3200|16|20|20|40|
+   |3201-3600|18|22|22|44|
+   |3601-4000|20|24|24|48|
+   |4001-4400|22|26|26|52|
+   |4400+|24|28|28|56|
+
+   Source: Eden from [Overclocking Discord](discord.gg/overclock)
 
    * Some ICs may not boot with very loose primary timings to begin with. It is recommended to loosen timings as the frequency is increases with the suggestions in the table above.
-   * Note that some boards have auto rules that can stifle your progress, an example being tCWL = tCL - 1, which can lead to uneven values of tCWL. Reading the [Miscellaneous Tips](#miscellaneous-tips) might give you insight into your platform and your motherboard's functionality.
+   * Some boards have auto rules that can cause issues, such as tCWL = tCL - 1, which can lead to tCWL being an odd number. If so, try setting tCWL to 1 value lower.
+     * tCWL higher than 18 or 20 may not work, though it is not necessary to set such high values of tCWL.
    * See [this post](https://redd.it/ahs5a2) for more information on these timings.
   
 8. Increase the DRAM frequency until it doesn't boot into Windows anymore. Keep in mind the expectations detailed above including the timings for each frequency range.
