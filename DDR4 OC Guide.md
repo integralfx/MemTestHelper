@@ -517,21 +517,14 @@ Some terminology:
         It is possible to hit half of the theoretical maximum write bandwidth. See [here](https://redd.it/cgc9bh).
       * Percentage of theoretically max bandwidth is inversely proportional to most memory timings. Generally speaking, as RAM timings are tightened, this value will increase.
 
-1. I would recommend tightening some of the secondary timings first, as they can speed up memory testing.  
-   My suggestions:
+1. I would recommend tightening some of the secondary timings first, as they can speed up memory testing. First is tRRDS, tRRDL and tFAW.
    
    | Timing | Safe | Tight | Extreme |
    | ------ | ---- | ----- | ------- |
    | tRRDS tRRDL tFAW | 6 6 24 | 4 6 16 | 4 4 16 |
-   | tWR tRTP<sup>1</sup> | 20 10 | 16 8 | 12 6 |
 
-   * On AMD, if GDM is enabled, tWR and tRTP get rounded so drop them by 2 or keep them even.   
    * The minimum value for which lowering tFAW will affect the performance of RAM is `tRRDS * 4` or `tRRDL * 4`, whichever is lower.
    * You don't have to run all of the timings at one preset. For example, you might only be able to run tRRDS tRRDL tFAW at the tight preset, but you may be able to run tWR at the extreme preset.
-   * On some Intel motherboards, tWR in the UEFI does nothing and instead needs to be controlled through tWRPRE (sometimes tWRPDEN). Dropping tWRPRE by 1 will drop tWR by 1, following the rule tWR = tWRPRE - tCWL - 4.
-   * <sup>1</sup>tWR is 2*tRTP as per the Micron DDR4 datasheet. This relationship is also stated in the JEDEC DDR4 datasheet. 
-   ![tWR tRTP relationship](Images/tWR-tRTP-relationship.png)  
-   Thanks to [junkmann](https://github.com/integralfx/MemTestHelper/issues/55) for pointing this out.
      
 2. Next is tRFC. Default for 8 Gb ICs is 350 **ns** (note the units).
    * Note: Tightening tRFC too much can result in system freezes/lock-ups.
@@ -559,9 +552,16 @@ Some terminology:
    | Timing | Safe | Tight | Extreme |
    | :----: | :--: | :---: | :-----: |
    | tCWL<sup>1</sup> | tCL | tCL - 1 | tCL - 2 |
+   | tWR tRTP<sup>1</sup> | 20 10 | 16 8 | 12 6 |
    | tWTRS tWTRL | 4 12 | 4 10 | 4 8 |
    
-   * On AMD, if GDM is enabled, tCWL gets rounded so drop tCWL by 2 or keep it even.
+   * On AMD, if GDM is enabled, tCWL, tWR and tRTP get rounded so drop them by 2 or keep them even.
+
+   * On some Intel motherboards, tWR in the UEFI does nothing and instead needs to be controlled through tWRPRE (sometimes tWRPDEN). Dropping tWRPRE by 1 will drop tWR by 1, following the rule tWR = tWRPRE - tCWL - 4.
+   * <sup>1</sup>tWR is 2*tRTP as per the Micron DDR4 datasheet. This relationship is also stated in the JEDEC DDR4 datasheet. 
+   ![tWR tRTP relationship](Images/tWR-tRTP-relationship.png)  
+   Thanks to [junkmann](https://github.com/integralfx/MemTestHelper/issues/55) for pointing this out.
+
    * On Intel, tWTRS/L should be left on auto and controlled with tWRRD_dg/sg, respectively. Dropping tWRRD_dg by 1 will drop tWTRS by 1. Likewise, with tWRRD_sg. Once they're as low as you can go, manually set tWTRS/L.
    * On Intel, changing tCWL will affect tWRRD_dg/sg and thus tWTR_S/L. If you lower tCWL by 1, you need to lower tWRRD_dg/sg by 1 to keep the same tWTR values. Note that this might also affect tWR per the relationship described earlier.
    * <sup>1</sup>Some motherboards don't play nice with odd tCWL. For example, I'm stable at 4000 15-19-19 tCWL 14, yet tCWL 15 doesn't even POST. Another user has had similar experiences. Some motherboards may seem fine but have issues with it at higher frequencies (Asus). Manually setting tCWL equal to tCL if tCL is even or one below if tCL is uneven should alleviate this (eg. if tCL = 18 try tCWL = 18 or 16, if tCL = 17 try tCWL = 16).
