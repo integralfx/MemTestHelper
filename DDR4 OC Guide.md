@@ -558,8 +558,8 @@ Some terminology:
 
    | Timing | Safe | Tight | Extreme |
    | :----: | :--: | :---: | :-----: |
-   | tWTRS tWTRL | 4 12 | 4 10 | 4 8 |
    | tCWL<sup>1</sup> | tCL | tCL - 1 | tCL - 2 |
+   | tWTRS tWTRL | 4 12 | 4 10 | 4 8 |
    
    * On AMD, if GDM is enabled, tCWL gets rounded so drop tCWL by 2 or keep it even.
    * On Intel, tWTRS/L should be left on auto and controlled with tWRRD_dg/sg, respectively. Dropping tWRRD_dg by 1 will drop tWTRS by 1. Likewise, with tWRRD_sg. Once they're as low as you can go, manually set tWTRS/L.
