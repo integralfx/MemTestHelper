@@ -461,8 +461,10 @@ This seems to line up with [The Stilt's](https://www.overclock.net/forum/10-amd-
    * Make sure your CPU overclock is disabled when tuning RAM, as an unstable CPU can lead to memory errors. Likewise, when pushing high frequency with tight timings, your CPU may become unstable and may need to be re-done.
 
    * Make sure your UEFI/BIOS is up to date.
+  
+2. Disable DRAM PowerDown Mode in UEFI. This also eliminates the need to tune related timings such as tCKE and tXP.
 
-2. On Intel, set command rate (CR) to 2T if it isn't already and set tCCDL to 8
+3. On Intel, set command rate (CR) to 2T if it isn't already and set tCCDL to 8
 
    On AMD, set Gear Down Mode to Enabled if it isn't already.
 
@@ -477,11 +479,11 @@ This seems to line up with [The Stilt's](https://www.overclock.net/forum/10-amd-
      * Gigabyte: (Dynamic<sup>1</sup>) Vcore SOC.
        * <sup>1</sup>Dynamic Vcore SOC is found on certain Gigabyte motherboards and is an offset voltage. Therefore, the base voltage can change automatically when increasing DRAM frequency. For example, +0.100 V at DDR4-3000 might result in 1.10 V actual, but +0.100V at DDR4-3400 might result in 1.20v actual.
      * MSI: CPU NB/SOC.
-6. To find what voltage to use for your IC, refer to the [maximum recommended daily voltage section](#maximum-recommended-daily-voltage).
+5. To find what voltage to use for your IC, refer to the [maximum recommended daily voltage section](#maximum-recommended-daily-voltage).
    * "Roll over" means that the IC becomes more unstable as you increase the voltage, sometimes to the point of not even POSTing.
    * ICs that are known to roll over above 1.35 V include but are not limited to: 8 Gb Samsung C-die and older Micron/SpecTek ICs (before M8E).
 
-7. Set loose primary timings. See the table below.
+6. Set loose primary timings. See the table below.
 
    |Frequency|tCL|tRCD|tRP|tRAS|
    |---|---|---|---|---|
@@ -498,7 +500,7 @@ This seems to line up with [The Stilt's](https://www.overclock.net/forum/10-amd-
      * tCWL higher than 18 or 20 may not work, though it is not necessary to set such high values of tCWL.
    * See [this post](https://redd.it/ahs5a2) for more information on these timings.
   
-8. Increase the DRAM frequency until it doesn't boot into Windows anymore. Keep in mind the expectations detailed above including the timings for each frequency range.
+7. Increase the DRAM frequency until it doesn't boot into Windows anymore. Keep in mind the expectations detailed above including the timings for each frequency range.
    * Ryzen 3000/5000:
      * Desynchronising MCLK and FCLK can incur a massive latency penalty, so you're better off tightening timings to keep your MCLK:FCLK 1:1. See [AMD - AM4](#amd-imc) for more information.
    * If you're on Intel, a quick way of knowing if you're unstable is to examine the RTLs and IOLs. Each group of RTLs and IOLs correspond to a channel. Within each group, 2 values correspond to each DIMM.
@@ -512,7 +514,7 @@ This seems to line up with [The Stilt's](https://www.overclock.net/forum/10-amd-
    In my case, RTLs are 53 and 55, which are exactly 2 apart, and IOLs are both 7.
    Note that having RTLs and IOLs within those ranges doesn't mean you're stable.
    * If you're on Ryzen 3000 or 5000, ensure that the Infinity Fabric frequency (FCLK) is set to half your effective DRAM frequency. Confirm this in ZenTimings by ensuring that FCLK matches UCLK and MCLK.
-9. Run a memory tester of your choice.
+8. Run a memory tester of your choice.
    * Windows will use ~2000 MB, so make sure to account for that when entering the amount of RAM to test if the test has manual input. For example, I have 16 GB of RAM and usually test 14000 MB.
    * Minimum recommended coverage/runtime:
      * **For AMD, run Prime95 Large FFTs and OCCT VRAM with max utilization simultaneously to stress the FCLK and ensure FCLK stability. This should be run after any frequency/FCLK change.**
@@ -524,9 +526,9 @@ This seems to line up with [The Stilt's](https://www.overclock.net/forum/10-amd-
        * Runtime varies with density. For 16 GB RAM, it usually takes between 1.5-2 hours. If you run 32 GB RAM, you can set the 12th row of the config (Time (%)) to half, and you'll get roughly the same runtime as 16 GB.
      * OCCT Memory: 30 minutes each for SSE and AVX.
      * **You can run more tests like other TM5 configs to ensure stability. It is recommended to run various tests for maximum error coverage.**
-10. If you crash/freeze/BSOD or get an error, drop the DRAM frequency by a notch and test again.
-11. Save your overclock profile in your UEFI.
-12.  From this point on, you can either: try to go for a higher frequency or work on tightening the timings.
+9. If you crash/freeze/BSOD or get an error, drop the DRAM frequency by a notch and test again.
+10. Save your overclock profile in your UEFI.
+11.  From this point on, you can either: try to go for a higher frequency or work on tightening the timings.
    * Keep in mind the expectations detailed above. If you're at the limit of your ICs and/or IMC, it's best to tighten the timings.
    
 ## Tightening Timings
