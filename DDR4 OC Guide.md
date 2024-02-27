@@ -30,11 +30,11 @@
     - [Intel IMC](#intel-imc)
     - [AMD IMC](#amd-imc)
 - [Overclocking](#overclocking)
-  - [Finding a Baseline](#finding-a-baseline)
-  - [Tightening Timings](#tightening-timings)
   - [Miscellaneous Tips](#miscellaneous-tips)
     - [Intel](#intel)
     - [AMD](#amd)
+  - [Finding a Baseline](#finding-a-baseline)
+  - [Tightening Timings](#tightening-timings)
 - [Useful Links](#useful-links)
   - [Benchmarks](#benchmarks-1)
   - [Information](#information)
@@ -420,14 +420,51 @@ Some terminology:
   * Increase DRAM frequency until unstable.
   * Tighten (lower) timings.
 
+## Miscellaneous Tips
+* Usually, a 200 MHz increase in effective DRAM frequency negates the latency penalty of loosening tCL, tRCD, and tRP by 1 but has the benefit of higher bandwidth.  
+  For example, DDR4-3000 15-17-17 has the same latency as DDR4-3200 16-18-18, but DDR4-3200 16-18-18 has higher bandwidth. This is typically after initial tuning has been completed and not at XMP.
+* Generally speaking, frequency should be prioritized over tighter timings, as long as performance is not negatively impacted by FCLK sync, Command Rate, or Memory Gear mode.
+* Secondary and tertiary timings (except for tRFC) don't change much, if at all, across the frequency range. If you have stable secondary and tertiary timings at DDR4-3200, you could probably run them at DDR4-3600, even DDR4-4000, provided your ICs, IMC, and motherboard are capable.
+
+### Intel
+* Loosening tCCDL to 8 may help with stability, especially above DDR4-3600. This does not bring a significant latency penalty but may considerably affect memory read and write bandwidth.
+* Higher cache (aka uncore, ring) frequency can increase bandwidth and reduce latency.
+* For Asus Maximus boards:
+   * Play around with the Maximus Tweak Modes; sometimes, one will post where the other does not.
+   * You can enable Round Trip Latency under Memory Training Algorithms to let the board attempt to train RTL and IOL values.
+   * If you can't boot, you can try tweaking the skew control values.  
+     More info [here](https://rog.asus.com/forum/showthread.php?47670-Maximus-7-Gene-The-road-to-overclocking-memory-without-increasing-voltage) (images broken).
+* tXP (and subsequently PPD) has a major impact on AIDA64 memory latency.
+* RTT Wr, Park, and Nom can have a massive impact on overclocking. The ideal values may depend on your board, memory IC and density. The "optimal" values will let you clock higher with less memory controller voltage. Some boards reveal the auto values (MSI) while others don't (Asus). Finding the perfect combination is time-consuming but very helpful for advanced tuning.
+* On some motherboards, enabling XMP can allow for better overclocking.
+  * Thanks to Bored and Muren for finding and verifying this on their Asrock motherboards.
+
+### AMD
+* Try playing around with ProcODT if you can't boot. This setting determines the processor's on-die termination impedance. According to [Micron](https://www.micron.com/support/~/media/D546161C2C6140BCB0BAEE954AA53433.pdf), higher settings of ProcODT can lead to more stable RAM, but the trade-off is potentially needing higher voltages. On Ryzen 1000 and 2000, you should try values between 40Ω and 68.6Ω due to the considerably weaker memory controller. 
+On Ryzen 3000 and 5000, [1usmus](https://www.overclock.net/threads/new-dram-calculator-for-ryzen%E2%84%A2-1-7-3-overclocking-dram-on-am4-membench-0-8-dram-bench.1640919/page-240#post-28049664) suggests 28Ω - 40Ω. Lower settings may be harder to run but potentially helps with voltage requirements. Higher values may aid with stability, according to [Micron](https://media-www.micron.com/-/media/client/global/documents/products/technical-note/dram/tn4040_ddr4_point_to_point_design_guide.pdf?la=en&rev=d58bc222192d411aae066b2577a12677), values of ODT above 60Ω are only suitable for extremely weak memory controllers and lower power solutions.
+This seems to line up with [The Stilt's](https://www.overclock.net/forum/10-amd-cpus/1728758-strictly-technical-matisse-not-really-26.html) settings.
+  > Phy at AGESA defaults, except ProcODT of 40.0Ohm, an ASUS auto-rule for Optimem III.
+* Lower SOC voltage and/or VDDG IOD may help with stability.
+* On Ryzen 3000 and 5000, higher CLDO_VDDP can help with stability above DDR4-3600.
+  > Increasing cLDO_VDDP seems beneficial > 3600MHz MEMCLKs, as increasing it seems to improve the margins and help with potential training issues. 
+  
+  Source: [The Stilt](https://www.overclock.net/forum/10-amd-cpus/1728758-strictly-technical-matisse-not-really-26.html).
+ 
+  > Small changes to VDDP can have a big effect, and VDDP cannot not be set to a value greater than VDIMM-0.1V (**not to exceed 1.05V**).
+  
+  Source: [AMD](https://web.archive.org/web/20210520115124/https://community.amd.com/t5/blogs/community-update-4-let-s-talk-dram/ba-p/415902)
+* When pushing FCLK around 1800 MHz, intermittent RAM training errors may be alleviated or eliminated by increasing VDDG CCD.
+
 ## Finding a Baseline
 1. * Ensure your sticks are in the recommended DIMM slots (usually 2 and 4).
 
    * Make sure your CPU overclock is disabled when tuning RAM, as an unstable CPU can lead to memory errors. Likewise, when pushing high frequency with tight timings, your CPU may become unstable and may need to be re-done.
 
    * Make sure your UEFI/BIOS is up to date.
+  
+2. Disable DRAM PowerDown Mode in UEFI. This also eliminates the need to tune related timings such as tCKE and tXP.
 
-2. On Intel, set command rate (CR) to 2T if it isn't already and set tCCDL to 8
+3. On Intel, set command rate (CR) to 2T if it isn't already and set tCCDL to 8
 
    On AMD, set Gear Down Mode to Enabled if it isn't already.
 
@@ -442,25 +479,28 @@ Some terminology:
      * Gigabyte: (Dynamic<sup>1</sup>) Vcore SOC.
        * <sup>1</sup>Dynamic Vcore SOC is found on certain Gigabyte motherboards and is an offset voltage. Therefore, the base voltage can change automatically when increasing DRAM frequency. For example, +0.100 V at DDR4-3000 might result in 1.10 V actual, but +0.100V at DDR4-3400 might result in 1.20v actual.
      * MSI: CPU NB/SOC.
-6. To find what voltage to use for your IC, refer to the [maximum recommended daily voltage section](#maximum-recommended-daily-voltage).
+5. To find what voltage to use for your IC, refer to the [maximum recommended daily voltage section](#maximum-recommended-daily-voltage).
    * "Roll over" means that the IC becomes more unstable as you increase the voltage, sometimes to the point of not even POSTing.
    * ICs that are known to roll over above 1.35 V include but are not limited to: 8 Gb Samsung C-die and older Micron/SpecTek ICs (before M8E).
 
-7. Set loose primary timings. See the table below.
+6. Set loose primary timings. See the table below.
 
-    |Frequency|tCL|tRCD|tRP|tRAS|tCWL|
-    |---|---|---|---|---|---|
-    |<=3200|16|20|20|40|16|
-    |3201-3600|18|22|22|44|18|
-    |3601-4000|20|24|24|48|20|
-    |4001-4400|22|26|26|52|22|
-    |4400+|24|28|28|56|24|
+   |Frequency|tCL|tRCD|tRP|tRAS|
+   |---|---|---|---|---|
+   |<=3200|16|20|20|40|
+   |3201-3600|18|22|22|44|
+   |3601-4000|20|24|24|48|
+   |4001-4400|22|26|26|52|
+   |4400+|24|28|28|56|
+
+   Source: Eden from [Overclocking Discord](discord.gg/overclock)
 
    * Some ICs may not boot with very loose primary timings to begin with. It is recommended to loosen timings as the frequency is increases with the suggestions in the table above.
-   * Note that some boards have auto rules that can stifle your progress, an example being tCWL = tCL - 1, which can lead to uneven values of tCWL. Reading the [Miscellaneous Tips](#miscellaneous-tips) might give you insight into your platform and your motherboard's functionality.
+   * Some boards have auto rules that can cause issues, such as tCWL = tCL - 1, which can lead to tCWL being an odd number. If so, try setting tCWL to 1 value lower.
+     * tCWL higher than 18 or 20 may not work, though it is not necessary to set such high values of tCWL.
    * See [this post](https://redd.it/ahs5a2) for more information on these timings.
   
-8. Increase the DRAM frequency until it doesn't boot into Windows anymore. Keep in mind the expectations detailed above including the timings for each frequency range.
+7. Increase the DRAM frequency until it doesn't boot into Windows anymore. Keep in mind the expectations detailed above including the timings for each frequency range.
    * Ryzen 3000/5000:
      * Desynchronising MCLK and FCLK can incur a massive latency penalty, so you're better off tightening timings to keep your MCLK:FCLK 1:1. See [AMD - AM4](#amd-imc) for more information.
    * If you're on Intel, a quick way of knowing if you're unstable is to examine the RTLs and IOLs. Each group of RTLs and IOLs correspond to a channel. Within each group, 2 values correspond to each DIMM.
@@ -474,7 +514,7 @@ Some terminology:
    In my case, RTLs are 53 and 55, which are exactly 2 apart, and IOLs are both 7.
    Note that having RTLs and IOLs within those ranges doesn't mean you're stable.
    * If you're on Ryzen 3000 or 5000, ensure that the Infinity Fabric frequency (FCLK) is set to half your effective DRAM frequency. Confirm this in ZenTimings by ensuring that FCLK matches UCLK and MCLK.
-9. Run a memory tester of your choice.
+8. Run a memory tester of your choice.
    * Windows will use ~2000 MB, so make sure to account for that when entering the amount of RAM to test if the test has manual input. For example, I have 16 GB of RAM and usually test 14000 MB.
    * Minimum recommended coverage/runtime:
      * **For AMD, run Prime95 Large FFTs and OCCT VRAM with max utilization simultaneously to stress the FCLK and ensure FCLK stability. This should be run after any frequency/FCLK change.**
@@ -486,9 +526,9 @@ Some terminology:
        * Runtime varies with density. For 16 GB RAM, it usually takes between 1.5-2 hours. If you run 32 GB RAM, you can set the 12th row of the config (Time (%)) to half, and you'll get roughly the same runtime as 16 GB.
      * OCCT Memory: 30 minutes each for SSE and AVX.
      * **You can run more tests like other TM5 configs to ensure stability. It is recommended to run various tests for maximum error coverage.**
-10. If you crash/freeze/BSOD or get an error, drop the DRAM frequency by a notch and test again.
-11. Save your overclock profile in your UEFI.
-12.  From this point on, you can either: try to go for a higher frequency or work on tightening the timings.
+9. If you crash/freeze/BSOD or get an error, drop the DRAM frequency by a notch and test again.
+10. Save your overclock profile in your UEFI.
+11.  From this point on, you can either: try to go for a higher frequency or work on tightening the timings.
    * Keep in mind the expectations detailed above. If you're at the limit of your ICs and/or IMC, it's best to tighten the timings.
    
 ## Tightening Timings
@@ -651,49 +691,15 @@ Some terminology:
     * If below DDR4-4400, try setting CR to 1T. If that doesn't work, leave CR on 2T.
     * On Asus Maximus boards, enabling Trace Centering can help greatly with pushing CR 1T to higher frequencies.
 
-11. You can also increase DRAM voltage to drop timings even more. Keep in mind the [voltage scaling characteristics of your ICs](#voltage-scaling) and the [maximum recommended daily voltage](#maximum-recommended-daily-voltage).
-    
-## Miscellaneous Tips
-* Usually, a 200 MHz increase in effective DRAM frequency negates the latency penalty of loosening tCL, tRCD, and tRP by 1 but has the benefit of higher bandwidth.  
-  For example, DDR4-3000 15-17-17 has the same latency as DDR4-3200 16-18-18, but DDR4-3200 16-18-18 has higher bandwidth. This is typically after initial tuning has been completed and not at XMP.
-* Generally speaking, frequency should be prioritized over tighter timings, as long as performance is not negatively impacted by FCLK sync, Command Rate, or Memory Gear mode.
-* Secondary and tertiary timings (except for tRFC) don't change much, if at all, across the frequency range. If you have stable secondary and tertiary timings at DDR4-3200, you could probably run them at DDR4-3600, even DDR4-4000, provided your ICs, IMC, and motherboard are capable.
-
-### Intel
-* Loosening tCCDL to 8 may help with stability, especially above DDR4-3600. This does not bring a significant latency penalty but may considerably affect memory read and write bandwidth.
-* Higher cache (aka uncore, ring) frequency can increase bandwidth and reduce latency.
-* After tightening the timings, you can increase IOL offsets to reduce IOLs. Make sure to run a memory test after. More info [here](https://hwbot.org/newsflash/3058_advanced_skylake_overclocking_tune_ddr4_memory_rtlio_on_maximus_viii_with_alexaros_guide).
+11. On Intel, you can increase IOL offsets to reduce IOLs. Make sure to run a memory test after. More info [here](https://hwbot.org/newsflash/3058_advanced_skylake_overclocking_tune_ddr4_memory_rtlio_on_maximus_viii_with_alexaros_guide).
   * In general, RTL and IOL values impact memory performance. Therefore, lowering them will increase bandwidth and decrease latency quite significantly.
   
     ![](Images/rtl-iol-aida-impact.png)
 
   * Lower values will, in some cases, also help with stability and lower memory controller voltage requirements. Some boards train them very well on their own. Some boards allow for easy tuning, while other boards simply ignore any user input.
   * If all else fails, you can try manually decreasing the RTL and IOL pair.
-* For Asus Maximus boards:
-   * Play around with the Maximus Tweak Modes; sometimes, one will post where the other does not.
-   * You can enable Round Trip Latency under Memory Training Algorithms to let the board attempt to train RTL and IOL values.
-   * If you can't boot, you can try tweaking the skew control values.  
-     More info [here](https://rog.asus.com/forum/showthread.php?47670-Maximus-7-Gene-The-road-to-overclocking-memory-without-increasing-voltage) (images broken).
-* tXP (and subsequently PPD) has a major impact on AIDA64 memory latency.
-* RTT Wr, Park, and Nom can have a massive impact on overclocking. The ideal values may depend on your board, memory IC and density. The "optimal" values will let you clock higher with less memory controller voltage. Some boards reveal the auto values (MSI) while others don't (Asus). Finding the perfect combination is time-consuming but very helpful for advanced tuning.
-* On some motherboards, enabling XMP can allow for better overclocking.
-  * Thanks to Bored and Muren for finding and verifying this on their Asrock motherboards.
 
-### AMD
-* Try playing around with ProcODT if you can't boot. This setting determines the processor's on-die termination impedance. According to [Micron](https://www.micron.com/support/~/media/D546161C2C6140BCB0BAEE954AA53433.pdf), higher settings of ProcODT can lead to more stable RAM, but the trade-off is potentially needing higher voltages. On Ryzen 1000 and 2000, you should try values between 40Ω and 68.6Ω due to the considerably weaker memory controller. 
-On Ryzen 3000 and 5000, [1usmus](https://www.overclock.net/threads/new-dram-calculator-for-ryzen%E2%84%A2-1-7-3-overclocking-dram-on-am4-membench-0-8-dram-bench.1640919/page-240#post-28049664) suggests 28Ω - 40Ω. Lower settings may be harder to run but potentially helps with voltage requirements. Higher values may aid with stability, according to [Micron](https://media-www.micron.com/-/media/client/global/documents/products/technical-note/dram/tn4040_ddr4_point_to_point_design_guide.pdf?la=en&rev=d58bc222192d411aae066b2577a12677), values of ODT above 60Ω are only suitable for extremely weak memory controllers and lower power solutions.
-This seems to line up with [The Stilt's](https://www.overclock.net/forum/10-amd-cpus/1728758-strictly-technical-matisse-not-really-26.html) settings.
-  > Phy at AGESA defaults, except ProcODT of 40.0Ohm, an ASUS auto-rule for Optimem III.
-* Lower SOC voltage and/or VDDG IOD may help with stability.
-* On Ryzen 3000 and 5000, higher CLDO_VDDP can help with stability above DDR4-3600.
-  > Increasing cLDO_VDDP seems beneficial > 3600MHz MEMCLKs, as increasing it seems to improve the margins and help with potential training issues. 
-  
-  Source: [The Stilt](https://www.overclock.net/forum/10-amd-cpus/1728758-strictly-technical-matisse-not-really-26.html).
- 
-  > Small changes to VDDP can have a big effect, and VDDP cannot not be set to a value greater than VDIMM-0.1V (**not to exceed 1.05V**).
-  
-  Source: [AMD](https://web.archive.org/web/20210520115124/https://community.amd.com/t5/blogs/community-update-4-let-s-talk-dram/ba-p/415902)
-* When pushing FCLK around 1800 MHz, intermittent RAM training errors may be alleviated or eliminated by increasing VDDG CCD.
+12. You can also increase DRAM voltage to drop timings even more. Keep in mind the [voltage scaling characteristics of your ICs](#voltage-scaling) and the [maximum recommended daily voltage](#maximum-recommended-daily-voltage).
 
 # Useful Links
 ## Benchmarks
